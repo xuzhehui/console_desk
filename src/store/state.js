@@ -9,6 +9,12 @@ const state = {
             ]
         },
         {
+            title:'物料管理',
+            sub:[
+                {title:'木材',page:'MaterialMannage'}
+            ]
+        },
+        {
             title:'基础设置',
             sub:[
                 {title:'物料分类字段',page:'Materialfield'},

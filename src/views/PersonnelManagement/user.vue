@@ -55,7 +55,7 @@ export default {
     methods:{
         init(row){
             console.log(row)
-            this.axios('/b/c',{params:row})
+            this.axios('/proxy/api/material_index',{params:row})
         },
         searchData(row){
 

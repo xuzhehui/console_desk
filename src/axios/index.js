@@ -11,12 +11,13 @@ let config = {
     // 请求超时时间
     timeout: 10000,
     // 每次请求携带cookie
-    withCredentials: true
+    withCredentials: true,
 }
 
 //请求拦截，后期可能会用到，先注册在此
 instance.interceptors.request.use(function (config) {
     // 在发送请求之前做些什么，例如加入token
+    config.headers['Authorization'] = 'c9cc8ebff9c7ee2edec538258efa7e9e1b758827'
     return config;
   }, function (error) {
     // 对请求错误做些什么
@@ -30,7 +31,7 @@ instance.interceptors.response.use(res => {
             // Vue.prototype.$Message.success(res.data.message)
             return res.data
         }else{
-            Vue.prototype.$Message.error(res.data.message)
+            Vue.prototype.$Message.error(res.data.msg)
             return res.data
         }
       }else{

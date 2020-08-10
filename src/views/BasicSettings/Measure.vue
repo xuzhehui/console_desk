@@ -49,10 +49,15 @@ export default {
     },
     methods:{
         init(row){
-            console.log(row)
+            this.getData(row)
         },
         searchData(row){
-            console.log(row)
+            this.getData(row)
+        },
+        getData(row){
+            this.axios('/proxy/api/basics_measure_index',{params:row}).then(res=>{
+                this.tableData = res.data;
+            })
         },
         changePage(e){
             this.pageIndex = e;

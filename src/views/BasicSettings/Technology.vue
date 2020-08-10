@@ -31,11 +31,11 @@ export default {
         return {
             list:[
                 {title:'ID',name:'Input',value:2,serverName:'id',placeholder:'请输入ID'},
-                {title:'物料分类名称',name:'Input',value:'',serverName:'user_name',placeholder:'请输入属性名称'},
+                {title:'物料分类名称',name:'Input',value:'',serverName:'title',placeholder:'请输入属性名称'},
             ],
             tableColums:[
                 {title:'ID',align:'center',key:'id'},
-                {title:'属性名称',align:'center'},
+                {title:'属性名称',align:'center',key:'title'},
                 {title:'操作',align:'center'},
             ],
             tableData:[
@@ -47,10 +47,15 @@ export default {
     },
     methods:{
         init(row){
-            console.log(row)
+            this.getData(row)
         },
         searchData(row){
-            console.log(row)
+            this.getData(row)
+        },
+        getData(row){
+            this.axios('/proxy/api/basics_properties_index',{params:row}).then(res=>{
+                this.tableData = res.data;
+            })
         },
         changePage(e){
             this.pageIndex = e;

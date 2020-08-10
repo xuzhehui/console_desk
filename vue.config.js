@@ -5,12 +5,12 @@ module.exports = {
     indexPath:'index.html',
     devServer: {
         proxy: {
-          '/api': {
-            target: 'http://localhost:5590', 
+          '/proxy': {
+            target: 'http://192.168.0.175:8080', 
             ws: true, // proxy websockets
             changeOrigin: true,
             pathRewrite: {
-              '^/api': '' // rewrite path
+              '^/proxy': '' // rewrite path
             }
           }
         } 

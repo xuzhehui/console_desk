@@ -53,6 +53,18 @@ const routerMap = [
         meta:{index:4},
         component: resolve => require(['@/views/PartsMannage/index'], resolve)
     },
+    {
+        path:'/cms/materialmannage/index',
+        name:'MaterialMannage',//物料管理-->部件列表
+        meta:{index:4},
+        component: resolve => require(['@/views/MaterialMannage/index'], resolve)
+    },
+    {
+        path:'/cms/materialmannage/edit',
+        name:'MaterialMannageEdit',//物料管理-->部件列表-->编辑-新增-查看
+        meta:{index:4},
+        component: resolve => require(['@/views/MaterialMannage/edit'], resolve)
+    },
 ]
 
 export default routerMap
