@@ -1,30 +1,44 @@
 <template>
     <div>
-        <Toptitle title="物料分类字段" />
-        <div class="nav">
-            <Topsearch :list='list' @init='init' @searchData='searchData'/>
-            <Button type="primary" ghost icon='md-add' @click="addItems">新增物料分类</Button>
-        </div>
-
-        <Table max-height='600' stripe border :columns="tableColums" :data="tableData">
-            <template slot-scope="{ row }" slot="set">
-                <Icon size='20' style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
-                <Icon @click="delItems" size='20' style="margin-left:10px;color:red;cursor:pointer" type="ios-trash-outline" />
+        <FullPage 
+        title='物料分类字段'
+        :list='list' 
+        @init='init' 
+        @searchData='searchData' 
+        @changePage='changePage'
+        :tableColums='tableColums'
+        :tableData='tableData'
+        :pageIndex='pageIndex'
+        :total='total'
+        >
+            <div slot='titleButton'>
+                <Button type="primary" ghost icon='md-add'>新增物料分类</Button>
+            </div>
+            <div slot='navButton'>
+                <Button type="primary" ghost icon='md-add' @click="addItems">新增物料分类</Button>
+            </div>
+            
+            <template slot='set' slot-scope='row'>
+                <div  >
+                    <Icon @click="addItems(row)" size='20' style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
+                    <Icon  size='20' style="margin-left:10px;color:red;cursor:pointer" type="ios-trash-outline" />
+                </div>
             </template>
-        </Table>
-
-        <Modal :title="showTitle" v-model="showModal" :width="480">
-            <Form :label-width="90">
-                <FormItem label="ID：">
-                    <Input placeholder="请输入ID" v-model="classInfo.id"/>
-                </FormItem>
-                <FormItem label="分类名称：">
-                    <Input placeholder="请输入分类名称" v-model="classInfo.title"/>
-                </FormItem>
-            </Form>
-        </Modal>
-
-        <Footer :pageIndex='pageIndex' :total='total' @change='changePage' />
+            
+            <div>
+                <Modal :title="showTitle" v-model="showModal" :width="480">
+                    <Form :label-width="90">
+                        <FormItem label="ID：">
+                            <Input placeholder="请输入ID" v-model="classInfo.id"/>
+                        </FormItem>
+                        <FormItem label="分类名称：">
+                            <Input placeholder="请输入分类名称" v-model="classInfo.title"/>
+                        </FormItem>
+                    </Form>
+                </Modal>
+            </div>
+        
+        </FullPage>
     </div>
 </template>
 
@@ -67,6 +81,7 @@ export default {
             this.pageIndex = e;
         },
         addItems(obj){
+            console.log(obj)
             this.showModal = true;
             if(obj.id){
                 this.showTitle='编辑分类'

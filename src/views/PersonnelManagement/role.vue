@@ -1,16 +1,27 @@
 <template>
     <div class="user">
-        <Toptitle title="角色管理" />
-        <div class="nav">
-            <Topsearch :list='list' @init='init' @searchData='searchData'/>
-            <Button type="primary" ghost icon='md-add'>新建角色</Button>
-        </div>
-        
-        <Table max-height='600' stripe border :columns="tableColums" :data="tableData">
-
-        </Table>
-
-        <Footer :pageIndex='pageIndex' :total='total' @change='changePage' />
+        <FullPage 
+        title='角色管理'
+        :list='list' 
+        @init='init' 
+        @searchData='searchData' 
+        @changePage='changePage'
+        :tableColums='tableColums'
+        :tableData='tableData'
+        :pageIndex='pageIndex'
+        :total='total'
+        >
+            <div slot='navButton'>
+                <Button type="primary" ghost icon='md-add'>新增角色</Button>
+            </div>
+            
+            <template slot='set' slot-scope='row'>
+                <div>
+                    <Icon size='20' style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
+                    <Icon size='20' style="margin-left:10px;color:red;cursor:pointer" type="ios-trash-outline" />
+                </div>
+            </template>
+        </FullPage>
     </div>
 </template>
 
@@ -28,7 +39,7 @@ export default {
             tableColums:[
                 {title:'ID',align:'center',key:'id'},
                 {title:'角色名',align:'center'},
-                {title:'操作',align:'center'},
+                {title:'操作',align:'center',slot:'set'},
             ],
             tableData:[
                 {id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},

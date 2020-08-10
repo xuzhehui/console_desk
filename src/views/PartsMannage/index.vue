@@ -1,19 +1,31 @@
 <template>
     <div>
-        <Toptitle title="部件列表">
-            <Button type="success" ghost icon='md-exit' style="margin-right:10px;">批量导入</Button>
-            <Button type="warning" ghost icon='md-return-left'>批量导出</Button>
-        </Toptitle>
-        <div class="nav">
-            <Topsearch :list='list' @init='init' @searchData='searchData'/>
-            <Button type="primary" ghost icon='md-add'>新增部件</Button>
-        </div>
-
-        <Table max-height='600' stripe border :columns="tableColums" :data="tableData">
-
-        </Table>
-
-        <Footer :pageIndex='pageIndex' :total='total' @change='changePage' />
+        <FullPage 
+        title='部件列表'
+        :list='list' 
+        @init='init' 
+        @searchData='searchData' 
+        @changePage='changePage'
+        :tableColums='tableColums'
+        :tableData='tableData'
+        :pageIndex='pageIndex'
+        :total='total'
+        >
+            <div slot='titleButton'>
+                <Button type="success" ghost icon='md-exit' style="margin-right:10px;">批量导入</Button>
+                <Button type="warning" ghost icon='md-return-left'>批量导出</Button>
+            </div>
+            <div slot='navButton'>
+                <Button type="primary" ghost icon='md-add'>新增部件</Button>
+            </div>
+            
+            <template slot='set' slot-scope='row'>
+                <div>
+                    <Icon size='20' style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
+                    <Icon size='20' style="margin-left:10px;color:red;cursor:pointer" type="ios-trash-outline" />
+                </div>
+            </template>
+        </FullPage>
     </div>
 </template>
 
