@@ -71,6 +71,7 @@ export default {
                 name:'MaterialMannageEdit',
                 params:{
                     title:n==1 ? '新增物料' : (n == 2 ? '编辑物料' : '查看物料'),
+                    type:n+'',
                     // id:row.id
                 }
             })
