@@ -23,17 +23,15 @@
             </template>
             
             <div>
-                <Modal @on-ok="postInfo" :title="showTitle" v-model="showModal" :width="480" @on-visible-change='vivibleModal'>
+                <Modal class-name="vertical-center-modal" @on-ok="postInfo" :title="showType == 1 ? '新增物料': '编辑物料'" v-model="showModal" :width="480" @on-visible-change='vivibleModal'>
                     <Form :label-width="90">
                         <FormItem label="ID：">
-                            <Input placeholder="请输入ID" v-model="classInfo.id"/>
+                            <Input disabled placeholder="ID自动生成" v-model="classInfo.id"/>
                         </FormItem>
                         <FormItem label="分类名称：">
                             <Input placeholder="请输入分类名称" v-model="classInfo.title"/>
                         </FormItem>
                     </Form>
-
-                    <!-- <div class="modal-footer" slot="footer"></div> -->
                 </Modal>
             </div>
         
@@ -54,22 +52,22 @@ export default {
                 {title:'物料分类',align:'center',key:'title'},
                 {title:'操作',align:'center',slot:'set'},
             ],
-            tableData:[
-                {id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},
-            ],
+            tableData:[],
             pageIndex:1,
             total:100,
             showModal:false,
-            showTitle:'新增分类',
+            showType:1,
             classInfo:{
                 id:'',
                 title:''
-            }
+            },
+            searchObj:{},
         }
     },
     
     methods:{
         init(row){
+            this.searchObj = row;
             this.getData(row)
         },
         searchData(row){
@@ -86,15 +84,15 @@ export default {
         addItems(obj){
             this.showModal = true;
             if(obj.id){
-                this.showTitle='编辑分类'
+                this.showType=2
                 this.classInfo.id = obj.id;
                 this.classInfo.title = obj.title;
             }else{
                 //新增
+                this.showType=1
             } 
         },
         delItems(row){
-            console.log(row)
             this.confirmDelete({
                 content:'确认删除么？',
                 then:()=>{
@@ -111,7 +109,11 @@ export default {
             }
         },
         postInfo(){
-            
+            let post_url = this.showType == 1 ? '/proxy/api/basics_material_add' : '/proxy/api/basics_material_edit';
+            this.axios.post(post_url,this.classInfo).then(res=>{
+                this.$Message.success(res.msg)
+                this.getData(this.searchObj)
+            })
         }
     }
 }
@@ -119,4 +121,12 @@ export default {
 
 <style lang="scss" scoped>
 .nav{display: flex;justify-content: space-between;align-items: center;}
+.vertical-center-modal{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .ivu-modal{
+            top: 0;
+        }
+    }
 </style>

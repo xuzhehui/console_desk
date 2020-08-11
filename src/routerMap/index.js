@@ -54,6 +54,12 @@ const routerMap = [
         component: resolve => require(['@/views/PartsMannage/index'], resolve)
     },
     {
+        path:'/cms/partsmannage/edit',
+        name:'PartsManageHomeEdit',//部件管理-->部件列表-->部件编辑-新增-查看
+        meta:{index:4},
+        component: resolve => require(['@/views/PartsMannage/edit'], resolve)
+    },
+    {
         path:'/cms/materialmannage/index',
         name:'MaterialMannage',//物料管理-->部件列表
         meta:{index:4},
@@ -65,6 +71,25 @@ const routerMap = [
         meta:{index:4},
         component: resolve => require(['@/views/MaterialMannage/edit'], resolve)
     },
+    {
+        path:'/cms/processroute/index',
+        name:'ProcessRoute',//工艺路线-->工艺列表
+        meta:{index:4},
+        component: resolve => require(['@/views/ProcessRoute/index'], resolve)
+    },
+    {
+        path:'/cms/product/index',
+        name:'Products',//商品管理-->商品列表
+        meta:{index:4},
+        component: resolve => require(['@/views/ProductMannage/index'], resolve)
+    },
+    {
+        path:'/cms/product/edit',
+        name:'ProductsEdit',//商品管理-->商品列表-->新增 编辑 查看
+        meta:{index:4},
+        component: resolve => require(['@/views/ProductMannage/edit'], resolve)
+    },
+
 ]
 
 export default routerMap

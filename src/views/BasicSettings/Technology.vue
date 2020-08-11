@@ -12,15 +12,36 @@
         :total='total'
         >
             <div slot='navButton'>
-                <Button type="primary" ghost icon='md-add'>新增属性</Button>
+                <Button @click="addItems" type="primary" ghost icon='md-add'>新增属性</Button>
             </div>
             
             <template slot='set' slot-scope='row'>
                 <div>
-                    <Icon size='20' style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
+                    <Icon size='20' @click="addItems(row.row)" style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
                     <Icon size='20' style="margin-left:10px;color:red;cursor:pointer" type="ios-trash-outline" />
                 </div>
             </template>
+
+            <div>
+                <Modal class-name="vertical-center-modal" @on-ok="postInfo" :title="showType == 1 ? '新增物料': '编辑物料'" v-model="showModal" :width="480" @on-visible-change='vivibleModal'>
+                    <Form :label-width="90">
+                        <FormItem label="ID：">
+                            <Input disabled placeholder="ID自动生成" v-model="classInfo.id"/>
+                        </FormItem>
+                        <FormItem label="属性名称：">
+                            <div v-if="showType == 1">
+                                <div class="item-attr" v-for="(item,index) of attribute" :key="index">
+                                    <Input placeholder="请输入属性名称" v-model="item.title"/>
+                                    <Icon @click="addAttr(index)" style="'margin:0 10px" :color='index == 0 ? "#32C800" : "#FF5E5C"' size='20' :type="index == 0 ? 'ios-add-circle' : 'md-remove-circle'" />
+                                </div>
+                            </div>
+
+                            <Input v-if="showType == 2" placeholder="请输入属性名称" v-model="classInfo.title"/>
+                            
+                        </FormItem>
+                    </Form>
+                </Modal>
+            </div>
         </FullPage>
     </div>
 </template>
@@ -30,19 +51,21 @@ export default {
     data(){
         return {
             list:[
-                {title:'ID',name:'Input',value:2,serverName:'id',placeholder:'请输入ID'},
+                {title:'ID',name:'Input',value:'',serverName:'id',placeholder:'请输入ID'},
                 {title:'物料分类名称',name:'Input',value:'',serverName:'title',placeholder:'请输入属性名称'},
             ],
             tableColums:[
                 {title:'ID',align:'center',key:'id'},
                 {title:'属性名称',align:'center',key:'title'},
-                {title:'操作',align:'center'},
+                {title:'操作',align:'center',slot:'set'},
             ],
-            tableData:[
-                {id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},
-            ],
+            tableData:[],
             pageIndex:1,
             total:100,
+            showModal:false,
+            showType:1,
+            classInfo:{},
+            attribute:[{title:''}]
         }
     },
     methods:{
@@ -57,8 +80,43 @@ export default {
                 this.tableData = res.data;
             })
         },
+        addItems(obj){
+            this.showModal = true;
+            if(obj.id){
+                this.showType=2
+                this.classInfo.id = obj.id;
+                this.classInfo.title = obj.title;
+            }else{
+                //新增
+                this.showType=1
+            } 
+        },
         changePage(e){
             this.pageIndex = e;
+        },
+        vivibleModal(e){
+            if(!e){
+                this.showType == 1 ? this.attribute=[{title:''}] : this.classInfo={}
+            }
+        },
+        postInfo(){
+            let post_url,post_data;
+            if(this.showType == 1){
+                post_url = '/proxy/api/basics_properties_add';
+                let result = []
+                this.attribute.map(v=>result.push(v.title))
+                post_data = {
+                    id:this.classInfo.id,
+                    title:result.join(',')
+                }
+            }else{
+                post_url = '/proxy/api/basics_properties_edit'
+                post_data = this.classInfo;
+            }
+            this.axios.post(post_url,post_data)
+        },
+        addAttr(n){
+            n == 0 ? this.attribute.push({title:''}) : this.attribute.splice(n,1)
         }
     }
 }
@@ -66,4 +124,5 @@ export default {
 
 <style lang="scss" scoped>
 .nav{display: flex;justify-content: space-between;align-items: center;}
+.item-attr{display: flex;align-items: center;margin-bottom: 10px;}
 </style>

@@ -9,6 +9,24 @@ const state = {
             ]
         },
         {
+            title:'商品管理',
+            sub:[
+                {title:'商品列表',page:'Products'}
+            ]
+        },
+
+        {
+            title:'工艺路线',
+            sub:[
+                {title:'工艺列表',page:'ProcessRoute'},
+                {title:'工艺列表1',
+                    sub:[
+                        {title:'三级列表1'}
+                    ]
+                }
+            ]
+        },
+        {
             title:'物料管理',
             sub:[
                 {title:'木材',page:'MaterialMannage'}
@@ -25,21 +43,6 @@ const state = {
                 {title:'部件字段',page:'Partfield'},
             ]
         },
-        // {
-        //     title:'财务管理',
-        //     sub:[
-        //         {title:'子菜单1'},
-        //         {title:'子菜单2'},
-        //         {
-        //             title:'子菜单3',
-        //             sub:[
-        //                 {title:'三级菜单1'},
-        //                 {title:'三级菜单2'}
-        //             ]
-                
-        //         },
-        //     ]
-        // },
         {
             title:'人员管理',
             sub:[

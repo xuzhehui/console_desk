@@ -7,7 +7,15 @@
                     {{item.title}}
                 </template>
                 
-                <MenuItem v-for="(_item,_index) of item.sub" :key="_index" :name="index+'-'+_index">{{_item.title}}</MenuItem>
+                <MenuItem v-if="_item.page" v-for="(_item,_index) of item.sub" :key="_index" :name="index+'-'+_index">{{_item.title}}</MenuItem>
+                <Submenu v-else name="2">
+                    <template slot="title">
+                        <Icon type="ios-filing" />
+                        {{_item.title}}
+                    </template>
+                    <MenuItem v-for="(__item,__index) of _item.sub" :key="__index" :name="index+'-'+_index+'-'+__index">{{__item.title}}</MenuItem>
+                </Submenu>
+
             </Submenu>
             <!-- <Submenu name="2">
                 <template slot="title">
@@ -21,7 +29,7 @@
                     <MenuItem name="3-1">Option 7</MenuItem>
                     <MenuItem name="3-2">Option 8</MenuItem>
                 </Submenu>
-            </Submenu>-->
+            </Submenu> -->
             
         </Menu>
     </div>

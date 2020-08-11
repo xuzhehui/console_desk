@@ -17,8 +17,9 @@
             
             <template slot='set' slot-scope='row'>
                 <div>
-                    <Icon @click="goDetial(2)" size='20' style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
-                    <Icon size='20' style="margin-left:10px;color:red;cursor:pointer" type="ios-trash-outline" />
+                    <Icon @click="goDetial(2,row.row)" size='20' style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
+                    <Icon @click="goDetial(3,row.row)" size='20' style="margin-right:10px;color:#32C800;cursor:pointer" type="ios-paper-outline" />
+                    <Icon size='20' style="color:red;cursor:pointer"  type="ios-trash-outline" />
                 </div>
             </template>
         </FullPage>
@@ -35,18 +36,18 @@ export default {
             ],
             tableColums:[
                 {title:'ID',align:'center',key:'id',fixed:'left',},
-                {title:'材料分类名称',align:'center',key:'id',width:'150'},
-                {title:'材质',align:'center',key:'id',width:'150'},
-                {title:'库存',align:'center',key:'id'},
-                {title:'单位',align:'center',key:'id'},
-                {title:'预警值',align:'center',key:'id'},
-                {title:'单价(元)',align:'center',key:'id'},
-                {title:'长',align:'center',key:'id'},
-                {title:'宽',align:'center',key:'id'},
-                {title:'厚',align:'center',key:'id'},
-                {title:'公式',align:'center',key:'id'},
-                {title:'描述',align:'center',key:'id'},
-                {title:'操作',align:'center',slot:'set',fixed:'right',width:'100'},
+                {title:'材料分类名称',align:'center',key:'type_name',width:'150'},
+                {title:'材质',align:'center',key:'title',width:'150'},
+                {title:'库存',align:'center',key:'stock'},
+                {title:'单位',align:'center',key:'unit'},
+                {title:'预警值',align:'center',key:'warning_number'},
+                {title:'单价(元)',align:'center',key:'price'},
+                {title:'长',align:'center',key:'long'},
+                {title:'宽',align:'center',key:'width'},
+                {title:'厚',align:'center',key:'high'},
+                {title:'公式',align:'center',key:'formula'},
+                {title:'描述',align:'center',key:'remark'},
+                {title:'操作',align:'center',slot:'set',fixed:'right',width:'150'},
             ],
             tableData:[
                 {id:'1',title:'222'}
@@ -57,7 +58,9 @@ export default {
     },
     methods:{
         init(row){
-
+            this.axios('/proxy/api/material').then(res=>{
+                this.tableData = res.data;
+            })
         },
         searchData(row){
 
@@ -66,14 +69,9 @@ export default {
 
         },
         goDetial(n,row){// n = 1 新增 2 编辑 3 查看 
-            
+            let id = row ? row.id : ''
             this.$router.push({
-                name:'MaterialMannageEdit',
-                params:{
-                    title:n==1 ? '新增物料' : (n == 2 ? '编辑物料' : '查看物料'),
-                    type:n+'',
-                    // id:row.id
-                }
+                path:`/cms/materialmannage/edit?id=${id}&type=${n}`,
             })
         }
     }

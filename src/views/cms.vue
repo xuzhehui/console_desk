@@ -47,12 +47,15 @@ export default {
         menuSelect(name,data){
             sessionStorage.removeItem('crumbs')
             let split_array = name.split('-');
-            let [parant,child] = split_array;
-            let parantData = data[parant],childData = parantData.sub[child];
-            this.$store.commit('updateCrumbs',{parantData,childData})
-            sessionStorage.setItem('crumbs',JSON.stringify({parantData,childData}))
+            let [parant,child,last] = split_array;
+            let parantData = data[parant],childData = parantData.sub[child],lastChild;
+            if(last){
+                lastChild = childData.sub[last]
+            }
+            this.$store.commit('updateCrumbs',{parantData,childData,lastChild })
+            sessionStorage.setItem('crumbs',JSON.stringify({parantData,childData,lastChild}))
             this.$router.push({
-                name:data[parant].sub[child].page
+                name:lastChild ? lastChild.page : childData.page
             })
         },
     },
