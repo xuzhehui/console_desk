@@ -1,7 +1,7 @@
 <template>
     <div>
         <FullPage 
-        title='工艺属性字段'
+        :title='title'
         :list='list' 
         @init='init' 
         @searchData='searchData' 
@@ -12,7 +12,7 @@
         :total='total'
         >
             <div slot='navButton'>
-                <Button @click="addItems" type="primary" ghost icon='md-add'>新增属性</Button>
+                <Button @click="addItems" type="primary" ghost icon='md-add'>新增{{title}}</Button>
             </div>
             
             <template slot='set' slot-scope='row'>
@@ -23,7 +23,7 @@
             </template>
 
             <div>
-                <Modal class-name="vertical-center-modal" @on-ok="postInfo" :title="showType == 1 ? '新增物料': '编辑物料'" v-model="showModal" :width="480" @on-visible-change='vivibleModal'>
+                <Modal class-name="vertical-center-modal" @on-ok="postInfo" :title="showType == 1 ? '新增'+title: '编辑'+title" v-model="showModal" :width="480" @on-visible-change='vivibleModal'>
                     <Form :label-width="90">
                         <FormItem label="ID：">
                             <Input disabled placeholder="ID自动生成" v-model="classInfo.id"/>
@@ -31,12 +31,12 @@
                         <FormItem label="属性名称：">
                             <div v-if="showType == 1">
                                 <div class="item-attr" v-for="(item,index) of attribute" :key="index">
-                                    <Input placeholder="请输入属性名称" v-model="item.title"/>
+                                    <Input :placeholder='"请输入"+title+"名称"' v-model="item.title"/>
                                     <Icon @click="addAttr(index)" style="'margin:0 10px" :color='index == 0 ? "#32C800" : "#FF5E5C"' size='20' :type="index == 0 ? 'ios-add-circle' : 'md-remove-circle'" />
                                 </div>
                             </div>
 
-                            <Input v-if="showType == 2" placeholder="请输入属性名称" v-model="classInfo.title"/>
+                            <Input v-if="showType == 2" :placeholder='"请输入"+title+"名称"' v-model="classInfo.title"/>
                             
                         </FormItem>
                     </Form>
@@ -52,11 +52,11 @@ export default {
         return {
             list:[
                 {title:'ID',name:'Input',value:'',serverName:'id',placeholder:'请输入ID'},
-                {title:'物料分类名称',name:'Input',value:'',serverName:'title',placeholder:'请输入属性名称'},
+                {title:`颜色名称`,name:'Input',value:'',serverName:'title',placeholder:`请输入颜色名称`},
             ],
             tableColums:[
                 {title:'ID',align:'center',key:'id'},
-                {title:'属性名称',align:'center',key:'title'},
+                {title:`颜色`,align:'center',key:'title'},
                 {title:'操作',align:'center',slot:'set'},
             ],
             tableData:[],
@@ -65,7 +65,19 @@ export default {
             showModal:false,
             showType:1,
             classInfo:{},
-            attribute:[{title:''}]
+            attribute:[{title:''}],
+            title:'',
+        }
+    },
+    mounted(){
+        this.title = this.$route.query.title
+    },
+    watch:{
+        $route(to){
+            this.title = to.query.title;
+            this.list[1].title = `${this.title}名称`;
+            this.list[1].placeholder = `请输入${this.title}名称`
+            this.tableData[1].title=this.title;
         }
     },
     methods:{

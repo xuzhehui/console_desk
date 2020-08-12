@@ -79,12 +79,12 @@ export default {
             this.getData(row)
         },
         getData(row){
-            this.axios('/proxy/api/basics_product_index',{params:row}).then(res=>{
+            this.axios('/api/basics_product_index',{params:row}).then(res=>{
                 this.tableData = res.data;
             })
         },
         getMeasure(){//获取基础测量字段列表
-            this.axios('/proxy/api/basics_measure_index').then(res=>{
+            this.axios('/api/basics_measure_index').then(res=>{
                 this.measureList = res.data;
             })
         },
@@ -104,7 +104,7 @@ export default {
             } 
         },
         postInfo(){
-            let post_url = this.showType == 1 ? '/proxy/api/basics_product_add' : '/proxy/api/basics_product_edit',post_data={
+            let post_url = this.showType == 1 ? '/api/basics_product_add' : '/api/basics_product_edit',post_data={
                 id:this.classInfo.id,
                 title:this.classInfo.title,
                 measure_id:this.classInfo.measure_id.join(',')

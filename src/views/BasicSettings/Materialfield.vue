@@ -74,7 +74,7 @@ export default {
             this.getData(row)
         },
         getData(row){
-            this.axios('/proxy/api/basics_material_index',{params:row}).then(res=>{
+            this.axios('/api/basics_material_index',{params:row}).then(res=>{
                 this.tableData = res.data;
             })
         },
@@ -109,7 +109,7 @@ export default {
             }
         },
         postInfo(){
-            let post_url = this.showType == 1 ? '/proxy/api/basics_material_add' : '/proxy/api/basics_material_edit';
+            let post_url = this.showType == 1 ? '/api/basics_material_add' : '/api/basics_material_edit';
             this.axios.post(post_url,this.classInfo).then(res=>{
                 this.$Message.success(res.msg)
                 this.getData(this.searchObj)

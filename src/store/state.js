@@ -5,20 +5,32 @@ const state = {
         {
             title:'部件管理',
             sub:[
-                {title:'部件列表',page:'PartsManageHome'}
+                {title:'部件列表',page:'/cms/partsmannage/list'}
             ]
         },
         {
             title:'商品管理',
             sub:[
-                {title:'商品列表',page:'Products'}
+                {title:'商品列表',page:'/cms/goods/index'}
+            ]
+        },
+        {
+            title:'产品管理',
+            sub:[
+                {
+                    title:'门',
+                    sub:[
+                        {title:'单拉门',page:'/cms/product/index'}
+                    ]
+                
+                },
             ]
         },
 
         {
             title:'工艺路线',
             sub:[
-                {title:'工艺列表',page:'ProcessRoute'},
+                {title:'工艺列表',page:'/cms/processroute/index'},
                 {title:'工艺列表1',
                     sub:[
                         {title:'三级列表1'}
@@ -27,27 +39,46 @@ const state = {
             ]
         },
         {
+            title:'工艺属性',
+            sub:[
+                {title:'颜色',page:'/cms/processmannage/index'},
+                {title:'材质',page:'/cms/processmannage/index'}
+            ]
+        },
+        {
+            title:'工序管理',
+            sub:[
+                {
+                    title:'木工',
+                    sub:[
+                        {title:'包边',page:'/cms/processmannage/index'},
+                        {title:'拉丝',page:'/cms/processmannage/index'}
+                    ]
+                },
+            ]
+        },
+        {
             title:'物料管理',
             sub:[
-                {title:'木材',page:'MaterialMannage'}
+                {title:'木材',page:'/cms/materialmannage/index'}
             ]
         },
         {
             title:'基础设置',
             sub:[
-                {title:'物料分类字段',page:'Materialfield'},
-                {title:'工艺属性字段',page:'Technology'},
-                {title:'工序分类字段',page:'Process'},
-                {title:'产品分类字段',page:'Productfield'},
-                {title:'测量字段',page:'Measure'},
-                {title:'部件字段',page:'Partfield'},
+                {title:'物料分类字段',page:'/cms/basicsettings/materialfield'},
+                {title:'工艺属性字段',page:'/cms/basicsettings/technology'},
+                {title:'工序分类字段',page:'/cms/basicsettings/process'},
+                {title:'产品分类字段',page:'/cms/basicsettings/productfield'},
+                {title:'测量字段',page:'/cms/basicsettings/measure'},
+                {title:'部件字段',page:'/cms/basicsettings/partfield'},
             ]
         },
         {
             title:'人员管理',
             sub:[
-                {title:'用户管理',page:'PersonnelManagementUser'},
-                {title:'角色管理',page:'PersonnelManagementRole'},
+                {title:'用户管理',page:'/cms/personnelmanagement/user'},
+                {title:'角色管理',page:'/cms/personnelmanagement/role'},
             ]
         }
     ]

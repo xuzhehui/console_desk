@@ -55,7 +55,10 @@ export default {
             this.$store.commit('updateCrumbs',{parantData,childData,lastChild })
             sessionStorage.setItem('crumbs',JSON.stringify({parantData,childData,lastChild}))
             this.$router.push({
-                name:lastChild ? lastChild.page : childData.page
+                path:lastChild ? lastChild.page : childData.page,
+                query:{
+                    title:lastChild ? lastChild.title : childData.title
+                }
             })
         },
     },

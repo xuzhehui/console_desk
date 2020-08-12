@@ -62,7 +62,7 @@ export default {
     mounted(){
         this.type = this.$route.query.type;
         this.id = this.$route.query.id||''
-        this.axios('/proxy/api/basics_material_index').then(res=>{
+        this.axios('/api/basics_material_index').then(res=>{
             this.materialList = res.data;
         })
         if(this.id){
@@ -71,7 +71,7 @@ export default {
     },
     methods:{
         getData(id){
-            this.axios('/proxy/api/material',{params:{id:id}}).then(res=>{
+            this.axios('/api/material',{params:{id:id}}).then(res=>{
                 let data = res.data.shift();
                 this.info = data;
             })

@@ -58,7 +58,7 @@ export default {
     },
     methods:{
         init(row){
-            this.axios('/proxy/api/material').then(res=>{
+            this.axios('/api/material').then(res=>{
                 this.tableData = res.data;
             })
         },

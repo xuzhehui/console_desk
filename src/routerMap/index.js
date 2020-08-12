@@ -12,6 +12,12 @@ const routerMap = [
         component: resolve => require(['@/views/PersonnelManagement/role'], resolve)
     },
     {
+        path:'/cms/personnelmanagement/role/edit',
+        name:'PersonnelManagementRoleEdit',//人员管理-->角色管理-->新增  编辑
+        meta:{index:4},
+        component: resolve => require(['@/views/PersonnelManagement/roleEdit'], resolve)
+    },
+    {
         path:'/cms/basicsettings/materialfield',
         name:'Materialfield',//基础设置-->物料分类字段
         meta:{index:4},
@@ -78,16 +84,34 @@ const routerMap = [
         component: resolve => require(['@/views/ProcessRoute/index'], resolve)
     },
     {
+        path:'/cms/goods/index',
+        name:'Goods',//商品管理-->商品列表
+        meta:{index:4},
+        component: resolve => require(['@/views/GoodsMannage/index'], resolve)
+    },
+    {
+        path:'/cms/goods/edit',
+        name:'GoodsEdit',//商品管理-->商品列表-->新增 编辑 查看
+        meta:{index:4},
+        component: resolve => require(['@/views/GoodsMannage/edit'], resolve)
+    },
+    {
         path:'/cms/product/index',
-        name:'Products',//商品管理-->商品列表
+        name:'Products',//产品管理-->通用产品页
         meta:{index:4},
         component: resolve => require(['@/views/ProductMannage/index'], resolve)
     },
     {
         path:'/cms/product/edit',
-        name:'ProductsEdit',//商品管理-->商品列表-->新增 编辑 查看
+        name:'ProductsEdit',//产品管理-->通用产品编辑 新增 查看
         meta:{index:4},
         component: resolve => require(['@/views/ProductMannage/edit'], resolve)
+    },
+    {
+        path:'/cms/processmannage/index',
+        name:'ProcessMannage',//工艺属性
+        meta:{index:4},
+        component: resolve => require(['@/views/ProcessMannage/index'], resolve)
     },
 
 ]

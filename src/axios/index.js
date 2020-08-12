@@ -16,6 +16,8 @@ let config = {
 
 //请求拦截，后期可能会用到，先注册在此
 instance.interceptors.request.use(function (config) {
+    let proxy_url = '/proxy'//打包上线时此处请注释掉
+    config.url = proxy_url+config.url;
     // 在发送请求之前做些什么，例如加入token
     config.headers['Authorization'] = 'c9cc8ebff9c7ee2edec538258efa7e9e1b758827'
     return config;

@@ -57,7 +57,7 @@ export default {
             console.log(row)
         },
         getData(row){
-            this.axios('/proxy/api/parts_index').then(res=>{
+            this.axios('/api/parts_index').then(res=>{
                 this.tableData = res.data
             })
         },

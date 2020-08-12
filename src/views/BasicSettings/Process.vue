@@ -69,7 +69,7 @@ export default {
             this.getData(row)
         },
         getData(row){
-            this.axios('/proxy/api/basics_procedure_index',{params:row}).then(res=>{
+            this.axios('/api/basics_procedure_index',{params:row}).then(res=>{
                 this.tableData = res.data;
             })
         },
@@ -77,7 +77,7 @@ export default {
             this.pageIndex = e;
         },
         postInfo(){
-            let post_url = this.showType == 1 ? '/proxy/api/basics_procedure_add' : '/proxy/api/basics_procedure_edit';
+            let post_url = this.showType == 1 ? '/api/basics_procedure_add' : '/api/basics_procedure_edit';
             this.axios.post(post_url,this.classInfo).then(res=>{
                 this.$Message.success(res.msg)
                 this.getData(this.searchObj)

@@ -39,12 +39,12 @@ export default {
             ],
             tableColums:[
                 {title:'ID',align:'center',key:'id'},
-                {title:'工艺组合名称',align:'center'},
+                {title:'工艺组合名称',align:'center',},
                 {title:'材质',align:'center'},
                 {title:'颜色',align:'center'},
                 {title:'工艺',align:'center'},
                 {title:'部件',align:'center'},
-                {title:'操作',align:'center'},
+                {title:'操作',align:'center',slot:'set'},
             ],
             tableData:[
                 {id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},

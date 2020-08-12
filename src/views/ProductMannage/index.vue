@@ -1,7 +1,7 @@
 <template>
     <div>
         <FullPage 
-        title='商品列表'
+        :title='$route.query.title'
         :list='list' 
         @init='init' 
         @searchData='searchData' 
@@ -11,17 +11,20 @@
         :pageIndex='pageIndex'
         :total='total'
         >
+            <div slot='titleButton'>
+                <Button type="success" ghost icon='md-exit' style="margin-right:10px;">批量导入</Button>
+                <Button type="warning" ghost icon='md-return-left'>批量导出</Button>
+            </div>
             <div slot='navButton'>
-                <Button type="primary" ghost icon='md-add' @click="goPage(1)">新增商品</Button>
+                <Button type="primary" ghost icon='md-add' @click="goPage(1)">新增产品</Button>
             </div>
             
             <template slot='set' slot-scope='row'>
                 <div>
-                    <Icon @click="goPage(2,row.row)"  size='20' style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
-                    <Icon @click="delItems(row.row)"  size='20' style="margin-left:10px;color:red;cursor:pointer" type="ios-trash-outline" />
+                    <Icon size='20' @click="goPage(2,row.row)" style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
+                    <Icon size='20' style="margin-left:10px;color:red;cursor:pointer" type="ios-trash-outline" />
                 </div>
             </template>
-        
         </FullPage>
     </div>
 </template>
@@ -31,46 +34,40 @@ export default {
     data(){
         return {
             list:[
-                {title:'ID',name:'Input',value:null,serverName:'id',placeholder:'请输入ID'},
-                {title:'商品名称',name:'Input',value:'',serverName:'title',placeholder:'请输入物料分类名称'},
+                {title:'ID',name:'Input',value:'',serverName:'id',placeholder:'请输入ID'},
+                {title:'产品型号',name:'Input',value:'',serverName:'name',placeholder:'请输入产品型号'},
+                {title:'产品名称',name:'Input',value:'',serverName:'title',placeholder:'请输入产品名称'},
             ],
             tableColums:[
                 {title:'ID',align:'center',key:'id'},
-                {title:'图片',align:'center',key:'title'},
-                {title:'商品名称',align:'center',},
-                {title:'通用商品价格',align:'center',},
+                {title:'分类名称',align:'center',key:'bp_title'},
+                {title:'产品名称',align:'center',key:'title'},
+                {title:'计量单位',align:'center',key:'company'},
+                {title:'图片',align:'center',key:'company'},
                 {title:'操作',align:'center',slot:'set'},
             ],
-            tableData:[{id:1,}],
+            tableData:[],
             pageIndex:1,
             total:100,
-            searchObj:{},
         }
     },
-    
+    mounted(){
+        console.log(this.$route.query)
+    },
     methods:{
         init(row){
-            this.searchObj = row;
             this.getData(row)
         },
         searchData(row){
-            this.getData(row)
+            console.log(row)
         },
         getData(row){
-            // this.axios('/proxy/api/basics_material_index',{params:row}).then(res=>{
-            //     this.tableData = res.data;
-            // })
+            this.axios('/api/product').then(res=>{
+                this.tableData = res.data
+            })
         },
         changePage(e){
             this.pageIndex = e;
-        },
-        delItems(row){
-            this.confirmDelete({
-                content:'确认删除么？',
-                then:()=>{
-
-                }
-            })
         },
         goPage(n,row){//n = 1 新增 2 编辑 3 查看
             let id = row ? row.id : ''
@@ -82,20 +79,10 @@ export default {
                 }
             })
         }
-
-
     }
 }
 </script>
 
 <style lang="scss" scoped>
-.nav{display: flex;justify-content: space-between;align-items: center;}
-.vertical-center-modal{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        .ivu-modal{
-            top: 0;
-        }
-    }
+
 </style>
