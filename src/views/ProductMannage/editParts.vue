@@ -25,7 +25,13 @@
             </FormItem>
         </Form>
 
-        <KeyBoard @click="tapKey"/>
+        <Modal v-model="showKey" :width="1300">
+            <div>
+                 <KeyBoard class='key-co' @click="tapKey"/>
+            </div>
+        </Modal>
+
+       
     </div>
 </template>
 
@@ -43,7 +49,8 @@ export default {
                 formula_w:'',
                 formula_h:'',
                 ratio:''
-            }
+            },
+            showKey:true,
         }
     },
     mounted(){
@@ -70,5 +77,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    
 </style>

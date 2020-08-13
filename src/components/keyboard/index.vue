@@ -67,10 +67,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.keyboard{width:1224px;
-    .key-title{font-size: 22px;color:#333333;span{font-size:16px;color:#666666;}}
+.keyboard{
+    .key-title{font-size: 22px;color:#333333;span{font-size:16px;color:#666666;}padding:20px 0;}
     .key-setup{padding:32px 76px;background:#D3D5DD;}
-    .key-box{display: flex;
+    .key-box{display: flex;justify-content: space-between;
         .left-key{display: flex;width:670px;flex-wrap:wrap;
              .left-key-items{width:124px;height:80px;display: flex;justify-content: center;align-items: center;background:#fff;margin-right:10px;margin-top:10px;
                 font-size:26px;color:#333;border-radius:5px;cursor: pointer;
@@ -83,9 +83,12 @@ export default {
                     margin-right:10px;margin-top:10px;background: #F48B01;color:#fff;border-radius: 5px;
                     cursor: pointer;
                 }
+                &:last-child{
+                    .right-item{margin-right:0;}
+                }
             }
         }
     }
-    .show{height:84px;background: #fff;border-radius: 5px;display: flex;justify-content: center;align-items: center;}
+    .show{height:84px;background: #fff;border-radius: 5px;display: flex;justify-content: center;align-items: center;font-size:32px;color:#333333;}
 }
 </style>
