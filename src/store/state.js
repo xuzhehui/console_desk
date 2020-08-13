@@ -51,8 +51,8 @@ const state = {
                 {
                     title:'木工',
                     sub:[
-                        {title:'包边',page:'/cms/processmannage/index'},
-                        {title:'拉丝',page:'/cms/processmannage/index'}
+                        {title:'包边',page:'/cms/proceduremannage/index'},
+                        {title:'拉丝',page:'/cms/proceduremannage/index'}
                     ]
                 },
             ]

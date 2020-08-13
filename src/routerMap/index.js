@@ -113,6 +113,18 @@ const routerMap = [
         meta:{index:4},
         component: resolve => require(['@/views/ProcessMannage/index'], resolve)
     },
+    {
+        path:'/cms/proceduremannage/index',
+        name:'ProcedureMannage',//工序管理通用页面
+        meta:{index:4},
+        component: resolve => require(['@/views/ProcedureMannage/index'], resolve)
+    },
+    {
+        path:'/cms/proceduremannage/edit',
+        name:'ProcedureMannageEdit',//工序管理通用页面 --> 新增--编辑
+        meta:{index:4},
+        component: resolve => require(['@/views/ProcedureMannage/edit'], resolve)
+    },
 
 ]
 
