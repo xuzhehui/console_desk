@@ -78,7 +78,7 @@ export default {
         },
         postData(){
             this.info.op = this.type == 1 ? 'add' : 'edit'
-            this.axios.post('/proxy/api/material',this.info).then(res=>{
+            this.axios.post('/api/material',this.info).then(res=>{
                 this.$Message.success(res.msg)
             })
         },

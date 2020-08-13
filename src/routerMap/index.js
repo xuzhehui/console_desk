@@ -18,6 +18,12 @@ const routerMap = [
         component: resolve => require(['@/views/PersonnelManagement/roleEdit'], resolve)
     },
     {
+        path:'/cms/personnelmanagement/user/edit',
+        name:'PersonnelManagementUserEdit',//人员管理-->用户管理-->新增  编辑
+        meta:{index:4},
+        component: resolve => require(['@/views/PersonnelManagement/userEdit'], resolve)
+    },
+    {
         path:'/cms/basicsettings/materialfield',
         name:'Materialfield',//基础设置-->物料分类字段
         meta:{index:4},
@@ -106,6 +112,12 @@ const routerMap = [
         name:'ProductsEdit',//产品管理-->通用产品编辑 新增 查看
         meta:{index:4},
         component: resolve => require(['@/views/ProductMannage/edit'], resolve)
+    },
+    {
+        path:'/cms/product/edit/parts',
+        name:'ProductsEditParts',//产品管理-->通用产品编辑 新增 查看 -->新增 编辑部件
+        meta:{index:4},
+        component: resolve => require(['@/views/ProductMannage/editParts'], resolve)
     },
     {
         path:'/cms/processmannage/index',

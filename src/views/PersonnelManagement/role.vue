@@ -21,10 +21,6 @@
                     <Icon @click="deleteItems(row.row)" size='20' style="margin-left:10px;color:red;cursor:pointer" type="ios-trash-outline" />
                 </div>
             </template>
-
-            <div>
-                <Modal v-model="dis" fullscreen></Modal>
-            </div>
         </FullPage>
     </div>
 </template>
@@ -49,7 +45,6 @@ export default {
             pageIndex:1,
             total:100,
             searchObj:{},
-            dis:true,
         }
     },
     methods:{
@@ -80,14 +75,14 @@ export default {
             })
         },
         goPage(n,row){
-            // let id = row ? row.id : ''
-            // this.$router.push({
-            //     path:'/cms/personnelmanagement/role/edit',
-            //     query:{
-            //         type:n,
-            //         id:id
-            //     }
-            // })
+            let id = row ? row.id : ''
+            this.$router.push({
+                path:'/cms/personnelmanagement/role/edit',
+                query:{
+                    type:n,
+                    id:id
+                }
+            })
         }
     }
 }

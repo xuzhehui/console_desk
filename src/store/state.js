@@ -80,7 +80,18 @@ const state = {
                 {title:'用户管理',page:'/cms/personnelmanagement/user'},
                 {title:'角色管理',page:'/cms/personnelmanagement/role'},
             ]
+        },
+        {
+            title:'生产订单管理',
+            sub:[
+                {title:'出库表',page:'/cms/basicsettings/partfield'},
+                {title:'完工单',page:'/cms/basicsettings/partfield'},
+                {title:'派工单',page:'/cms/basicsettings/partfield'},
+                {title:'生产计划列表',page:'/cms/basicsettings/partfield'},
+                {title:'生产订单列表',page:'/cms/basicsettings/partfield'},
+            ]
         }
+
     ]
 }
 

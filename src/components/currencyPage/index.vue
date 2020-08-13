@@ -74,5 +74,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.nav{display: flex;justify-content: space-between;align-items: flex-end;}
+.nav{display: flex;justify-content: space-between;align-items:center;}
 </style>
