@@ -20,8 +20,8 @@
             
             <template slot='set' slot-scope='row'>
                 <div class="table-set">
-                    <a>编辑</a>
-                    <a @click="goDetail">详情</a>
+                    <a @click="goDetail(row.row)">编辑</a>
+                    <a @click="goDetail(row.row)">详情</a>
                     <a>下生产计划</a>
                     <a>下载图纸</a>
                 </div>
@@ -96,7 +96,7 @@ export default {
         },
         goDetail(row){
             this.$router.push({
-                path:'/cms/productionorderlist/deliverylist/decorationorderdetails',
+                path:'/cms/productionorderlist/productionsorder/details',
             })
         },
         changePage(e){

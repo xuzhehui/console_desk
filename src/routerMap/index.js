@@ -215,6 +215,30 @@ const routerMap = [
         meta:{index:4},
         component: resolve => require(['@/views/ProductionOrderList/ProductionsOrder/Decorationlist'], resolve)
     },
+    {
+        path:'/cms/productionorderlist/productionsorder/details',
+        name:'ProductionOrderDetails',//生产订单列表-->生产订单列表-->生产计划订单详情-->编辑与查看
+        meta:{index:4},
+        component: resolve => require(['@/views/ProductionOrderList/ProductionsOrder/details'], resolve)
+    },
+    {
+        path:'/cms/ordermannage/businessorderlist/list',
+        name:'BusinessOrderlist',//订单管理-->业务订单列表
+        meta:{index:4},
+        component: resolve => require(['@/views/OrderMannage/BusinessOrderlist/list'], resolve)
+    },
+    {
+        path:'/cms/ordermannage/businessorderlist/decorationlist',
+        name:'BusinessOrderDecorationlist',//订单管理-->业务订单列表-->工装订单列表
+        meta:{index:4},
+        component: resolve => require(['@/views/OrderMannage/BusinessOrderlist/Decorationlist'], resolve)
+    },
+    {
+        path:'/cms/ordermannage/businessorderlist/details',
+        name:'BusinessOrderDetails',//订单管理-->业务订单列表-->家装工装订单列表-->家装工装订单详情
+        meta:{index:4},
+        component: resolve => require(['@/views/OrderMannage/BusinessOrderlist/details'], resolve)
+    },
 
 ]
 

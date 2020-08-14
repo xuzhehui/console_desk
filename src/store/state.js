@@ -3,6 +3,14 @@ const state = {
     crumbs:[],
     navgationData:[
         {
+            title:'订单管理',
+            sub:[
+                {title:'业务订单列表',page:'/cms/ordermannage/businessorderlist/list'},
+                {title:'生产计划列表',page:'/cms/partsmannage/list'},
+                {title:'生产订单列表',page:'/cms/partsmannage/list'}
+            ]
+        },
+        {
             title:'部件管理',
             sub:[
                 {title:'部件列表',page:'/cms/partsmannage/list'}
