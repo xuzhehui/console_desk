@@ -84,11 +84,11 @@ const state = {
         {
             title:'生产订单管理',
             sub:[
-                {title:'出库表',page:'/cms/basicsettings/partfield'},
-                {title:'完工单',page:'/cms/basicsettings/partfield'},
-                {title:'派工单',page:'/cms/basicsettings/partfield'},
-                {title:'生产计划列表',page:'/cms/basicsettings/partfield'},
-                {title:'生产订单列表',page:'/cms/basicsettings/partfield'},
+                {title:'出库表',page:'/cms/productionorderlist/deliverylist/deliverylist'},
+                {title:'完工单',page:'/cms/productionorderlist/completionlist/list'},
+                {title:'派工单',page:'/cms/productionorderlist/dispatchlist/list'},
+                {title:'生产计划列表',page:'/cms/productionorderlist/productionplanlist/list'},
+                {title:'生产订单列表',page:'/cms/productionorderlist/productionsorder/list'},
             ]
         }
 

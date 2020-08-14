@@ -137,6 +137,84 @@ const routerMap = [
         meta:{index:4},
         component: resolve => require(['@/views/ProcedureMannage/edit'], resolve)
     },
+    {
+        path:'/cms/productionorderlist/deliverylist/deliverylist',
+        name:'DeliveryList',//生产订单列表-->出库表
+        meta:{index:4},
+        component: resolve => require(['@/views/ProductionOrderList/Deliverylist/Deliverylist'], resolve)
+    },
+    {
+        path:'/cms/productionorderlist/deliverylist/decorationlist',
+        name:'Decorationlist',//生产订单列表-->出库表-->工装家装订单列表
+        meta:{index:4},
+        component: resolve => require(['@/views/ProductionOrderList/Deliverylist/Decorationlist'], resolve)
+    },
+    {
+        path:'/cms/productionorderlist/deliverylist/decorationorderdetails',
+        name:'DecorationOrderDetails',//生产订单列表-->出库表-->工装家装订单列表-->工装家装订单详情
+        meta:{index:4},
+        component: resolve => require(['@/views/ProductionOrderList/Deliverylist/DecorationOrderDetails'], resolve)
+    },
+    {
+        path:'/cms/productionorderlist/deliverylist/partsdetails',
+        name:'PartsDetails',//生产订单列表-->出库表-->工装家装订单列表-->工装家装订单详情-->部件详情
+        meta:{index:4},
+        component: resolve => require(['@/views/ProductionOrderList/Deliverylist/PartsDetails'], resolve)
+    },
+    {
+        path:'/cms/productionorderlist/completionlist/list',
+        name:'Completionlist',//生产订单列表-->完工单
+        meta:{index:4},
+        component: resolve => require(['@/views/ProductionOrderList/Completionlist/list'], resolve)
+    },
+    {
+        path:'/cms/productionorderlist/completionlist/decorationlist',
+        name:'CompletionlistDecorationlist',//生产订单列表-->完工单-->工装家装订单列表
+        meta:{index:4},
+        component: resolve => require(['@/views/ProductionOrderList/Completionlist/Decorationlist'], resolve)
+    },
+    {
+        path:'/cms/productionorderlist/completionlist/details',
+        name:'CompletionlistDecorationlistDetails',//生产订单列表-->完工单-->工装家装订单列表-->订单详情
+        meta:{index:4},
+        component: resolve => require(['@/views/ProductionOrderList/Completionlist/Details'], resolve)
+    },
+    {
+        path:'/cms/productionorderlist/dispatchlist/list',
+        name:'DispatchlistList',//生产订单列表-->派工单
+        meta:{index:4},
+        component: resolve => require(['@/views/ProductionOrderList/Dispatchlist/list'], resolve)
+    },
+    {
+        path:'/cms/productionorderlist/dispatchlist/details',
+        name:'DispatchlistDetails',//生产订单列表-->派工单--派工单详情
+        meta:{index:4},
+        component: resolve => require(['@/views/ProductionOrderList/Dispatchlist/details'], resolve)
+    },
+    {
+        path:'/cms/productionorderlist/productionplanlist/list',
+        name:'ProductionPlanlistList',//生产订单列表-->生产计划列表
+        meta:{index:4},
+        component: resolve => require(['@/views/ProductionOrderList/ProductionPlanlist/list'], resolve)
+    },
+    {
+        path:'/cms/productionorderlist/productionplanlist/details',
+        name:'ProductionPlanlistDetails',//生产订单列表-->生产计划列表-->生产计划订单详情
+        meta:{index:4},
+        component: resolve => require(['@/views/ProductionOrderList/ProductionPlanlist/details'], resolve)
+    },
+    {
+        path:'/cms/productionorderlist/productionsorder/list',
+        name:'ProductionOrderList',//生产订单列表-->生产订单列表
+        meta:{index:4},
+        component: resolve => require(['@/views/ProductionOrderList/ProductionsOrder/list'], resolve)
+    },
+    {
+        path:'/cms/productionorderlist/productionsorder/Decorationlist',
+        name:'ProductionOrderDecorationlist',//生产订单列表-->生产订单列表-->生产计划订单详情
+        meta:{index:4},
+        component: resolve => require(['@/views/ProductionOrderList/ProductionsOrder/Decorationlist'], resolve)
+    },
 
 ]
 

@@ -3,11 +3,15 @@
         <Toptitle :title="title">
             <slot name='titleButton'></slot>
         </Toptitle>
-        <div class="nav">
+        
+        <div class="nav" v-if="showTopSearch">
             <Topsearch :list='list' @init='init' @searchData='searchData'/>
             <div>
                 <slot name='navButton'></slot>
             </div>
+        </div>
+        <div>
+            <slot name='text-list'></slot>
         </div>
 
         <Table max-height='600' stripe border :columns="tableColums" :data="tableData">
@@ -27,7 +31,7 @@ export default {
     props:{
         list:{
             type:Array,
-            default:[],
+            default:null,
         },
         tableColums:{
             type:Array,
@@ -48,6 +52,10 @@ export default {
         title:{
             type:String,
             default:''
+        },
+        showTopSearch:{
+            type:Boolean,
+            default:true,
         }
 
 
