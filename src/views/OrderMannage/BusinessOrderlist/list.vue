@@ -18,7 +18,7 @@
 
             <div slot='navButton' style="display:flex;">
                 <Button @click="setTableColums" type="primary" style="margin-right:10px;" ghost icon='ios-cog'>表头设置</Button>
-                <Button type="primary" ghost icon='ios-cog'>新增订单</Button>
+                <Button @click="addOrder" type="primary" ghost icon='ios-cog'>新增订单</Button>
             </div>
             
             <template slot='set' slot-scope='row'>
@@ -97,6 +97,11 @@ export default {
         },
         setTableColums(){//设置表头
             this.showTableColums = true;
+        },
+        addOrder(){
+            this.$router.push({
+                path:'/cms/ordermannage/businessorderlist/edit',
+            })
         },
         goDetial(row){
             this.$router.push({
