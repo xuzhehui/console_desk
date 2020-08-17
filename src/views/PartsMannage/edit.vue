@@ -7,10 +7,12 @@
 
         <Form style="width:50%">
             <FormItem label="部件分类名称">
-                <Select ></Select>
+                <Select>
+                    <Option v-for="item of partList" :key="item.id" :value="item.id" :label="item.title"></Option>
+                </Select>
             </FormItem>
             <FormItem label="标签">
-                <RadioGroup style="width:100%;" v-model="animal">
+                <RadioGroup style="width:100%;">
                     <Radio label="是"></Radio>
                     <Radio label="否"></Radio>
                 </RadioGroup>
@@ -30,7 +32,7 @@
             </FormItem>
 
              <FormItem label="单位">
-                <Input></Input>
+                <Input v-model="info.until" placeholder="请输入单位"></Input>
             </FormItem>
         </Form>
 
@@ -57,7 +59,10 @@ export default {
         return {
             type:1,
             id:null,
-            info:{},
+            info:{
+                until:''
+            },
+            partList:[],
             tableColums:[
                 {title:'零部件ID',align:'center',key:'id'},
                 {title:'零部件名称',align:'center'},
@@ -76,10 +81,19 @@ export default {
     mounted(){
         this.type = this.$route.query.type;
         this.id = this.$route.query.id;
+        this.getParts()
     },
     methods:{
         back(){
             this.$router.go(-1)
+        },
+        getParts(){
+            this.axios('/api/basics_parts_index').then(res=>{
+                this.partList = res.data;
+            })
+        },
+        postData(){
+
         }
     }
 }

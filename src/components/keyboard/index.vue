@@ -16,6 +16,12 @@
                 </div>
             </div>
         </div>
+
+        <div class="key-footer">
+            <Button @click="cancel" style="margin-right:20px;">取消</Button>
+            <Button @click="success" type='primary'>确认</Button>
+        </div>
+
         
     </div>
 </template>
@@ -33,6 +39,8 @@ export default {
             result:[],
             revoke_str:'',
         }
+    },
+    computed:{
     },
     mounted(){
         this.key_list_right =  this.spliceGroup(this.key_list_right,4)
@@ -56,11 +64,15 @@ export default {
             }else{
                 this.result.push(key_code)
             }
-            let str = this.result.join('')
-            this.$emit('click',str)
+            this.$emit('click',this.result)
         },
-        revoke(){
-
+        success(){
+            this.$emit('success',this.result.join(''))
+            this.result = [];
+        },
+        cancel(){
+            this.$emit('cancel','')
+            this.result = [];
         }
     }
 }
@@ -91,4 +103,5 @@ export default {
     }
     .show{height:84px;background: #fff;border-radius: 5px;display: flex;justify-content: center;align-items: center;font-size:32px;color:#333333;}
 }
+.key-footer{display: flex;justify-content:flex-end;padding-top:20px;}
 </style>

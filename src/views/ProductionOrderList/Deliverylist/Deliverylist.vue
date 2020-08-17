@@ -48,7 +48,7 @@ export default {
             list:[
                 {title:'订单编号',name:'Input',serverName:'id',placeholder:'请输入订单编号',value:''},
                 {title:'派工类型',name:'Input',serverName:'id1',placeholder:'请选择',value:''},
-                {title:'出库日期范围',name:'Input',start_value:'',end_value:'',isDate:true,serverName:'id2',start_placeholder:'开始日期',end_placeholder:'结束日期'}
+                {title:'出库日期范围',name:'Input',start_value:'',end_value:'',isDate:true,start_placeholder:'开始日期',end_placeholder:'结束日期'}
             ],
             tableColums:[
                 {title:'订单编号',align:'center',key:'id',fixed:'left',},
@@ -76,7 +76,7 @@ export default {
             // })
         },
         searchData(row){
-
+            console.log(row)
         },
         changePage(e){
 

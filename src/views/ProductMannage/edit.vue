@@ -10,7 +10,7 @@
                 <span>产品图片</span>
                 <div class="product-add">
                     <div class="items" v-for='(item,index) of info.img' :key="index">
-                        <img :src="item" alt="">
+                        <img :src="$store.state.ip+item" alt="">
                         <Icon size='20' @click="delItems(index,info.img)" class="delete-img" type="ios-close-circle" />
                     </div>
 
@@ -28,14 +28,14 @@
                         <Option v-for="item of productFiled" :key="item.id" :value="item.id" :label="item.title"></Option>
                     </Select>
                 </FormItem>
-                <FormItem label="型号" v-model="info.model">
-                    <Input style="width:300px" placeholder="请输入产品型号"></Input>
+                <FormItem label="型号" >
+                    <Input v-model="info.model" style="width:300px" placeholder="请输入产品型号"></Input>
                 </FormItem>
-                <FormItem label="计量单位" v-model="info.unit">
-                    <Input style="width:300px" placeholder="请输入计量单位"></Input>
+                <FormItem label="计量单位" >
+                    <Input v-model="info.unit" style="width:300px" placeholder="请输入计量单位"></Input>
                 </FormItem>
-                <FormItem label="产品名称" v-model="info.title">
-                    <Input style="width:300px" placeholder="请输入产品名称"></Input>
+                <FormItem label="产品名称" >
+                    <Input v-model="info.title" style="width:300px" placeholder="请输入产品名称"></Input>
                 </FormItem>
             </Form>
 
@@ -53,10 +53,7 @@
             <div class="view-filed">
                 <span>基础测量字段</span>
                 <div class="filed-item">
-                    <div>长(L)</div>
-                    <div>长(L)</div>
-                    <div>长(L)</div>
-                    <div>长(L)</div>
+                    <div v-for='item of measureList' :key="item.id">{{item.title}}({{item.e_title}})</div>
                 </div>
             </div>
 
@@ -68,7 +65,7 @@
                 <span>计算公式请使用英文字母参与公式运算，详细请参考例)</span>
             </div>
 
-            <Table style="margin-bottom:40px;" stripe border :columns="tableColums" :data="tableData">
+            <Table style="margin-bottom:40px;" stripe border :columns="tableColums" :data="info.part">
                 <template slot-scope="{ row }" slot="set">
                     <a style="color:red;">删除</a>
                 </template>
@@ -101,16 +98,18 @@ export default {
     data(){
         return {
             type:1,
+            id:null,
             addImgList:[],//上传图片列表
             customList:[],//自定义属性列表
             customInfo:{},//自定义属性对象
             productFiled:[],
+            measureList:[],//基础测量展示字段(仅展示)
             tableColums:[
-                {title:'部件名称',align:'center'},
-                {title:'长(L)',align:'center'},
-                {title:'宽(W)',align:'center'},
-                {title:'高(H)',align:'center'},
-                {title:'产值比例(%)',align:'center'},
+                {title:'部件名称',align:'center',key:'part_name'},
+                {title:'长(L)',align:'center',key:'formula_l'},
+                {title:'宽(W)',align:'center',key:'formula_w'},
+                {title:'高(H)',align:'center',key:'formula_h'},
+                {title:'产值比例(%)',align:'center',key:'ratio'},
                 {title:'操作',align:'center',slot:'set'},
             ],
             tableData:[],
@@ -121,31 +120,48 @@ export default {
                 title:'',//名称
                 unit:'',//单位
                 img:[],//图片列表
-                part:{//部件
-
-                },
+                part:[],//部件,
                 remark:[],//自定义属性列表
                 id:'',
             }
         }
     },
     mounted(){
-        this.getProductFiledData()
+        this.type = this.$route.query.type||1;
+        this.id = this.$route.query.id||null;
+        if(this.id){
+            this.getData(this.id)
+        }
+        if(this.$route.params.info){
+            this.info = this.$route.params.info
+        }
+        this.getProductFiledData();
+        this.getMeasureList()
     },
     methods:{
         postData(){
-
+            this.type == 1 ? this.info.op = 'add' : this.info.op = 'edit'
+            let data = JSON.parse(JSON.stringify(this.info));
+            data.img = JSON.stringify(data.img)
+            data.part = JSON.stringify(data.part)
+            data.remark = JSON.stringify(data.remark)
+            this.axios.post('/api/product',data).then(res=>{
+                if(res.data.code == 200){
+                    this.$Message.success(res.msg)
+                }
+            })
         },
         back(){
-            this.$router.go(-1)
+            this.$router.push({
+                name:'Products'
+            })
         },
         goPage(n,row){
             let id = row ? row.id : ''
             this.$router.push({
-                path:'/cms/product/edit/parts',
-                query:{
-                    type:n,
-                    id:id
+                name:'ProductsEditParts',
+                params:{
+                    info:this.info
                 }
             })
         },
@@ -161,18 +177,16 @@ export default {
         postImg(file){
             let formData = new FormData()
             formData.append('file',file)
-            this.axios.post('/api/save/pic',formData).then(res=>{
-                // console.log(res)
-                // this.info.img.push(res.data)
+            this.axios.post('/api/upload_pic',formData).then(res=>{
+                console.log(res)
+                this.info.img.push(res.data.url)
             })
         },
         changeIpt(e){
-            if(this.info.img.length>3){
+            if(this.info.img.length>=3){
                 return this.$Message.warning('图片最多上传3张')
             }
             let file = e.target.files[0];
-            let url = window.URL.createObjectURL(file);
-            this.info.img.push(url)
             this.postImg(file)
             e.target.value = null
         },
@@ -180,7 +194,18 @@ export default {
             this.axios('/api/basics_product_index').then(res=>{
                 this.productFiled = res.data;
             })
-        }
+        },
+        getMeasureList(){
+            this.axios('/api/basics_measure_index').then(res=>{
+                this.measureList = res.data;
+                console.log(this.measureList)
+            })
+        },
+        getData(row){
+            this.axios('/api/product',{params:{id:row}}).then(res=>{
+                this.info = res.data;
+            })
+        },
     }
 }
 </script>

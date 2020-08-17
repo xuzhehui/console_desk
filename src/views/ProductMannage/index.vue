@@ -22,7 +22,7 @@
             <template slot='set' slot-scope='row'>
                 <div>
                     <Icon size='20' @click="goPage(2,row.row)" style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
-                    <Icon size='20' style="margin-left:10px;color:red;cursor:pointer" type="ios-trash-outline" />
+                    <Icon @click="delItems(row.row)" size='20' style="margin-left:10px;color:red;cursor:pointer" type="ios-trash-outline" />
                 </div>
             </template>
         </FullPage>
@@ -40,9 +40,9 @@ export default {
             ],
             tableColums:[
                 {title:'ID',align:'center',key:'id'},
-                {title:'分类名称',align:'center',key:'bp_title'},
+                {title:'分类名称',align:'center',key:'type_name'},
                 {title:'产品名称',align:'center',key:'title'},
-                {title:'计量单位',align:'center',key:'company'},
+                {title:'计量单位',align:'center',key:'unit'},
                 {title:'图片',align:'center',key:'company'},
                 {title:'操作',align:'center',slot:'set'},
             ],
@@ -62,8 +62,16 @@ export default {
             console.log(row)
         },
         getData(row){
-            this.axios('/api/product').then(res=>{
+            this.axios('/api/product',{params:row}).then(res=>{
                 this.tableData = res.data
+            })
+        },
+        delItems(row){
+            this.confirmDelete({
+                content:'确认删除么？',
+                then:()=>{
+                    this.getData({id:row.id,state:0})
+                }
             })
         },
         changePage(e){

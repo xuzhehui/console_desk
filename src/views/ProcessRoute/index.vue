@@ -34,31 +34,27 @@ export default {
     data(){
         return {
             list:[
-                {title:'ID',name:'Input',value:2,serverName:'id',placeholder:'请输入ID'},
-                {title:'工艺组合名称',name:'Input',value:'',serverName:'user_name',placeholder:'请输入工艺组合名称'},
+                {title:'ID',name:'Input',value:'',serverName:'id',placeholder:'请输入ID'},
+                {title:'工艺组合名称',name:'Input',value:'',serverName:'',placeholder:'请输入工艺组合名称'},
             ],
-            tableColums:[
-                {title:'ID',align:'center',key:'id'},
-                {title:'工艺组合名称',align:'center',},
-                {title:'材质',align:'center'},
-                {title:'颜色',align:'center'},
-                {title:'工艺',align:'center'},
-                {title:'部件',align:'center'},
-                {title:'操作',align:'center',slot:'set'},
-            ],
-            tableData:[
-                {id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},{id:'1'},
-            ],
+            tableColums:[],
+            tableData:[],
             pageIndex:1,
             total:100,
         }
     },
     methods:{
         init(row){
-            console.log(row)
+            this.getData(row)
         },
         searchData(row){
             console.log(row)
+        },
+        getData(row){
+            this.axios('/api/process_route_index',{params:row}).then(res=>{
+                this.tableColums = res.data.top;
+                this.tableData = res.data.detail;
+            })
         },
         changePage(e){
             this.pageIndex = e;

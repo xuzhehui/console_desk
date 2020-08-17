@@ -9,40 +9,37 @@
             <div class="items" v-for='(item,index) of addImgList' :key="index">
                 <img :src="item" alt="">
             </div>
-
-            <div class="add-items">
-                <Icon size='100' type="ios-add" />
-                <input @change="changeIpt" type="file" class="ipt"/>
-            </div>
         </div>
 
         <Form inline>
             <FormItem label='商品名称'>
-                <Select style="width:300px;" placeholder="请选择商品名称"></Select>
+                <Select :disabled='this.type == 3 ? true : false' @on-change="changeSelect" v-model="info.product_id" style="width:300px;" placeholder="请选择商品名称">
+                    <Option v-for="item of productList" :key='item.id' :label="item.title" :value="item.id"></Option>
+                </Select>
             </FormItem>
             <FormItem label='通用销售价格'>
-                <Input style="width:300px;"  placeholder="请选择商品名称"></Input>
+                <Input :disabled='this.type == 3 ? true : false' v-model="info.price" style="width:300px;"  placeholder="请选择商品名称"></Input>
             </FormItem>
         </Form>
 
         <div class='factor'>
             <span>代理商</span>
-            <RadioGroup v-model="showAgent">
-                <Radio :label="1">选择代理商</Radio>
-                <Radio :label="2">不选择代理商</Radio>
+            <RadioGroup v-model="showAgent" >
+                <Radio :disabled='this.type == 3 ? true : false' :label="1">选择代理商</Radio>
+                <Radio :disabled='this.type == 3 ? true : false' :label="2">不选择代理商</Radio>
             </RadioGroup>
         </div>
 
         <div class="agent" v-if="showAgent == 1 ? true : false">
-            <div class='agent-item' v-for="(item,index) of agentList" :key="index">
+            <div class='agent-item' v-for="(item,index) of info.agent" :key="index">
                 <Form>
                     <FormItem label='姓名'>
-                        <Select v-model="item.username">
-                            <Option v-for="item of agentNames" :key="item.value" :value="item.value" :label="item.title"></Option>
+                        <Select v-model="item.id">
+                            <Option v-for="item of agentNames" :key="item.id" :value="item.id" :label="item.nickname"></Option>
                         </Select>
                     </FormItem>
                     <FormItem label='代理价格'>
-                        <Input v-model="item.title" placeholder="请输入代理商价格"></Input>
+                        <Input v-model="item.price" placeholder="请输入代理商价格"></Input>
                     </FormItem>
                 </Form>
             </div>
@@ -61,38 +58,62 @@ export default {
         return {
             type:1,
             id:null,
+            productList:[],
             addImgList:[],
-            agentList:[
-                {username:'',price:''}
-            ],
             agentNames:[
-                {title:'姓名1',value:1},
-                {title:'姓名2',value:2}
+                {id:'',price:''},
             ],
-            showAgent:2
+            showAgent:2,
+            info:{
+                img:'',
+                product_id:'',
+                price:'',
+                agent:[],
+            }
         }
     },
     mounted(){
         this.type = this.$route.query.type;
-        this.id = this.$route.query.id;
+        this.id = this.$route.query.id||null;
+        if(this.id){
+            this.getGoodsDetail(this.id)
+        }
+        this.getData();
+        this.getUser();
     },
     methods:{
         postData(){
-
+            this.info.op = this.type == 1 ? 'add' : 'edit'
+            this.axios.post('/api/goods',this.info).then(res=>{
+                console.log(res)
+            })
+        },
+        getData(row){
+            this.axios('/api/product',{params:row}).then(res=>{
+                console.log(res)
+                this.productList = res.data
+            })
         },
         back(){
             this.$router.go(-1)
         },
-        changeIpt(e){
-            let url = window.URL.createObjectURL(e.target.files[0]);
-            this.addImgList.push(url)
-            let formData = new FormData()
-            formData.append('file',e.target.files[0])
-            this.axios.post('/b/c',formData)
-            e.target.value = null
-        },
         addAgent(){
-            this.agentList.push({title:'',price:''})
+            this.info.agent.push({id:'',price:''})
+        },
+        changeSelect(e){
+            this.axios('/api/goods_product',{params:{id:e}}).then(res=>{
+                console.log(res)
+            })
+        },
+        getUser(){
+            this.axios('/api/user').then(res=>{
+                this.agentNames = res.data;
+            })
+        },
+        getGoodsDetail(row){
+            this.axios('/api/goods',{params:{id:row}}).then(res=>{
+                this.info = res.data;
+            })
         }
     }
 }

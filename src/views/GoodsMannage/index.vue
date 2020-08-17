@@ -18,6 +18,7 @@
             <template slot='set' slot-scope='row'>
                 <div>
                     <Icon @click="goPage(2,row.row)"  size='20' style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
+                    <Icon @click="goPage(3,row.row)" size='20' style="margin-right:10px;color:#32C800;cursor:pointer" type="ios-paper-outline" />
                     <Icon @click="delItems(row.row)"  size='20' style="margin-left:10px;color:red;cursor:pointer" type="ios-trash-outline" />
                 </div>
             </template>
@@ -36,12 +37,12 @@ export default {
             ],
             tableColums:[
                 {title:'ID',align:'center',key:'id'},
-                {title:'图片',align:'center',key:'title'},
-                {title:'商品名称',align:'center',},
-                {title:'通用商品价格',align:'center',},
+                {title:'图片',align:'center',key:'img_url'},
+                {title:'商品名称',align:'center',key:'title'},
+                {title:'通用商品价格',align:'center',key:'price'},
                 {title:'操作',align:'center',slot:'set'},
             ],
-            tableData:[{id:1,}],
+            tableData:[],
             pageIndex:1,
             total:100,
             searchObj:{},
@@ -54,12 +55,13 @@ export default {
             this.getData(row)
         },
         searchData(row){
+            this.searchObj = row;
             this.getData(row)
         },
         getData(row){
-            // this.axios('/proxy/api/basics_material_index',{params:row}).then(res=>{
-            //     this.tableData = res.data;
-            // })
+            this.axios('/api/goods',{params:row}).then(res=>{
+                this.tableData = res.data;
+            })
         },
         changePage(e){
             this.pageIndex = e;
@@ -68,7 +70,9 @@ export default {
             this.confirmDelete({
                 content:'确认删除么？',
                 then:()=>{
-
+                    this.axios.post('/api/goods',{id:row.id,state:0}).then(res=>{
+                        this.getData(this.searchObj)
+                    })
                 }
             })
         },

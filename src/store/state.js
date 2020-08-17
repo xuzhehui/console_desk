@@ -1,13 +1,21 @@
 const state = {
     userInfo:{},
     crumbs:[],
+    keyBoard_value:'',//计算器值
+    ip:'http://192.168.0.175:8080',
     navgationData:[
         {
             title:'订单管理',
             sub:[
                 {title:'业务订单列表',page:'/cms/ordermannage/businessorderlist/list'},
-                {title:'生产计划列表',page:'/cms/partsmannage/list'},
-                {title:'生产订单列表',page:'/cms/partsmannage/list'}
+                {title:'生产计划列表',page:'/cms/ordermannage/productionplanlist/list'},
+                {title:'生产订单列表',page:'/cms/ordermannage/productionorderlist/list'}
+            ]
+        },
+        {
+            title:'审批',
+            sub:[
+                {title:'审批列表',page:'/cms/approval/list'},
             ]
         },
         {
@@ -39,11 +47,11 @@ const state = {
             title:'工艺路线',
             sub:[
                 {title:'工艺列表',page:'/cms/processroute/index'},
-                {title:'工艺列表1',
-                    sub:[
-                        {title:'三级列表1'}
-                    ]
-                }
+                // {title:'工艺列表1',
+                //     sub:[
+                //         {title:'三级列表1'}
+                //     ]
+                // }
             ]
         },
         {
@@ -98,7 +106,13 @@ const state = {
                 {title:'生产计划列表',page:'/cms/productionorderlist/productionplanlist/list'},
                 {title:'生产订单列表',page:'/cms/productionorderlist/productionsorder/list'},
             ]
-        }
+        },
+        {
+            title:'测量订单管理',
+            sub:[
+                {title:'测量订单列表',page:'/cms/measurementordermannage/list'},
+            ]
+        },
 
     ]
 }

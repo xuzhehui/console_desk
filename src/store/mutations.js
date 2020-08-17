@@ -6,6 +6,9 @@ const mutations  = {
                 state.crumbs.push(payload[i])
             }
         }
+    },
+    updatekeyBoard(state,val){
+        state.keyBoard_value = val
     }
 }
 

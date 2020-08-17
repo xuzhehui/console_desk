@@ -7,28 +7,29 @@
 
         <Form inline>
             <FormItem label="部件名称">
-                <Select v-model="info.part_id" style="width:186px;">
+                <Select @on-change='changeSelect' :label-in-value="true" v-model="info.part_id" style="width:186px;">
                     <Option v-for="item of partsList" :key="item.id" :value="item.id" :label="item.title"></Option>
                 </Select>
             </FormItem>
             <FormItem label="长(L)">
-                <Input v-model="info.formula_l" placeholder="请输入公式(自动唤出软键盘)"></Input>
+                <Input @on-focus="popKeyBoard(1)" v-model="info.formula_l" placeholder="请输入公式(自动唤出软键盘)"></Input>
             </FormItem>
             <FormItem label="宽(W)">
-                <Input v-model="info.formula_w" placeholder="请输入公式(自动唤出软键盘)"></Input>
+                <Input @on-focus="popKeyBoard(2)" v-model="info.formula_w" placeholder="请输入公式(自动唤出软键盘)"></Input>
             </FormItem>
             <FormItem   label="高(H)">
-                <Input v-model="info.formula_h" placeholder="请输入公式(自动唤出软键盘)"></Input>
+                <Input @on-focus="popKeyBoard(3)" v-model="info.formula_h" placeholder="请输入公式(自动唤出软键盘)"></Input>
             </FormItem>
             <FormItem label="产值比例(%)">
                 <Input v-model="info.ratio" placeholder="请输入产值比例"></Input>
             </FormItem>
         </Form>
 
-        <Modal v-model="showKey" :width="1300">
+        <Modal v-model="showKey" :width="1300" :mask-closable='false' :closable='false'>
             <div>
-                 <KeyBoard class='key-co' @click="tapKey"/>
+                 <KeyBoard @cancel='successKey' @success='successKey' class='key-co'/>
             </div>
+            <div slot='footer'></div>
         </Modal>
 
        
@@ -37,6 +38,7 @@
 
 <script>
 import KeyBoard from '../../components/keyboard/index'
+import {mapState,mapMutations} from 'vuex'
 export default {
     data(){
         return {
@@ -44,33 +46,61 @@ export default {
             id:null,
             partsList:[],
             info:{
+                title:'',
                 part_id:'',
                 formula_l:'',
                 formula_w:'',
                 formula_h:'',
                 ratio:''
             },
-            showKey:true,
+            showKey:false,
+            key_board_value:'',
+            netWork:'',
+            logo:1,
         }
     },
     mounted(){
         this.getPartsData()
     },
+    
     methods:{
         back(){
             this.$router.go(-1)
         },
         getPartsData(row){
-            this.axios('/api/parts_index').then(res=>{
+            this.axios('/api/basics_parts_index').then(res=>{
+                console.log(res)
                 this.partsList = res.data
             })
         },
         postData(){
-
+            this.$route.params.info.part.push(this.info)
+            this.$router.push({
+                name:'ProductsEdit',
+                params:{
+                    info:this.$route.params.info, 
+                }
+            })
+        },
+        successKey(str){
+            this.logo == 1 ? this.info.formula_l = str : (this.logo == 2 ? this.info.formula_w = str : this.info.formula_h = str)
+            this.showKey = false;
+        },
+        cancelKey(str){
+            this.logo == 1 ? this.info.formula_l = str : (this.logo == 2 ? this.info.formula_w = str : this.info.formula_h = str)
+            this.showKey = false;
         },
         tapKey(e){
-            console.log(e)
+            this.netWork = e;
+        },
+        popKeyBoard(n){
+            this.logo = n;
+            this.showKey = true;
+        },
+        changeSelect(e){
+            this.info.part_name = e.label
         }
+        
     },
     components:{KeyBoard}
 }
