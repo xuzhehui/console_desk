@@ -39,7 +39,7 @@
         <div class="edit-table-log">
             <div>
                 <span>零部件添加：</span>
-                <Button type="primary" ghost>新增零部件</Button>
+                <Button @click="addNewsPart" type="primary" ghost>新增零部件</Button>
             </div>
             <span class="footer-log">备注:适用于 ＋(加)  -(减)   ×(乘)  ÷(除)不输入就是不设定公式，支持单项输入)</span>
         </div>
@@ -94,6 +94,9 @@ export default {
         },
         postData(){
 
+        },
+        addNewsPart(){
+            
         }
     }
 }
