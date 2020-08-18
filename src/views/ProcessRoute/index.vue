@@ -16,12 +16,12 @@
                 <Button type="warning" ghost icon='md-return-left'>批量导出</Button>
             </div>
             <div slot='navButton'>
-                <Button type="primary" ghost icon='md-add'>新增工艺</Button>
+                <Button @click="goPage(1)" type="primary" ghost icon='md-add'>新增工艺</Button>
             </div>
             
             <template slot='set' slot-scope='row'>
                 <div>
-                    <Icon size='20' style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
+                    <Icon @click="goPage(2,row.row)" size='20' style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
                     <Icon size='20' style="margin-left:10px;color:red;cursor:pointer" type="ios-trash-outline" />
                 </div>
             </template>
@@ -58,6 +58,16 @@ export default {
         },
         changePage(e){
             this.pageIndex = e;
+        },
+        goPage(n,row){
+            let id = row ? row.id : '' 
+            this.$router.push({
+                path:'/cms/processroute/edit',
+                query:{
+                    type:n,
+                    id:id
+                }
+            })
         }
     }
 }

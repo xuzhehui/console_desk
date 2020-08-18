@@ -18,10 +18,22 @@
             <span>使用权限：</span>
             <div style="padding:10px 0;">
                 <Collapse v-model="value1">
-                    <Panel v-for="(item,index) of jurisdiction" :key="item.id" :name="index">
+                    <Panel v-for="(item,index) of jurisdiction" :key="item.id" :name="index+''">
                         <Checkbox label="订单管理">{{item.title}}</Checkbox>
                         <div slot="content">
-                            <CheckboxGroup>
+                            <Collapse v-if="item.sub" v-model="value1">
+                                <Panel v-for="(_item,_index) of item.sub" :key="_item.id" :name="_index+''">
+                                    <Checkbox label="订单管理">{{_item.title}}</Checkbox>
+                                    <div slot="content">
+                                        <CheckboxGroup>
+                                            <Checkbox label="香蕉"></Checkbox>
+                                            <Checkbox label="苹果"></Checkbox>
+                                            <Checkbox label="西瓜"></Checkbox>
+                                        </CheckboxGroup>
+                                    </div>
+                                </Panel>
+                            </Collapse>
+                            <CheckboxGroup v-if=!item.sub>
                                 <Checkbox label="香蕉"></Checkbox>
                                 <Checkbox label="苹果"></Checkbox>
                                 <Checkbox label="西瓜"></Checkbox>
@@ -56,13 +68,18 @@ export default {
         },
         getData(){//获取所有权限
             this.axios('/api/permission').then(res=>{
-                this.jurisdiction = res.data;
+                let result = []
+                for(let i in res.data){
+                    result.push(res.data[i])
+                }
+                this.jurisdiction = result;
+                console.log(this.jurisdiction)
             })
         },
 
         getUserData(){
             this.axios('/api/user_permission').then(res=>{
-                console.log(res)
+                
             })
         },
         back(){

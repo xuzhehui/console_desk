@@ -7,18 +7,18 @@
 
         <Form style="width:50%">
             <FormItem label="部件分类名称">
-                <Select>
+                <Select v-model="info.p_id">
                     <Option v-for="item of partList" :key="item.id" :value="item.id" :label="item.title"></Option>
                 </Select>
             </FormItem>
             <FormItem label="标签">
-                <RadioGroup style="width:100%;">
-                    <Radio label="是"></Radio>
-                    <Radio label="否"></Radio>
+                <RadioGroup v-model="info.label" style="width:100%;">
+                    <Radio :label="0">是</Radio>
+                    <Radio :label="1">否</Radio>
                 </RadioGroup>
             </FormItem>
             <FormItem label="部件名称">
-                <Input></Input>
+                <Input v-model="info.title"></Input>
             </FormItem>
 
             <FormItem label="关联产品">
@@ -27,12 +27,12 @@
                     ~
                     <Select style="width:50%"></Select>
                 </div>
-                <span>该产品测量属性为：12</span>
+                <span>该产品测量属性为：L W H</span>
                 
             </FormItem>
 
              <FormItem label="单位">
-                <Input v-model="info.until" placeholder="请输入单位"></Input>
+                <Input v-model="info.company" placeholder="请输入单位"></Input>
             </FormItem>
         </Form>
 
@@ -60,19 +60,19 @@ export default {
             type:1,
             id:null,
             info:{
-                until:''
+                company:''
             },
             partList:[],
             tableColums:[
                 {title:'零部件ID',align:'center',key:'id'},
-                {title:'零部件名称',align:'center'},
-                {title:'数量',align:'center'},
-                {title:'单位',align:'center'},
-                {title:'长',align:'center'},
-                {title:'宽',align:'center'},
-                {title:'厚',align:'center'},
-                {title:'工艺要求',align:'center'},
-                {title:'标签',align:'center'},
+                {title:'零部件名称',align:'center',key:'title'},
+                {title:'数量',align:'center',key:'number'},
+                {title:'单位',align:'center',key:'company'},
+                {title:'长',align:'center',key:'long'},
+                {title:'宽',align:'center',key:'wide'},
+                {title:'厚',align:'center',key:'thick'},
+                {title:'工艺要求',align:'center',key:'requirement'},
+                {title:'标签',align:'center',key:''},
                 {title:'操作',align:'center',slot:'set'},
             ],
             tableData:[{id:1}]
@@ -81,6 +81,9 @@ export default {
     mounted(){
         this.type = this.$route.query.type;
         this.id = this.$route.query.id;
+        if(this.id){
+            this.getDetails(this.id)
+        }
         this.getParts()
     },
     methods:{
@@ -95,8 +98,18 @@ export default {
         postData(){
 
         },
+        getDetails(id){
+            this.axios('/api/parts_detail',{params:{id:id}}).then(res=>{
+                console.log(res)
+                this.info = res.data;
+                this.tableData = res.data.detail;
+            })
+        },
         addNewsPart(){
-            
+            this.$router.push({
+                path:'/cms/partsmannage/addparts',
+                query:{}
+            })
         }
     }
 }

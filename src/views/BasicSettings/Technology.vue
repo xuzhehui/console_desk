@@ -113,7 +113,10 @@ export default {
                 post_url = '/api/basics_properties_edit'
                 post_data = this.classInfo;
             }
-            this.axios.post(post_url,post_data)
+            this.axios.post(post_url,post_data).then(res=>{
+                this.$Message.success(res.msg)
+                this.getData()
+            })
         },
         addAttr(n){
             n == 0 ? this.attribute.push({title:''}) : this.attribute.splice(n,1)

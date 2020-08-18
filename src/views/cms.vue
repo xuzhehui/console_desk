@@ -57,7 +57,8 @@ export default {
             this.$router.push({
                 path:lastChild ? lastChild.page : childData.page,
                 query:{
-                    title:lastChild ? lastChild.title : childData.title
+                    title:lastChild ? lastChild.title : childData.title,
+                    id:lastChild ? lastChild.id : childData.id||'',
                 }
             })
         },

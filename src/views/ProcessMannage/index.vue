@@ -51,7 +51,7 @@ export default {
     data(){
         return {
             list:[
-                {title:'ID',name:'Input',value:'',serverName:'id',placeholder:'请输入ID'},
+                {title:'ID',name:'Input',value:'',serverName:'p_id',placeholder:'请输入ID'},
                 {title:`颜色名称`,name:'Input',value:'',serverName:'title',placeholder:`请输入颜色名称`},
             ],
             tableColums:[
@@ -67,28 +67,37 @@ export default {
             classInfo:{},
             attribute:[{title:''}],
             title:'',
+            id:null,
+            searchObj:{},
         }
     },
     mounted(){
         this.title = this.$route.query.title
+        if(this.$route.query.id){
+            this.watchData(this.$route.query.id)
+        }
+
     },
     watch:{
         $route(to){
             this.title = to.query.title;
+            this.id = to.query.id;
             this.list[1].title = `${this.title}名称`;
             this.list[1].placeholder = `请输入${this.title}名称`
-            this.tableData[1].title=this.title;
+            this.tableColums[1].title = this.title
+            this.watchData(this.id)
         }
     },
     methods:{
         init(row){
-            this.getData(row)
+            this.searchObj = row;
+            // this.getData(row)
         },
         searchData(row){
             this.getData(row)
         },
         getData(row){
-            this.axios('/api/basics_properties_index',{params:row}).then(res=>{
+            this.axios('/api/properties_index',{params:row}).then(res=>{
                 this.tableData = res.data;
             })
         },
@@ -109,12 +118,13 @@ export default {
         vivibleModal(e){
             if(!e){
                 this.showType == 1 ? this.attribute=[{title:''}] : this.classInfo={}
+                this.watchData(this.$route.query.id)
             }
         },
         postInfo(){
             let post_url,post_data;
             if(this.showType == 1){
-                post_url = '/api/basics_properties_add';
+                post_url = '/api/properties_add';
                 let result = []
                 this.attribute.map(v=>result.push(v.title))
                 post_data = {
@@ -122,13 +132,21 @@ export default {
                     title:result.join(',')
                 }
             }else{
-                post_url = '/api/basics_properties_edit'
+                post_url = '/api/properties_edit'
                 post_data = this.classInfo;
             }
-            this.axios.post(post_url,post_data)
+            this.axios.post(post_url,post_data).then(res=>{
+                this.$Message.success(res.msg)
+                this.watchData(this.id)
+            })
         },
         addAttr(n){
             n == 0 ? this.attribute.push({title:''}) : this.attribute.splice(n,1)
+        },
+        watchData(id){
+            this.axios('/api/properties_index',{params:{id:id}}).then(res=>{
+                this.tableData = res.data;
+            })
         }
     }
 }

@@ -57,8 +57,8 @@ const state = {
         {
             title:'工艺属性',
             sub:[
-                {title:'颜色',page:'/cms/processmannage/index'},
-                {title:'材质',page:'/cms/processmannage/index'}
+                {title:'颜色',page:'/cms/processmannage/index',id:2},
+                {title:'材质',page:'/cms/processmannage/index',id:1}
             ]
         },
         {
@@ -67,8 +67,15 @@ const state = {
                 {
                     title:'木工',
                     sub:[
-                        {title:'包边',page:'/cms/proceduremannage/index'},
-                        {title:'拉丝',page:'/cms/proceduremannage/index'}
+                        {title:'包边',page:'/cms/proceduremannage/index',id:1},
+                        {title:'清漆',page:'/cms/proceduremannage/index',id:2}
+                    ]
+                },
+                {
+                    title:'油漆',
+                    sub:[
+                        {title:'123',page:'/cms/proceduremannage/index',id:3},
+                        {title:'test',page:'/cms/proceduremannage/index',id:4}
                     ]
                 },
             ]

@@ -36,16 +36,16 @@ export default {
     data(){
         return {
             list:[
-                {title:'ID',name:'Input',value:'',serverName:'id',placeholder:'请输入ID'},
+                {title:'ID',name:'Input',value:'',serverName:'p_id',placeholder:'请输入ID'},
                 {title:'工序名称',name:'Input',value:'',serverName:'title',placeholder:'请输入工序名称'},
             ],
             tableColums:[
                 {title:'ID',align:'center',key:'id'},
                 {title:'工序类型',align:'center',key:'title'},
                 {title:'工序名称',align:'center',key:'title'},
-                {title:'工时',align:'center',key:'title'},
-                {title:'工价',align:'center',key:'title'},
-                {title:'产能',align:'center',key:'title'},
+                {title:'工时',align:'center',key:'time'},
+                {title:'工价',align:'center',key:'wages'},
+                {title:'产能',align:'center',key:'capacity'},
                 {title:'操作',align:'center',slot:'set'},
             ],
             tableData:[],
@@ -54,22 +54,31 @@ export default {
             showModal:false,
             showType:1,
             classInfo:{},
-            searchObj:{}
+            searchObj:{},
+            id:null,
+        }
+    },
+    watch:{
+        $route(to){
+            this.id = to.query.id;
+            this.getData({id:this.id})
         }
     },
     mounted(){
-        
+        if(this.$route.query.id){
+            this.id = this.$route.query.id
+            this.getData({id:this.id})
+        }
     },
     methods:{
         init(row){
             this.searchObj = row;
-            this.getData(row)
+            // this.getData(row)
         },
         searchData(row){
-            console.log(row)
         },
         getData(row){
-            this.axios('/api/basics_parts_index').then(res=>{
+            this.axios('/api/procedure_index',{params:row}).then(res=>{
                 this.tableData = res.data;
             })
         },
@@ -77,7 +86,8 @@ export default {
             this.pageIndex = e;
         },
         goPage(n,row){
-            let id = row ? row.id : ''
+            let id = row ? row.id : this.id
+            console.log(id)
             this.$router.push({
                 path:'/cms/proceduremannage/edit',
                 query:{
