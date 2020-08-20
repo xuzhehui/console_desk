@@ -86,6 +86,7 @@ export default {
             this.list[1].placeholder = `请输入${this.title}名称`
             this.tableColums[1].title = this.title
             this.watchData(this.id)
+            this.classInfo.id = this.id;
         }
     },
     methods:{

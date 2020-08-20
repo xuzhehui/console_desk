@@ -9,7 +9,7 @@
             <CheckboxGroup v-model="imgIds" class="product-add">
                 <div class="items" v-for='(item,index) of info.img' :key="index">
                     <img :src="$store.state.ip + item.img_url" alt="">
-                    <Checkbox class="check" :label='item.id'></Checkbox>
+                    <Checkbox class="check" :label='item.id'>{{''}}</Checkbox>
                 </div>
             </CheckboxGroup>
         </div>

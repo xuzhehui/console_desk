@@ -17,14 +17,16 @@
         <div>
             <span>使用权限：</span>
             <div style="padding:10px 0;">
-                <Collapse v-model="value1">
+                <Collapse>
                     <Panel v-for="(item,index) of jurisdiction" :key="item.id" :name="index+''">
                         <Checkbox label="订单管理">{{item.title}}</Checkbox>
                         <div slot="content">
-                            <Collapse v-if="item.sub" v-model="value1">
+                            <!-- 此处为菜单项的渲染方式  -->
+                            <Collapse v-if="item.sub">
                                 <Panel v-for="(_item,_index) of item.sub" :key="_item.id" :name="_index+''">
                                     <Checkbox label="订单管理">{{_item.title}}</Checkbox>
                                     <div slot="content">
+                                        
                                         <CheckboxGroup>
                                             <Checkbox label="香蕉"></Checkbox>
                                             <Checkbox label="苹果"></Checkbox>
@@ -33,6 +35,7 @@
                                     </div>
                                 </Panel>
                             </Collapse>
+                            <!-- 此处为非菜单项渲染方式 -->
                             <CheckboxGroup v-if=!item.sub>
                                 <Checkbox label="香蕉"></Checkbox>
                                 <Checkbox label="苹果"></Checkbox>
@@ -59,8 +62,11 @@ export default {
     mounted(){
         this.type = this.$route.query.type;
         this.id = this.$route.query.id;
+        if(this.id){
+            this.getUserData(this.id)
+        }
         this.getData()
-        this.getUserData()
+        
     },
     methods:{
         postData(){
@@ -68,23 +74,28 @@ export default {
         },
         getData(){//获取所有权限
             this.axios('/api/permission').then(res=>{
-                let result = []
-                for(let i in res.data){
-                    result.push(res.data[i])
-                }
-                this.jurisdiction = result;
-                console.log(this.jurisdiction)
+                let result = this.deepObjToArray(res.data)
+                this.jurisdiction = result
             })
         },
 
-        getUserData(){
-            this.axios('/api/user_permission').then(res=>{
+        getUserData(id){
+            let data = {}
+            if(id){
+                data.group_id = id
+            }
+            this.axios('/api/user_permission',{params:data}).then(res=>{
                 
             })
         },
         back(){
             this.$router.go(-1)
         },
+        deepObjToArray(obj){
+            let result = Object.values(obj);
+            result.map(v=> this.func.isType(v.sub) == 'Object' ? v.sub = this.deepObjToArray(v.sub) : '' )
+            return result
+        }
     }
 }
 </script>

@@ -49,7 +49,7 @@ export default {
     },
     mounted(){
         let flag = JSON.parse(localStorage.getItem('autoLogin'));
-        this.autoLogin = flag
+        this.autoLogin = flag||false
         if(this.autoLogin){
             let user = JSON.parse(localStorage.getItem('userInfo'))
             this.userInfo = user;
@@ -64,10 +64,12 @@ export default {
             let userInfo = JSON.stringify(this.userInfo)
             localStorage.setItem('userInfo',userInfo)
             this.axios.post('/api/login',this.userInfo).then(res=>{
-                this.$Message.success(res.msg||'登陆成功')
-                if(res.data.token){
-                    sessionStorage.setItem('token',res.data.token)
-                    this.$router.push({name:'Cms'})
+                if(res.code == 200){
+                    this.$Message.success(res.msg||'登陆成功')
+                    if(res.data.token){
+                        sessionStorage.setItem('token',res.data.token)
+                        this.$router.push({name:'Cms'})
+                    }
                 }
             })
         },

@@ -1,6 +1,6 @@
 <template>
     <div class="content">
-        <Menu @on-select='menuSelect($event,navgationData)'>
+        <Menu :active-name='activeMenu' :open-names='openMenu' @on-select='menuSelect($event,navgationData)'>
             <Submenu v-for="(item,index) of navgationData" :key="index" :name="index">
                 <template slot="title">
                     <Icon type="ios-analytics" />
@@ -45,8 +45,20 @@ export default {
     },
     data(){
         return {
-
+            activeMenu:'',
+            openMenu:[],
         }
+    },
+    created(){
+        if(sessionStorage.getItem('open-menu')){
+            let open = sessionStorage.getItem('open-menu')
+            this.activeMenu = open
+            let first = parseInt(open[0])
+            this.openMenu.push(first)
+        }  
+    },
+    mounted(){
+        
     },
     methods:{
         menuSelect(name,data){
@@ -59,15 +71,5 @@ export default {
 <style lang="scss" scoped>
 .content{overflow-y: scroll;
         overflow-x:hidden;
-      &::-webkit-scrollbar {
-        width: 3px;
-      }
-      &::-webkit-scrollbar-thumb {
-        background: #d8d8d8;
-        border-radius: 10px;
-      }
-      &::-webkit-scrollbar-track-piece {
-        background: transparent;
-      }
 }
 </style>

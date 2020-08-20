@@ -6,6 +6,7 @@ import components  from '@/untils/components'
 import axios from './axios/index'
 import ViewUI from 'view-design';
 import 'view-design/dist/styles/iview.css';
+import untilFn from './untils/until'
 
 import ConfirmDelete from './components/confirm-delete/index.js'
 
@@ -16,6 +17,8 @@ Vue.use(components)
 Vue.use(ConfirmDelete)
 
 Vue.prototype.axios = axios
+
+Vue.prototype.func = untilFn
 
 Vue.config.productionTip = false
 

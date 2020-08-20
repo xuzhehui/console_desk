@@ -110,7 +110,7 @@
                 </div>
 
                 <div class="items-table">
-                    <Table :columns="tableColumns" :data="tableData"></Table>
+                    <Table border :columns="tableColumns" :data="tableData"></Table>
                 </div>
             </div>
         </div>

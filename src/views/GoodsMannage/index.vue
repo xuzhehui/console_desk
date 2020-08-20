@@ -37,7 +37,19 @@ export default {
             ],
             tableColums:[
                 {title:'ID',align:'center',key:'id'},
-                {title:'图片',align:'center',key:'img_url'},
+                {title:'图片',align:'center',key:'img_url',
+                    render: (h, params) => {
+                        return h('img', {
+                            attrs:{
+                                src:this.$store.state.ip + params.row.img_url,
+                                style:'max-width:50px;max-height:50px;position:relative;top:3px;'
+                            },
+                            props:{
+                                row: params.row
+                            }
+                        })
+                    }
+                },
                 {title:'商品名称',align:'center',key:'title'},
                 {title:'通用商品价格',align:'center',key:'price'},
                 {title:'操作',align:'center',slot:'set'},

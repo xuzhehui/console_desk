@@ -75,7 +75,7 @@ export default {
                 {title:'标签',align:'center',key:''},
                 {title:'操作',align:'center',slot:'set'},
             ],
-            tableData:[{id:1}]
+            tableData:[]
         }
     },
     mounted(){

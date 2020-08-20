@@ -1,27 +1,28 @@
 <template>
-    <div>
+    <div style="height:100%;">
         <Toptitle :title="title">
             <slot name='titleButton'></slot>
         </Toptitle>
-        
-        <div class="nav" v-if="showTopSearch">
-            <Topsearch :list='list' @init='init' @searchData='searchData'/>
-            <div>
-                <slot name='navButton'></slot>
+
+        <div class="page-edit">
+            <div class="nav" v-if="showTopSearch">
+                <Topsearch :list='list' @init='init' @searchData='searchData'/>
+                <div>
+                    <slot name='navButton'></slot>
+                </div>
             </div>
+            <div>
+                <slot name='text-list'></slot>
+            </div>
+
+            <Table @on-selection-change='selectTable'   stripe border :columns="tableColums" :data="tableData">
+                <template slot-scope="{ row }" slot="set">
+                    <slot name='set' :row='row'></slot>
+                </template>
+            </Table>
+
+            <slot></slot>
         </div>
-        <div>
-            <slot name='text-list'></slot>
-        </div>
-
-        <Table max-height='600' stripe border :columns="tableColums" :data="tableData">
-            <template slot-scope="{ row }" slot="set">
-                <slot name='set' :row='row'></slot>
-            </template>
-        </Table>
-
-        <slot></slot>
-
         <Footer :pageIndex='pageIndex' :total='total' @change='changePage' />
     </div>
 </template>
@@ -77,10 +78,14 @@ export default {
         changePage(e){
             this.$emit('changePage',e)
         },
+        selectTable(e){
+            this.$emit('selectTable',e)
+        }
     }
 }
 </script>
 
 <style lang="scss" scoped>
 .nav{display: flex;justify-content: space-between;align-items:center;}
+.page-edit{overflow: hidden;overflow-y: auto;position:relative;top:20px;height:80%;}
 </style>

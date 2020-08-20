@@ -43,7 +43,19 @@ export default {
                 {title:'分类名称',align:'center',key:'type_name'},
                 {title:'产品名称',align:'center',key:'title'},
                 {title:'计量单位',align:'center',key:'unit'},
-                {title:'图片',align:'center',key:'company'},
+                {title:'图片',align:'center',key:'company',
+                    render: (h, params) => {
+                        return h('img', {
+                            attrs:{
+                                src:this.$store.state.ip + params.row.img_url,
+                                style:'max-width:50px;max-height:50px;position:relative;top:3px;'
+                            },
+                            props:{
+                                row: params.row
+                            }
+                        })
+                    }
+                },
                 {title:'操作',align:'center',slot:'set'},
             ],
             tableData:[],

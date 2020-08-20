@@ -45,6 +45,7 @@ export default {
     methods:{
         ...mapMutations(['updateCrumbs']),
         menuSelect(name,data){
+            sessionStorage.setItem('open-menu',name)
             sessionStorage.removeItem('crumbs')
             let split_array = name.split('-');
             let [parant,child,last] = split_array;

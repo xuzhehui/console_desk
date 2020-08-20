@@ -70,13 +70,13 @@ export default {
                 
             ],
             tableColums:[
-                {title:'订单编号',align:'center',key:'id',fixed:'left',},
-                {title:'小区',align:'center',key:'stock'},
+                {title:'订单编号',align:'center',key:'order_no',fixed:'left',},
+                {title:'小区',align:'center',key:'residential_name'},
                 {title:'紧急程度',align:'center',key:'title'},
-                {title:'发货日期',align:'center',key:'title'},
-                {title:'下单日期',align:'center',key:'unit'},
-                {title:'下测量日期',align:'center',key:'warning_number'},
-                {title:'实际测量时间',align:'center',key:'price'},
+                {title:'发货日期',align:'center',key:'predict_time'},
+                {title:'下单日期',align:'center',key:'crt_time'},
+                {title:'下测量日期',align:'center',key:'measure_time'},
+                {title:'实际测量时间',align:'center',key:'upd_time'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'150'},
             ],
             tableData:[
@@ -89,15 +89,18 @@ export default {
     },
     methods:{
         init(row){
-            // this.axios('/api/material').then(res=>{
-            //     this.tableData = res.data;
-            // })
+            this.getData()
         },
         searchData(row){
 
         },
         changePage(e){
 
+        },
+        getData(row){
+            this.axios('/api/produce_list',{params:row}).then(res=>{
+                this.tableData = res.data;
+            })
         },
         setTableColums(){//设置表头
             this.showTableColums = true;

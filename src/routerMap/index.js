@@ -288,6 +288,24 @@ const routerMap = [
         component: resolve => require(['@/views/Approval/list'], resolve)
     },
     {
+        path:'/cms/approval/examine',
+        name:'ApprovalExamine',//审批-->审批详情
+        meta:{index:4},
+        component: resolve => require(['@/views/Approval/examine'], resolve)
+    },
+    {
+        path:'/cms/approval/frock',
+        name:'ApprovaFrock',//审批-->审批列表-->工装审批列表
+        meta:{index:4},
+        component: resolve => require(['@/views/Approval/frock'], resolve)
+    },
+    {
+        path:'/cms/approval/details',
+        name:'ApprovaDetails',//审批-->审批列表-->工装审批列表-->审批详情
+        meta:{index:4},
+        component: resolve => require(['@/views/Approval/details'], resolve)
+    },
+    {
         path:'/cms/measurementordermannage/list',
         name:'MeasurementOrderMannagelist',//测量订单管理-->订单列表
         meta:{index:4},

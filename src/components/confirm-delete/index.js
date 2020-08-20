@@ -3,12 +3,14 @@ import Delete from './index.vue'
 const ConfirmDelete = Vue.extend(Delete) // 直接将Vue组件作为Vue.extend的参数
 let nId = 1;
 
-const Notice = ({content,then,cancel}) => {
+const Notice = ({content,type,title,then,cancel}) => {
     let id = 'notice-' + nId++
   
     const ConfirmDeleteInstance = new ConfirmDelete({
       data: {
-        content: content
+        content: content,
+        type:type||'error',
+        title:title||'确认删除'
       },
     }) // 实例化一个带有content内容then方法cancel方法的ConfirmDeleteInstance
     ConfirmDeleteInstance.id = id

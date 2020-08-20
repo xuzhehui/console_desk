@@ -30,11 +30,10 @@ instance.interceptors.request.use(function (config) {
 // 2. 响应拦截
 instance.interceptors.response.use(res => {
       if(res.status == 200){
-        console.log(res.data.code)
         if(res.data.code == 200){
             // Vue.prototype.$Message.success(res.data.message)
             return res.data
-        }else{
+        }else{//若code 非 200
             Vue.prototype.$Message.error(res.data.msg)
             return res.data
         }

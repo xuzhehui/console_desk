@@ -66,8 +66,8 @@
             </div>
 
             <Table style="margin-bottom:40px;" stripe border :columns="tableColums" :data="info.part">
-                <template slot-scope="{ row }" slot="set">
-                    <a style="color:red;">删除</a>
+                <template slot-scope="{ row,index }" slot="set">
+                    <a @click="delItems(index,info.part)" style="color:red;">删除</a>
                 </template>
             </Table>
 

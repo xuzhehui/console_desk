@@ -1,10 +1,10 @@
 <template>
     <div class="confirm-d">
-        <Modal class-name="vertical-center-modal" title='确认删除' v-model="show" :width="444">
-            <div>{{content}}</div>
+        <Modal class-name="vertical-center-modal" :title='title' v-model="show" :width="444">
+            <div class='content-modal'>{{content}}</div>
             <div class="modal-footer" slot="footer">
                 <Button @click="cancel">取消</Button>
-                <Button @click="then" type="error">确认</Button>
+                <Button @click="then" :type="type ? type :'error'">确认</Button>
             </div>
         </Modal>
     </div>
@@ -38,12 +38,8 @@ export default {
 .modal-footer{display: flex;justify-content:flex-end;}
 </style>
 <style lang="scss">
-.vertical-center-modal{
-    display: flex;
-     align-items: center;
-    justify-content: center;
-    .ivu-modal{
-        top: 0;
-    }
+.content-modal{display: flex;justify-content: center;align-items: center;}
+.vertical-center-modal{display: flex;align-items: center;justify-content: center;
+    .ivu-modal{top: 0;}
 }
 </style>
