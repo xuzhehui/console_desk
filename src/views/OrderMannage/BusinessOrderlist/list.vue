@@ -65,14 +65,14 @@ export default {
                 },
             ],
             tableColums:[
-                {title:'订单编号',align:'center',key:'id',fixed:'left',},
-                {title:'订单类型',align:'center',key:'type_name',width:'150'},
-                {title:'紧急程度',align:'center',key:'title',width:'150'},
-                {title:'小区',align:'center',key:'stock'},
-                {title:'计划开始时间',align:'center',key:'unit'},
-                {title:'计划结束时间',align:'center',key:'warning_number'},
-                {title:'完成进度',align:'center',key:'price'},
-                {title:'交货日期',align:'center',key:'long'},
+                {title:'订单编号',align:'center',key:'order_no',fixed:'left',},
+                {title:'订单类型',align:'center',key:'show_type',width:'150'},
+                {title:'紧急程度',align:'center',key:'show_warning_state',width:'150'},
+                {title:'小区',align:'center',key:'address'},
+                {title:'计划开始时间',align:'center',key:'start_time'},
+                {title:'计划结束时间',align:'center',key:'end_time'},
+                {title:'完成进度',align:'center',key:'show_state'},
+                {title:'交货日期',align:'center',key:'predict_time'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'150'},
             ],
             tableData:[
@@ -85,12 +85,20 @@ export default {
     },
     methods:{
         init(row){
-            // this.axios('/api/material').then(res=>{
-            //     this.tableData = res.data;
-            // })
+            this.getData({id:1})
         },
         searchData(row){
 
+        },
+        getData(row){
+            this.axios('/api/order_index',{params:row}).then(res=>{
+                res.data.map(v=>{
+                    v.show_type = v.type == 1 ? '业务订单' : '代理商订单'
+                    v.show_state = v.state == 0 ? '未审核' : (v.state == 1 ? '审核中' : (v.state == 2 ? '审核通过' : (v.state == 3 ? '订单生产中' : '完成'))),
+                    v.show_warning_state = v.warning_state == 0 ? '不急' : (v.warning_state == 1 ? '比较急' : (v.warning_state == 2 ? '紧急' : '非常急'))
+                })
+                this.tableData = res.data;
+            })
         },
         changePage(e){
 
