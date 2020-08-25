@@ -19,7 +19,7 @@ const routes = [
     {
         path:'/cms',
         name:'Cms',
-        meta:{index:1},
+        meta:{index:2},
         component: resolve => require(['@/views/cms'], resolve),
         children:routerMap, 
     }

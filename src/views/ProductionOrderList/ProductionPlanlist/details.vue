@@ -37,7 +37,7 @@
 export default {
     data(){
         return {
-            type:1,
+            order_no:null,
             logList:[{title:'系统单号',value:'10998765'}],
             list:[
                 {title:'工序分类',name:'Select',serverName:'id1',placeholder:'请选择',value:'',
@@ -52,31 +52,35 @@ export default {
                 },
             ],
             tableColums:[
-                {title:'小区',align:'center',key:'type'},
-                {title:'楼幢',align:'center'},
-                {title:'单元',align:'center'},
-                {title:'楼层',align:'center'},
-                {title:'房间号',align:'center'},
-                {title:'产品',align:'center'},
-                {title:'位置',align:'center'},
-                {title:'部件',align:'center'},
-                {title:'左式',align:'center'},
-                {title:'右式',align:'center'},
+                {title:'楼幢',align:'center',key:'house'},
+                {title:'单元',align:'center',key:'unit'},
+                {title:'楼层',align:'center',key:'layer'},
+                {title:'房间号',align:'center',key:'number'},
+                {title:'产品',align:'center',key:'product_title'},
+                {title:'位置',align:'center',key:'house'},
+                {title:'部件',align:'center',key:'parts_title'},
+                {title:'左右式',align:'center',key:'product_type'},
                 {title:'包装码',align:'center'},
                 {title:'部件是否贴标签',align:'center'},
                 {title:'贴标签零部件',align:'center'},
-                {title:'工序分类',align:'center'},
-                {title:'工序',align:'center'},
-                {title:'是否完成',align:'center'},
+                {title:'工序分类',align:'center',key:'basics_procedure_title'},
+                {title:'工序',align:'procedure_title',key:'procedure_title'},
+                {title:'是否完成',align:'center',key:'is_complete'},
                 {title:'测量尺寸',align:'center'},
-                {title:'单位',align:'center'},
+                {title:'单位',align:'center',},
                 {title:'数量',align:'center'},
-                {title:'二维码',align:'center'},
+                {title:'二维码',align:'center',},
                 {title:'芯片编号',align:'center',slot:'set'},
             ],
             tableData:[{type:'123'}],
             pageIndex:1,
             total:100,
+        }
+    },
+    mounted(){
+        this.order_no = this.$route.query.order_no;
+        if(this.order_no){
+            this.getDetails({order_no:this.order_no})
         }
     },
     methods:{
@@ -88,6 +92,11 @@ export default {
         },
         back(){
             this.$router.go(-1)
+        },
+        getDetails(row){
+            this.axios('/api/orders_plan_detail',{params:row}).then(res=>{
+                this.tableData = res.data.list;
+            })
         },
         postData(){
 

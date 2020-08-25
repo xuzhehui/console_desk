@@ -80,9 +80,15 @@ export default {
         },
         goPage(row){
             row.order_type == 1 ? this.$router.push({
-                path:'/cms/approval/frock'
+                path:'/cms/approval/frock',
+                query:{
+                    id:row.id
+                }
             }) : this.$router.push({
-                path:'/cms/approval/details'
+                path:'/cms/approval/details',
+                query:{
+                    id:row.id
+                }
             })
         },
         goDetails(row){

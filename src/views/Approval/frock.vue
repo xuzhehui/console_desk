@@ -18,6 +18,13 @@
                 <Button type="success" ghost>批量通过审批</Button>
             </div>
 
+            <div slot='text-list' class="log-list">
+                <div class="log-item" v-for="(item,index) of logList" :key="index">
+                    <span>{{item.key}}：</span>
+                    <span style="color:#333;font-weight:bold;">{{item.value}}</span>
+                </div>
+            </div>
+
             <div slot='navButton'>
                 <Button @click="setTableColums" type="primary" ghost icon='ios-cog'>表头设置</Button>
             </div>
@@ -55,20 +62,22 @@ export default {
             showModal:false,
             showType:1,
             info:{},
-            searchObj:{}
+            searchObj:{},
+            logList:[],
         }
     },
     methods:{
         init(row){
             this.searchObj = row;
-            this.getData(row)
+            this.getData({id:this.$route.query.id})
         },
         searchData(row){
             console.log(row)
         },
         getData(row){
-            this.axios('/api/order_oa_list',{params:row}).then(res=>{
-                this.tableData = res.data;
+            this.axios('/api/order_industry_list',{params:row}).then(res=>{
+                this.tableData = res.data.oil;
+                this.logList = res.data.detail;
             })
         },
         goDetail(row){

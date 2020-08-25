@@ -18,13 +18,13 @@
 
             <div slot='navButton' style="display:flex;">
                 <Button @click="setTableColums" type="primary" style="margin-right:10px;" ghost icon='ios-cog'>表头设置</Button>
-                <Button @click="addOrder" type="primary" ghost icon='ios-cog'>新增订单</Button>
+                <Button @click="addOrder(1)" type="primary" ghost icon='ios-cog'>新增订单</Button>
             </div>
             
             <template slot='set' slot-scope='row'>
                 <div>
-                    <a style="margin:0 5px">下测量</a>
-                    <a style="margin:0 5px" @click="goDetial(row.row)">编辑</a>
+                    <a @click="openLower(row.row)" style="margin:0 5px">下测量</a>
+                    <a style="margin:0 5px" @click="addOrder(2,row.row)">编辑</a>
                     <a style="margin:0 5px" @click="goDetial(row.row)">详情</a>
                     <a style="margin:0 5px">删除</a>
                 </div>
@@ -42,6 +42,25 @@
                                     <Checkbox label="香蕉"></Checkbox>
                                 </CheckboxGroup>
                             </div>
+                        </FormItem>
+                    </Form>
+                </Modal>
+
+                <Modal class-name="vertical-center-modal" title='下测量' v-model="show_lower" @on-ok="lowerMeter">
+                    <Form inline :label-width="100">
+                        <FormItem label="测量人员">
+                            <Select v-model="postInfo.user_id" style="width:186px;">
+                                <Option v-for="item of users" :key="item.id" :label="item.nickname" :value="item.id"></Option>
+                            </Select>
+                        </FormItem>
+
+                        <FormItem label="选择时间">
+                            <div style="display:flex;">
+                                <DatePicker v-model="postInfo.start_time" type="date" placeholder="开始时间"></DatePicker>
+                                -
+                                <DatePicker v-model="postInfo.end_time" type="date" placeholder="结束时间"></DatePicker>
+                            </div>
+                             
                         </FormItem>
                     </Form>
                 </Modal>
@@ -81,6 +100,14 @@ export default {
             pageIndex:1,
             total:100,
             showTableColums:false,
+            show_lower:false,
+            postInfo:{//下测量数据
+                id:null,
+                start_time:'',
+                end_time:'',
+                user_id:null,
+            },
+            users:[],
         }
     },
     methods:{
@@ -106,28 +133,53 @@ export default {
         setTableColums(){//设置表头
             this.showTableColums = true;
         },
-        addOrder(){
+        addOrder(n,row){
+            let id = row ? row.id : '';
             this.$router.push({
                 path:'/cms/ordermannage/businessorderlist/edit',
+                query:{
+                    type:n,
+                    id:id
+                }
             })
         },
         goDetial(row){
             this.$router.push({
                 path:'/cms/ordermannage/businessorderlist/decorationlist',
-                query:{}
+                query:{
+                    id:row.id
+                }
             })
-        }
+        },
+        openLower(row){
+            this.show_lower = true;
+            this.postInfo.id = row.id
+            this.axios('/api/user').then(res=>this.users = res.data)
+        },
+        lowerMeter(){
+            try{
+                this.postInfo.start_time = new Date(this.postInfo.start_time).toLocaleDateString().replace(/\//g,"-")
+                this.postInfo.end_time = new Date(this.postInfo.end_time).toLocaleDateString().replace(/\//g,"-")
+            }catch(e){
+                console.log(e)
+            }
+            this.axios.post('/api/orders_set_measure',this.postInfo).then(res=>{
+                if(res.code == 200){
+                    this.$Message.success(res.msg)
+                }
+            })
+        },
     }
 }
 </script>
 
 <style lang="scss" scoped>
-.vertical-center-modal{
-    display: flex;
-     align-items: center;
-    justify-content: center;
-    .ivu-modal{
-        top: 0;
-    }
-}
+// .vertical-center-modal{
+//     display: flex;
+//      align-items: center;
+//     justify-content: center;
+//     .ivu-modal{
+//         top: 0;
+//     }
+// }
 </style>

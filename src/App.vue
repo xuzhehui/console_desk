@@ -23,5 +23,16 @@ table-edit-set{margin-right:10px;color:#3764FF;cursor:pointer}
 ::-webkit-scrollbar-track-piece {
   background: transparent;
 }
+.vertical-center-modal{
+    display: flex;
+     align-items: center;
+    justify-content: center;
+    .ivu-modal{
+        top: 0;
+    }
+}
+
+.log-list{display: flex;flex-wrap:wrap;padding:10px 0;color:#666;}
+.log-item{margin-right:40px;margin-bottom:20px;}
 
 </style>

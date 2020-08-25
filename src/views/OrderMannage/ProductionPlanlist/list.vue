@@ -67,19 +67,19 @@ export default {
                 },
             ],
             tableColums:[
-                {title:'订单编号',align:'center',key:'id',fixed:'left',},
-                {title:'订单类型',align:'center',key:'type_name',width:'150'},
-                {title:'紧急程度',align:'center',key:'title',width:'150'},
-                {title:'小区',align:'center',key:'stock'},
-                {title:'发货日期',align:'center',key:'unit'},
-                {title:'下单日期',align:'center',key:'warning_number'},
-                {title:'订单状态',align:'center',key:'price'},
-                {title:'客户姓名',align:'center',key:'long'},
-                {title:'手机号',align:'center',key:'long'},
-                {title:'完成进度',align:'center',key:'long'},
-                {title:'预估生产日期',align:'center',key:'long'},
-                {title:'生产开始时间',align:'center',key:'long'},
-                {title:'生产结束时间',align:'center',key:'long'},
+                {title:'订单编号',align:'center',key:'order_no',fixed:'left',},
+                {title:'订单类型',align:'center',key:'type',width:'150'},
+                {title:'紧急程度',align:'center',key:'warning_state',width:'150'},
+                {title:'小区',align:'center',key:'residential_name'},
+                {title:'发货日期',align:'center',key:'predict_time'},
+                {title:'下单日期',align:'center',key:'crt_time'},
+                {title:'订单状态',align:'center',key:'sub_state'},
+                {title:'客户姓名',align:'center',key:'client_name'},
+                {title:'手机号',align:'center',key:'mobile'},
+                {title:'完成进度',align:'center',key:'complete_rate'},
+                {title:'预估生产工期',align:'center',key:'predict_working'},
+                {title:'生产开始时间',align:'center',key:'start_time'},
+                {title:'生产结束时间',align:'center',key:'end_time'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'150'},
             ],
             tableData:[
@@ -88,13 +88,12 @@ export default {
             pageIndex:1,
             total:100,
             showTableColums:false,
+            
         }
     },
     methods:{
         init(row){
-            // this.axios('/api/material').then(res=>{
-            //     this.tableData = res.data;
-            // })
+            this.getData({sub_state:5})
         },
         searchData(row){
 
@@ -102,13 +101,20 @@ export default {
         changePage(e){
 
         },
+        getData(row){
+            this.axios('/api/produce_list',{params:row}).then(res=>{
+                this.tableData = res.data;
+            })
+        },
         setTableColums(){//设置表头
             this.showTableColums = true;
         },
         goDetial(row){
             this.$router.push({
                 path:'/cms/ordermannage/productionplanlist/details',
-                query:{}
+                query:{
+                    id:row.id
+                }
             })
         }
     }

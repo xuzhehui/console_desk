@@ -72,16 +72,14 @@ export default {
             tableColums:[
                 {title:'订单编号',align:'center',key:'order_no',fixed:'left',},
                 {title:'小区',align:'center',key:'residential_name'},
-                {title:'紧急程度',align:'center',key:'title'},
+                {title:'紧急程度',align:'center',key:'warning_state'},
                 {title:'发货日期',align:'center',key:'predict_time'},
                 {title:'下单日期',align:'center',key:'crt_time'},
                 {title:'下测量日期',align:'center',key:'measure_time'},
                 {title:'实际测量时间',align:'center',key:'upd_time'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'150'},
             ],
-            tableData:[
-                {id:'1',title:'222'}
-            ],
+            tableData:[],
             pageIndex:1,
             total:100,
             showTableColums:false,
@@ -108,7 +106,9 @@ export default {
         goDetial(row){
             this.$router.push({
                 path:'/cms/productionorderlist/productionsorder/Decorationlist',
-                query:{}
+                query:{
+                    id:row.id
+                }
             })
         }
     }

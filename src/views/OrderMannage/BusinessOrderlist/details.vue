@@ -34,7 +34,7 @@
 export default {
     data(){
         return {
-            type:1,
+            id:this.$route.query.id,
             logList:[{title:'系统单号',value:'10998765'}],
             tableColums:[
                 {title:'产品类型',align:'center',key:'type'},
@@ -42,16 +42,21 @@ export default {
                 {title:'工艺',align:'center'},
                 {title:'颜色',align:'center'},
                 {title:'左/右式',align:'center'},
-                {title:'产品名称',align:'center'},
-                {title:'产品型号',align:'center'},
+                {title:'产品名称',align:'center',key:'product_name'},
+                {title:'产品型号',align:'center',key:'model'},
                 {title:'测量数据',align:'center'},
-                {title:'位置',align:'center'},
+                {title:'位置',align:'center',key:'address'},
                 {title:'预估产品工期',align:'center'},
                 {title:'操作',align:'center',slot:'set'},
             ],
-            tableData:[{type:'123'}],
+            tableData:[],
             pageIndex:1,
             total:100,
+        }
+    },
+    mounted(){
+        if(this.id){
+            this.getData(this.id)
         }
     },
     methods:{
@@ -61,9 +66,17 @@ export default {
         postData(){
 
         },
+        getData(id){
+            this.axios('/api/order_product_list',{params:{id:id}}).then(res=>{
+                this.tableData = res.data.product;
+            })
+        },
         goPage(row){
             this.$router.push({
-                path:'/cms/productionorderlist/deliverylist/partsdetails'
+                path:'/cms/productionorderlist/deliverylist/partsdetails',
+                query:{
+                    id:row.id
+                }
             })
         },
         changePage(e){}
@@ -73,4 +86,5 @@ export default {
 
 <style lang="scss" scoped>
 .log-list{display: flex;flex-wrap:wrap;padding:10px 0;}
+
 </style>

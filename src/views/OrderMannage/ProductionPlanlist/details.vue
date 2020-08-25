@@ -87,13 +87,18 @@ export default {
     },
     methods:{
         init(row){
-
+            this.getData({id:this.$route.query.id})
         },
         searchData(row){
 
         },
         back(){
             this.$router.go(-1)
+        },
+        getData(row){
+            this.axios('/api/produce_list',{params:row}).then(res=>{
+                console.log(res)
+            })
         },
         postData(){
 

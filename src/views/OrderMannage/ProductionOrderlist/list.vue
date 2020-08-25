@@ -22,7 +22,7 @@
             
             <template slot='set' slot-scope='row'>
                 <div>
-                    <Icon @click="goDetial(3,row.row)" size='20' style="color:#32C800;cursor:pointer" type="ios-paper-outline" />
+                    <Icon @click="goDetial(row.row)" size='20' style="color:#32C800;cursor:pointer" type="ios-paper-outline" />
                 </div>
             </template>
 
@@ -61,16 +61,16 @@ export default {
                 },
             ],
             tableColums:[
-                {title:'订单编号',align:'center',key:'id',fixed:'left',},
-                {title:'订单类型',align:'center',key:'type_name',width:'150'},
-                {title:'小区',align:'center',key:'title',width:'150'},
-                {title:'紧急程度',align:'center',key:'stock'},
-                {title:'测量开始时间',align:'center',key:'unit'},
-                {title:'测量结束时间',align:'center',key:'warning_number'},
-                {title:'实际测量时间',align:'center',key:'price'},
-                {title:'完成进度',align:'center',key:'long'},
-                {title:'交货日期',align:'center',key:'long'},
-                {title:'备注',align:'center',key:'long'},
+                {title:'订单编号',align:'center',key:'order_no',fixed:'left',},
+                {title:'订单类型',align:'center',key:'type',width:'150'},
+                {title:'小区',align:'center',key:'residential_name',width:'150'},
+                {title:'紧急程度',align:'center',key:'warning_state'},
+                {title:'测量开始时间',align:'center',key:'start_time'},
+                {title:'测量结束时间',align:'center',key:'end_time'},
+                {title:'实际测量时间',align:'center',key:'upd_time'},
+                {title:'完成进度',align:'center',key:'sub_state'},
+                {title:'交货日期',align:'center',key:'predict_time'},
+                {title:'备注',align:'center',key:'remark'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'150'},
             ],
             tableData:[
@@ -83,23 +83,27 @@ export default {
     },
     methods:{
         init(row){
-            // this.axios('/api/material').then(res=>{
-            //     this.tableData = res.data;
-            // })
+            this.getData()
         },
         searchData(row){
 
         },
         changePage(e){
-
+            
         },
         setTableColums(){//设置表头
             this.showTableColums = true;
         },
+        getData(row){
+            this.axios('/api/produce_list',{params:row}).then(res=>this.tableData = res.data)
+        },
         goDetial(row){
+            console.log(row)
             this.$router.push({
                 path:'/cms/ordermannage/productionorderlist/decorationlist',
-                query:{}
+                query:{
+                    id:row.id
+                }
             })
         }
     }

@@ -11,9 +11,12 @@
                 <span>{{item.value}}</span>
             </div>
         </div>
-        <Table border stripe :columns="tableColums" :data="tableData">
+        <div>
+            <Table class="overflow-table" border stripe :columns="tableColums" :data="tableData">
 
-        </Table>
+            </Table>
+        </div>
+        
     </div>
 </template>
 
@@ -30,10 +33,57 @@ export default {
                 {title:'宽',align:'center'},
                 {title:'高',align:'center'},
                 {title:'单位',align:'center'},
-                {title:'左式',align:'center'},
-                {title:'右式',align:'center'},
-                {title:'图号',align:'center'},
-                {title:'图纸',align:'center'},
+                {title:'左右式',align:'center',width:'100',
+                    render: (h, params) => {
+                        return h('Select', {
+                            props:{
+                                value:1,
+                            },
+                        on:{
+                            'on-change':(e) =>console.log(e)
+                        },
+                        },
+                        [
+                        h('Option',{
+                            props: {
+                                 value:1
+                            }
+                            },'左式'),
+                        h('Option',{
+                            props: {
+                                value:2
+                            }
+                        },'右式')
+                        ]);
+                    },
+                },
+                {title:'图号',align:'center',width:'150',
+                    render(h){
+                        return h('Input',{
+                            attrs:{
+                                placeholder:'请输入图号'
+                            }
+                        })
+                    }
+                },
+                {title:'图纸',align:'center',
+                    render(h){
+                        return h('Upload',{
+                            props:{
+                                'show-upload-list':false
+                            },
+                            attrs:{
+                                action:'//jsonplaceholder.typicode.com/posts/'
+                            }
+                        },[
+                            h('a',{
+                                attrs:{
+                                    style:'position:relative;'
+                                }
+                            },'上传')
+                        ])
+                    }
+                },
                 {title:'位置',align:'center'},
                 {title:'测量数据',align:'center'},
             ],
@@ -42,12 +92,20 @@ export default {
             total:100,
         }
     },
+    created(){
+        this.type = this.$route.query.type;
+        this.id = this.$route.query.id;
+        this.getData(this.id)
+    },
     methods:{
         back(){
             this.$router.go(-1)
         },
         postData(){
 
+        },
+        getData(id){
+            this.axios('/api/order_oa_list',{params:{id:id}}).then(res=>console.log(res))
         },
         goPage(row){
             this.$router.push({
@@ -61,4 +119,5 @@ export default {
 
 <style lang="scss" scoped>
 .log-list{display: flex;flex-wrap:wrap;padding:10px 0;}
+/deep/ .ivu-table-wrapper{overflow:visible;color:red;}//穿透iview
 </style>

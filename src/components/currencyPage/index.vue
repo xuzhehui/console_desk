@@ -11,6 +11,12 @@
                     <slot name='navButton'></slot>
                 </div>
             </div>
+            <!-- <div slot='text-list' class="log-list" >
+                <div class="log-item" v-for="(item,index) of logList" :key="index">
+                    <span>{{item.key}}：</span>
+                    <span style="color:#333;font-weight:bold;">{{item.value}}</span>
+                </div>
+            </div> -->
             <div>
                 <slot name='text-list'></slot>
             </div>

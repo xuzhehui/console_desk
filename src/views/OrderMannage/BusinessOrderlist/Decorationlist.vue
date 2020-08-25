@@ -19,15 +19,15 @@
 
             <div slot='text-list' class="log-list">
                 <div class="log-item" v-for="(item,index) of logList" :key="index">
-                    <span>{{item.title}}：</span>
-                    <span>{{item.value}}</span>
+                    <span>{{item.key}}：</span>
+                    <span style="color:#333;font-weight:bold;">{{item.value}}</span>
                 </div>
             </div>
 
             <template slot='set' slot-scope='row'>
                 <div>
                    <a style="margin:0 5px;" @click="goPage">编辑</a>
-                   <a style="margin:0 5px;" @click="goPage">详情</a>
+                   <a style="margin:0 5px;" @click="goPage(row.row)">详情</a>
                    <a style="margin:0 5px;">下测量</a>
                 </div>
             </template>
@@ -54,13 +54,13 @@ export default {
                 },
             ],
             tableColums:[
-                {title:'小区',align:'center',key:'type'},
-                {title:'楼幢',align:'center'},
-                {title:'单元',align:'center'},
-                {title:'楼层',align:'center'},
-                {title:'房间号',align:'center'},
-                {title:'单价',align:'center'},
-                {title:'预估房间工期',align:'center'},
+                {title:'小区',align:'center',key:'residential_name'},
+                {title:'楼幢',align:'center',key:'house'},
+                {title:'单元',align:'center',key:'unit'},
+                {title:'楼层',align:'center',key:'layer'},
+                {title:'房间号',align:'center',key:'number'},
+                {title:'单价',align:'center',key:''},
+                {title:'预估房间工期',align:'center',key:''},
                 {title:'操作',align:'center',slot:'set'},
             ],
             tableData:[{type:'123'}],
@@ -70,7 +70,7 @@ export default {
     },
     methods:{
         init(row){
-
+            this.getData({id:12||this.$route.query.id})
         },
         searchData(row){
 
@@ -78,12 +78,21 @@ export default {
         back(){
             this.$router.go(-1)
         },
+        getData(row){
+            this.axios('/api/order_industry_list',{params:row}).then(res=>{
+                this.tableData = res.data.oil
+                this.logList = res.data.detail
+            })
+        },
         postData(){
 
         },
         goPage(row){
             this.$router.push({
-                path:'/cms/ordermannage/businessorderlist/details'
+                path:'/cms/ordermannage/businessorderlist/details',
+                query:{
+                    id:row.id
+                }
             })
         },
         changePage(e){}
@@ -92,5 +101,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.log-list{display: flex;flex-wrap:wrap;padding:10px 0;}
+.log-list{display: flex;flex-wrap:wrap;padding:10px 0;color:#666;}
+.log-item{margin-right:40px;margin-bottom:20px;}
 </style>

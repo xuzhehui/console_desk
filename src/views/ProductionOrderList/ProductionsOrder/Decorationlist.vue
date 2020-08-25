@@ -56,7 +56,7 @@ export default {
                 {title:'产品',name:'Input',value:'',serverName:'title',placeholder:'请输入部件名称'},
             ],
             tableColums:[
-                {title:'订单号',align:'center',key:'id'},
+                {title:'订单号',align:'center',key:'order_no'},
                 {title:'小区名称',align:'center',key:'id'},
                 {title:'楼幢',align:'center',key:'title'},
                 {title:'单元',align:'center',},
@@ -67,7 +67,7 @@ export default {
                 {title:'交付日期',align:'center',key:'title'},
                 {title:'订单生产时间',align:'center',key:'title'},
                 {title:'单价',align:'center',key:'title'},
-                {title:'单价',align:'center',key:'title'},
+                {title:'图纸',align:'center',key:'title'},
                 {title:'预估房号工期',align:'center',key:'title'},
                 {title:'操作',align:'center',slot:'set',width:'180'},
             ],
@@ -84,14 +84,14 @@ export default {
     methods:{
         init(row){
             this.searchObj = row;
-            this.getData(row)
+            this.getData({id:this.$route.query.id})
         },
         searchData(row){
             console.log(row)
         },
         getData(row){
-            this.axios('/api/basics_parts_index').then(res=>{
-                this.tableData = res.data;
+            this.axios('/api/order_industry_list',{params:row}).then(res=>{
+                this.tableData = res.data.oil;
             })
         },
         goDetail(row){

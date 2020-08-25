@@ -14,13 +14,13 @@ const routerMap = [
     {
         path:'/cms/personnelmanagement/role/edit',
         name:'PersonnelManagementRoleEdit',//人员管理-->角色管理-->新增  编辑
-        meta:{index:4},
+        meta:{index:5},
         component: resolve => require(['@/views/PersonnelManagement/roleEdit'], resolve)
     },
     {
         path:'/cms/personnelmanagement/user/edit',
         name:'PersonnelManagementUserEdit',//人员管理-->用户管理-->新增  编辑
-        meta:{index:4},
+        meta:{index:6},
         component: resolve => require(['@/views/PersonnelManagement/userEdit'], resolve)
     },
     {
