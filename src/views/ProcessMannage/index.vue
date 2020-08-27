@@ -4,6 +4,7 @@
         :title='title'
         :list='list' 
         @init='init' 
+        :loading='loading'
         @searchData='searchData' 
         @changePage='changePage'
         :tableColums='tableColums'
@@ -69,6 +70,7 @@ export default {
             title:'',
             id:null,
             searchObj:{},
+            loading:false,
         }
     },
     mounted(){
@@ -145,7 +147,9 @@ export default {
             n == 0 ? this.attribute.push({title:''}) : this.attribute.splice(n,1)
         },
         watchData(id){
+            this.loading = true;
             this.axios('/api/properties_index',{params:{id:id}}).then(res=>{
+                this.loading = false;
                 this.tableData = res.data;
             })
         }

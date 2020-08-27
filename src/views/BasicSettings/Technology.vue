@@ -4,6 +4,7 @@
         title='工艺属性字段'
         :list='list' 
         @init='init' 
+        :loading='loading'
         @searchData='searchData' 
         @changePage='changePage'
         :tableColums='tableColums'
@@ -65,7 +66,8 @@ export default {
             showModal:false,
             showType:1,
             classInfo:{},
-            attribute:[{title:''}]
+            attribute:[{title:''}],
+            loading:false,
         }
     },
     methods:{
@@ -76,7 +78,9 @@ export default {
             this.getData(row)
         },
         getData(row){
+            this.loading = true;
             this.axios('/api/basics_properties_index',{params:row}).then(res=>{
+                this.loading = false;
                 this.tableData = res.data;
             })
         },

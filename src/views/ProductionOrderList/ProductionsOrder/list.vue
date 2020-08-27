@@ -24,7 +24,7 @@
                     <a style="margin:0 5px">原材料预算</a>
                     <a style="margin:0 5px">打印二维码</a>
                     <a style="margin:0 5px" @click="goDetial(row.row)">详情</a>
-                    <a style="margin:0 5px">下生产</a>
+                    <a style="margin:0 5px" @click="openModal(row.row)">下生产</a>
                 </div>
             </template>
 
@@ -39,6 +39,18 @@
                                     <Checkbox label="西瓜"></Checkbox>
                                     <Checkbox label="香蕉"></Checkbox>
                                 </CheckboxGroup>
+                            </div>
+                        </FormItem>
+                    </Form>
+                </Modal>
+
+                <Modal class-name="vertical-center-modal" title='下生产计划' v-model="showPlan" @on-ok="sendPlanInfo">
+                    <Form>
+                        <FormItem label="选择时间">
+                            <div style="display:flex;">
+                                <DatePicker v-model="planInfo.start_time" type="date" placeholder="开始时间"></DatePicker>
+                                -
+                                <DatePicker v-model="planInfo.end_time" type="date" placeholder="结束时间"></DatePicker>
                             </div>
                         </FormItem>
                     </Form>
@@ -83,6 +95,12 @@ export default {
             pageIndex:1,
             total:100,
             showTableColums:false,
+            showPlan:false,
+            planInfo:{
+                id:null,
+                start_time:'',
+                end_time:''
+            }
         }
     },
     methods:{
@@ -108,6 +126,24 @@ export default {
                 path:'/cms/productionorderlist/productionsorder/Decorationlist',
                 query:{
                     id:row.id
+                }
+            })
+        },
+        openModal(row){
+            this.planInfo.id = row.id;
+            this.showPlan = true;
+        },
+        sendPlanInfo(){
+            try{
+                this.planInfo.start_time = new Date(this.planInfo.start_time).toLocaleDateString().replace(/\//g,"-")
+                this.planInfo.end_time = new Date(this.planInfo.end_time).toLocaleDateString().replace(/\//g,"-")
+            }catch(e){
+                console.log(e)
+            }
+            this.axios.post('/api/orders_plan',this.planInfo).then(res=>{
+                if(res.code == 200){
+                    this.$Message.success(res.msg)
+                    this.getData()
                 }
             })
         }

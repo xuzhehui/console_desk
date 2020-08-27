@@ -6,22 +6,22 @@
 
         <div class="page-edit">
             <div class="nav" v-if="showTopSearch">
-                <Topsearch :list='list' @init='init' @searchData='searchData'/>
+                <Topsearch  :list='list' @init='init' @searchData='searchData'/>
                 <div>
                     <slot name='navButton'></slot>
                 </div>
             </div>
-            <!-- <div slot='text-list' class="log-list" >
+            <div v-if="logList" slot='text-list' class="log-list" >
                 <div class="log-item" v-for="(item,index) of logList" :key="index">
                     <span>{{item.key}}：</span>
-                    <span style="color:#333;font-weight:bold;">{{item.value}}</span>
+                    <span>{{item.value}}</span>
                 </div>
-            </div> -->
+            </div>
             <div>
                 <slot name='text-list'></slot>
             </div>
 
-            <Table @on-selection-change='selectTable'   stripe border :columns="tableColums" :data="tableData">
+            <Table :loading='loading' @on-selection-change='selectTable'   stripe border :columns="tableColums" :data="tableData">
                 <template slot-scope="{ row }" slot="set">
                     <slot name='set' :row='row'></slot>
                 </template>
@@ -63,6 +63,18 @@ export default {
         showTopSearch:{
             type:Boolean,
             default:true,
+        },
+        loading:{
+            type:Boolean,
+            default:false,
+        },
+        // showLog:{
+        //     type:Boolean,
+        //     default:false,
+        // },
+        logList:{
+            type:Array,
+            default:null,
         }
 
 

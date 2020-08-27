@@ -9,7 +9,7 @@
 
                 <Avatar style="margin-right:10px;" src="https://i.loli.net/2017/08/21/599a521472424.jpg" />
 
-                <label style="margin-right:20px;">momo.zxy</label>
+                <label style="margin-right:20px;">{{userInfo.nickname}}</label>
 
                 <Divider type="vertical" style="margin-right:20px;" />
 
@@ -24,12 +24,24 @@
 </template>
 
 <script>
+import { mapState,mapMutations } from 'vuex'
 export default {
     data(){
         return {
 
         }
-    }
+    },
+    created(){
+        this.saveUser()
+    },
+    computed:{
+        ...mapState(['userInfo'])
+    },
+    mounted(){
+    },
+    methods:{
+        ...mapMutations(['saveUser'])
+    },
 }
 </script>
 

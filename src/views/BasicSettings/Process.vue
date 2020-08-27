@@ -3,6 +3,7 @@
          <FullPage 
         title='工序分类'
         :list='list' 
+        :loading='loading'
         @init='init' 
         @searchData='searchData' 
         @changePage='changePage'
@@ -58,6 +59,7 @@ export default {
             showModal:false,
             classInfo:{},
             searchObj:{},
+            loading:false,
         }
     },
     methods:{
@@ -69,7 +71,9 @@ export default {
             this.getData(row)
         },
         getData(row){
+            this.loading = true;
             this.axios('/api/basics_procedure_index',{params:row}).then(res=>{
+                this.loading = false;
                 this.tableData = res.data;
             })
         },

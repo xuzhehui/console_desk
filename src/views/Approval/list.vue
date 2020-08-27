@@ -4,6 +4,7 @@
         title='审批列表'
         :list='list' 
         @init='init' 
+        :loading='loading'
         @searchData='searchData' 
         @changePage='changePage'
         :tableColums='tableColums'
@@ -56,6 +57,7 @@ export default {
             tableData:[],
             pageIndex:1,
             total:100,
+            loading:false,
         }
     },
     methods:{
@@ -66,7 +68,9 @@ export default {
             this.getData(row)
         },
         getData(row){
+            this.loading = true;
             this.axios('/api/order_oa_list',{params:row}).then(res=>{
+                this.loading = false;
                 res.data.map(v=>{
                     v.show_state = v.state == 0 ? '待审批' : (v.state == 1 ? '同意' : (v.state == 2 ? '驳回' :'取消'))
                     v.show_type = v.state == 1 ? '测量' : '生产'

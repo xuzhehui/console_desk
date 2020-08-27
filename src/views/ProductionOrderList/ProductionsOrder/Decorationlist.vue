@@ -22,7 +22,7 @@
                 <div class="table-set">
                     <a @click="goDetail(row.row)">编辑</a>
                     <a @click="goDetail(row.row)">详情</a>
-                    <a>下生产计划</a>
+                    <a @click="openModal(row.row)">下生产计划</a>
                     <a>下载图纸</a>
                 </div>
             </template>
@@ -42,6 +42,18 @@
                         </FormItem>
                     </Form>
                 </Modal>
+
+                <Modal class-name="vertical-center-modal" title='下生产计划' v-model="showPlan" @on-ok="sendPlanInfo">
+                    <Form>
+                        <FormItem label="选择时间">
+                            <div style="display:flex;">
+                                <DatePicker v-model="planInfo.start_time" type="date" placeholder="开始时间"></DatePicker>
+                                -
+                                <DatePicker v-model="planInfo.end_time" type="date" placeholder="结束时间"></DatePicker>
+                            </div>
+                        </FormItem>
+                    </Form>
+                </Modal>
             </div>
         </FullPage>
     </div>
@@ -57,18 +69,18 @@ export default {
             ],
             tableColums:[
                 {title:'订单号',align:'center',key:'order_no'},
-                {title:'小区名称',align:'center',key:'id'},
-                {title:'楼幢',align:'center',key:'title'},
-                {title:'单元',align:'center',},
-                {title:'楼层',align:'center',key:'title'},
-                {title:'房号',align:'center',key:'title'},
-                {title:'是否紧急',align:'center',key:'title'},
-                {title:'单价',align:'center',key:'title'},
-                {title:'交付日期',align:'center',key:'title'},
-                {title:'订单生产时间',align:'center',key:'title'},
-                {title:'单价',align:'center',key:'title'},
-                {title:'图纸',align:'center',key:'title'},
-                {title:'预估房号工期',align:'center',key:'title'},
+                {title:'小区名称',align:'center',key:'residential_name'},
+                {title:'楼幢',align:'center',key:'house'},
+                {title:'单元',align:'center',key:'unit'},
+                {title:'楼层',align:'center',key:'layer'},
+                {title:'房号',align:'center',key:'number'},
+                {title:'是否紧急',align:'center',key:''},
+                {title:'单价',align:'center',key:''},
+                {title:'交付日期',align:'center',key:''},
+                {title:'订单生产时间',align:'center',key:''},
+                {title:'单价',align:'center',key:''},
+                {title:'图纸',align:'center',key:''},
+                {title:'预估房号工期',align:'center',key:''},
                 {title:'操作',align:'center',slot:'set',width:'180'},
             ],
             tableData:[],
@@ -79,6 +91,12 @@ export default {
             classInfo:{},
             searchObj:{},
             showTableColums:false,
+            showPlan:false,
+            planInfo:{
+                id:null,
+                start_time:'',
+                end_time:''
+            }
         }
     },
     methods:{
@@ -105,6 +123,23 @@ export default {
         back(){
             this.$router.go(-1)
         },
+        openModal(row){
+            this.planInfo.id = row.id;
+            this.showPlan = true;
+        },
+        sendPlanInfo(){
+            try{
+                this.planInfo.start_time = new Date(this.planInfo.start_time).toLocaleDateString().replace(/\//g,"-")
+                this.planInfo.end_time = new Date(this.planInfo.end_time).toLocaleDateString().replace(/\//g,"-")
+            }catch(e){
+                console.log(e)
+            }
+            this.axios.post('/api/orders_plan',this.planInfo).then(res=>{
+                if(res.code == 200){
+                    this.$Message.success(res.msg)
+                }
+            })
+        }
     }
 }
 </script>

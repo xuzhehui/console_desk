@@ -9,6 +9,10 @@ const mutations  = {
     },
     updatekeyBoard(state,val){
         state.keyBoard_value = val
+    },
+    saveUser(state){
+        let userInfo = sessionStorage.getItem('user_info');
+        state.userInfo = JSON.parse(userInfo)
     }
 }
 

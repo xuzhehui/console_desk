@@ -4,6 +4,7 @@
         title='部件字段'
         :list='list' 
         @init='init' 
+        :loading='loading'
         @searchData='searchData' 
         @changePage='changePage'
         :tableColums='tableColums'
@@ -63,7 +64,8 @@ export default {
             showModal:false,
             showType:1,
             classInfo:{},
-            searchObj:{}
+            searchObj:{},
+            loading:false,
         }
     },
     methods:{
@@ -75,7 +77,9 @@ export default {
             console.log(row)
         },
         getData(row){
+            this.loading = true;
             this.axios('/api/basics_parts_index').then(res=>{
+                this.loading = false,
                 this.tableData = res.data;
             })
         },

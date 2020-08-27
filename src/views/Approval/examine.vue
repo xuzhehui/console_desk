@@ -9,10 +9,8 @@
         <div class="page-edit">
             <div style="padding:20px 0;">
                 <Steps :current="current">
-                    <!-- <Step title="提交审批"></Step> -->
-                    <Step v-for="(item,index) of examMineData.orders_oa" :key="item.id" 
-                    :title="index == 0 ? '提交审批' : (index == examMineData.orders_oa.length-1 ? '审批完成' : (index+=1) +'级审批')"></Step>
-                    <!-- <Step title="审批完成"></Step> -->
+                    <Step v-for="item of examMineData.orders_oa" :key="item.id" 
+                    :title="item.title"></Step>
                 </Steps>
             </div>
 
@@ -27,7 +25,7 @@
                             <tr>开始时间</tr>
                             <tr>交付时间</tr>
                         </th>
-                        <th>
+                        <th style="width:40%">
                             <tr>{{examMineData.order_no}}</tr>
                             <tr>工装</tr>
                             <tr>{{examMineData.predict_price}}</tr>
@@ -58,26 +56,22 @@
                     <table border="0" cellspacing='1' cellpadding="0">
                         <th style="width:10%;background:#F4F8FF">
                             <tr>提交人员</tr>
-                            <tr>一级审批</tr>
-                            <tr>三级审批</tr>
+                            <tr v-for="item of left_table" :key="item.id">{{item.title}}</tr>
                             <tr>审批状态</tr>
                         </th>
-                        <th>
+                        <th style="width:40%;">
                             <tr>D19140</tr>
-                            <tr>工装</tr>
-                            <tr>1900万</tr>
+                            <tr v-for="item of left_table" :key="item.id">{{item.title}}</tr>
                             <tr>2020-8-20</tr>
                         </th>
                         <th style="width:10%;background:#F4F8FF">
                             <tr>提交时间</tr>
-                            <tr>二级审批</tr>
-                            <tr>四级审批</tr>
+                            <tr v-for="item of right_table" :key="item.id">{{item.title}}</tr>
                             <tr>通知他人</tr>
                         </th>
                         <th>
                             <tr>{{func.replaceDate(examMineData.crt_time)}}</tr>
-                            <tr>15466767765</tr>
-                            <tr>张三</tr>
+                            <tr v-for="item of right_table" :key="item.id">{{item.title}}</tr>
                             <tr>否</tr>
                         </th>
                     </table>
@@ -141,7 +135,16 @@ export default {
         getDetails(id){
             this.axios('/api/order_oa_list',{params:{id:id}}).then(res=>{
                 let copyData = JSON.parse(JSON.stringify(res.data))
-                copyData.orders_oa.map((v,i)=>(i+1)%2 ? this.left_table.push(v) : this.right_table.push(v))
+                res.data.orders_oa.map((v,i)=>{
+                    if((i+1)%2){
+                        v.title = `${i+1}级审批`
+                        this.left_table.push(v)
+                    }else{
+                        v.title = `${i+1}级审批`
+                        this.right_table.push(v)
+                    }
+                })
+                console.log(res.data.orders_oa)
                 res.data.orders_oa.unshift({title:'提交审批'})
                 res.data.orders_oa.push({title:'审批完成'})
                 this.examMineData = res.data;
@@ -183,7 +186,7 @@ export default {
 <style lang="scss" scoped>
 table { border-collapse: collapse;text-align:center;width:100%;border:1px solid #DEDEDE;
     th{border-right:1px solid #DEDEDE;
-        tr{display: flex;flex-direction:column;border-bottom:1px solid #DEDEDE;padding:10px;
+        tr{display: flex;flex-direction:column;border-bottom:1px solid #DEDEDE;padding:10px;align-items:center;
             &:last-child{border-bottom: none;}
         }
     }

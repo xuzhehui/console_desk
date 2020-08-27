@@ -3,16 +3,18 @@
         <FullPage 
         title='业务订单列表'
         :list='list' 
-        @init='init' 
+        @init='init'
+        :loading='loading' 
         @searchData='searchData' 
         @changePage='changePage'
+        @selectTable='selectTable'
         :tableColums='tableColums'
         :tableData='tableData'
         :pageIndex='pageIndex'
         :total='total'
         >
             <div slot='titleButton' >
-                <Button  type="primary" style="margin-right:10px;" ghost>批量下测量</Button>
+                <Button  type="primary" @click="openLower(selectIds)" style="margin-right:10px;" ghost>批量下测量</Button>
                 <Button  type="primary" ghost>批量打印二维码</Button>
             </div>
 
@@ -46,7 +48,7 @@
                     </Form>
                 </Modal>
 
-                <Modal class-name="vertical-center-modal" title='下测量' v-model="show_lower" @on-ok="lowerMeter">
+                <Modal class-name="vertical-center-modal" title='下测量' v-model="show_lower" @on-ok="lowerMeter(postInfo)">
                     <Form inline :label-width="100">
                         <FormItem label="测量人员">
                             <Select v-model="postInfo.user_id" style="width:186px;">
@@ -84,7 +86,8 @@ export default {
                 },
             ],
             tableColums:[
-                {title:'订单编号',align:'center',key:'order_no',fixed:'left',},
+                {type:'selection',fixed:'left',width:'60'},
+                {title:'订单编号',align:'center',key:'order_no',},
                 {title:'订单类型',align:'center',key:'show_type',width:'150'},
                 {title:'紧急程度',align:'center',key:'show_warning_state',width:'150'},
                 {title:'小区',align:'center',key:'address'},
@@ -102,23 +105,29 @@ export default {
             showTableColums:false,
             show_lower:false,
             postInfo:{//下测量数据
-                id:null,
+                id:'',
                 start_time:'',
                 end_time:'',
                 user_id:null,
             },
             users:[],
+            selectIds:null,
+            loading:false,
         }
     },
+
     methods:{
         init(row){
             this.getData({id:1})
+            this.axios('/api/menu')
         },
         searchData(row){
 
         },
         getData(row){
+            this.loading = true;
             this.axios('/api/order_index',{params:row}).then(res=>{
+                this.loading = false;
                 res.data.map(v=>{
                     v.show_type = v.type == 1 ? '业务订单' : '代理商订单'
                     v.show_state = v.state == 0 ? '未审核' : (v.state == 1 ? '审核中' : (v.state == 2 ? '审核通过' : (v.state == 3 ? '订单生产中' : '完成'))),
@@ -128,7 +137,7 @@ export default {
             })
         },
         changePage(e){
-
+            console.log(e)
         },
         setTableColums(){//设置表头
             this.showTableColums = true;
@@ -152,34 +161,33 @@ export default {
             })
         },
         openLower(row){
+            if(!row){return this.$Message.warning('请至少选择一项')}
+            this.postInfo.id = Array.isArray(row) ? row.join(',') : row.id
             this.show_lower = true;
-            this.postInfo.id = row.id
             this.axios('/api/user').then(res=>this.users = res.data)
         },
-        lowerMeter(){
+        lowerMeter(postData){
             try{
-                this.postInfo.start_time = new Date(this.postInfo.start_time).toLocaleDateString().replace(/\//g,"-")
-                this.postInfo.end_time = new Date(this.postInfo.end_time).toLocaleDateString().replace(/\//g,"-")
+                postData.start_time = new Date(postData.start_time).toLocaleDateString().replace(/\//g,"-")
+                postData.end_time = new Date(postData.end_time).toLocaleDateString().replace(/\//g,"-")
             }catch(e){
                 console.log(e)
             }
-            this.axios.post('/api/orders_set_measure',this.postInfo).then(res=>{
+            this.axios.post('/api/orders_set_measure',postData).then(res=>{
                 if(res.code == 200){
                     this.$Message.success(res.msg)
+                    this.selectIds = null;//清空多选项
                 }
             })
+        },
+        selectTable(e){
+            let result = [];
+            e.map(v=>result.push(v.id))
+            this.selectIds = result;
         },
     }
 }
 </script>
 
 <style lang="scss" scoped>
-// .vertical-center-modal{
-//     display: flex;
-//      align-items: center;
-//     justify-content: center;
-//     .ivu-modal{
-//         top: 0;
-//     }
-// }
 </style>

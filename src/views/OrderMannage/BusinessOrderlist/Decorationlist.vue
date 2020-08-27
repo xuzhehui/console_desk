@@ -101,6 +101,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.log-list{display: flex;flex-wrap:wrap;padding:10px 0;color:#666;}
-.log-item{margin-right:40px;margin-bottom:20px;}
+// .log-list{display: flex;flex-wrap:wrap;padding:10px 0;color:#666;}
+// .log-item{margin-right:40px;margin-bottom:20px;}
 </style>

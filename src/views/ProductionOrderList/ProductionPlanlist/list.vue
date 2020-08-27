@@ -44,6 +44,22 @@
 
                 <Modal class-name="vertical-center-modal" title="派工单" v-model="showOrderMenu" @on-ok="sendDispatchInfo">
                     <Form :label-width="100">
+                        <FormItem label="产品">
+                            <Select v-model="dispatchInfo.product_id">
+                                <Option v-for="(item,index) of info.product" :key="index" :value="item.id" :label="item.title"></Option>
+                            </Select>
+                        </FormItem>
+                        <FormItem label="部件">
+                            <Select v-model="dispatchInfo.part_id">
+                                <Option v-for="(item,index) of info.part" :key="index" :value="item.id" :label="item.title"></Option>
+                            </Select>
+                        </FormItem>
+                        <FormItem label="工序">
+                            <Select v-model="dispatchInfo.produce_id">
+                                <Option v-for="(item,index) of info.produce" :key="index" :value="item.id" :label="item.title"></Option>
+                            </Select>
+                        </FormItem>
+
                         <FormItem label="选择工人">
                             <Select v-model="dispatchInfo.user_id">
                                 <Option v-for="item of users" :key="item.id" :value="item.id" :label="item.nickname"></Option>
@@ -115,7 +131,11 @@ export default {
                 start_time:'',//开始时间
                 end_time:'',//结束时间
                 user_salary:'',//日薪
+                part_id:'',
+                produce_id:'',
+                product_id:'',
             },
+            info:{},
             users:[],
         }
     },
@@ -148,6 +168,9 @@ export default {
         },
         dispatchList(row){
             this.dispatchInfo.id = row.id;
+            this.axios('/api/orders_plan_get_list',{params:{id:12||row.id}}).then(res=>{
+                this.info = res.data;
+            })
             this.showOrderMenu = true;
         },
         getUsers(){

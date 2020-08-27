@@ -3,7 +3,8 @@
         <FullPage 
         title='生产计划列表'
         :list='list' 
-        @init='init' 
+        @init='init'
+        :loading='loading' 
         @searchData='searchData' 
         @changePage='changePage'
         :tableColums='tableColums'
@@ -88,6 +89,7 @@ export default {
             pageIndex:1,
             total:100,
             showTableColums:false,
+            loading:false,
             
         }
     },
@@ -102,7 +104,9 @@ export default {
 
         },
         getData(row){
+            this.loading = true;
             this.axios('/api/produce_list',{params:row}).then(res=>{
+                this.loading = false;
                 this.tableData = res.data;
             })
         },
@@ -113,7 +117,7 @@ export default {
             this.$router.push({
                 path:'/cms/ordermannage/productionplanlist/details',
                 query:{
-                    id:row.id
+                    order_no:row.order_no
                 }
             })
         }

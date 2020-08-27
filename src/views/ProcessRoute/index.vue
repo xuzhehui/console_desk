@@ -4,6 +4,7 @@
         title='工艺列表'
         :list='list' 
         @init='init' 
+        :loading='loading'
         @searchData='searchData' 
         @changePage='changePage'
         :tableColums='tableColums'
@@ -41,6 +42,7 @@ export default {
             tableData:[],
             pageIndex:1,
             total:100,
+            loading:false,
         }
     },
     methods:{
@@ -51,7 +53,9 @@ export default {
             console.log(row)
         },
         getData(row){
+            this.loading = true;
             this.axios('/api/process_route_index',{params:row}).then(res=>{
+                this.loading = false;
                 this.tableColums = res.data.top;
                 this.tableData = res.data.detail;
             })

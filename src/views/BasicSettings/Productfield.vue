@@ -4,6 +4,7 @@
         title='产品分类字段'
         :list='list' 
         @init='init' 
+        :loading='loading'
         @searchData='searchData' 
         @changePage='changePage'
         :tableColums='tableColums'
@@ -67,7 +68,8 @@ export default {
 
             },
             measureList:[],//测量字段列表
-            searchObj:{}
+            searchObj:{},
+            loading:false,
         }
     },
     methods:{
@@ -79,7 +81,9 @@ export default {
             this.getData(row)
         },
         getData(row){
+            this.loading = true;
             this.axios('/api/basics_product_index',{params:row}).then(res=>{
+                this.loading = false,
                 this.tableData = res.data;
             })
         },

@@ -16,8 +16,10 @@ let config = {
 
 //请求拦截，后期可能会用到，先注册在此
 instance.interceptors.request.use(function (config) {
+    Vue.prototype.$loading.show()
     let token = sessionStorage.getItem('token');
-    let proxy_url = '/proxy'//打包上线时此处请注释掉
+    let proxy_url = ' http://121.41.102.225'//打包上线时请改用此处
+    // let proxy_url = '/proxy'//打包上线时此处请注释掉
     config.url = proxy_url+config.url;
     // 在发送请求之前做些什么，例如加入token
     config.headers['Authorization'] = token || 'c9cc8ebff9c7ee2edec538258efa7e9e1b758827'
@@ -29,6 +31,7 @@ instance.interceptors.request.use(function (config) {
 
 // 2. 响应拦截
 instance.interceptors.response.use(res => {
+      Vue.prototype.$loading.hide()
       if(res.status == 200){
         if(res.data.code == 200){
             // Vue.prototype.$Message.success(res.data.message)
@@ -42,7 +45,7 @@ instance.interceptors.response.use(res => {
       }
     },
     // 对于错误响应的处理
-    err => Vue.prototype.$Message.error("服务异常")
+    err => {Vue.prototype.$Message.error("服务异常"),Vue.prototype.$loading.hide()}
 );
 
 export default instance

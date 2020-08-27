@@ -36,6 +36,9 @@ export default {
     computed:{
         ...mapState(['navgationData','crumbs'])
     },
+    created(){
+        this.getMenuData()
+    },
     mounted(){
         if(sessionStorage.getItem('crumbs')){
             let data = JSON.parse(sessionStorage.getItem('crumbs'))
@@ -63,6 +66,30 @@ export default {
                 }
             })
         },
+        deepObjToArray(obj){
+            let result = Object.values(obj);
+            result.map(v=> this.func.isType(v.sub) == 'Object' ? v.sub = this.deepObjToArray(v.sub) : '' )
+            return result
+        },
+        deepData(row){
+           row.map(v=>{
+               if(v.sub_action!=0){
+                   v.sub.map(k=>k.page=v.page)
+                   v.page = '';
+               }
+               v.page = ''
+           })
+           return row
+        },
+
+        getMenuData(){
+            this.axios('/api/menu').then(res=>{
+                let result = this.deepObjToArray(res.data)
+                result = this.deepData(result)
+                this.$store.state.navgationData = result;
+                
+            })
+        }
     },
     components:{Header,Navgation,Crumbs}
 }

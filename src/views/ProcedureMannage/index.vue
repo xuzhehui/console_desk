@@ -4,6 +4,7 @@
         :title='$route.query.title'
         :list='list' 
         @init='init' 
+        :loading='loading'
         @searchData='searchData' 
         @changePage='changePage'
         :tableColums='tableColums'
@@ -56,6 +57,7 @@ export default {
             classInfo:{},
             searchObj:{},
             id:null,
+            loading:false,
         }
     },
     watch:{
@@ -78,7 +80,9 @@ export default {
         searchData(row){
         },
         getData(row){
+            this.loading = true;
             this.axios('/api/procedure_index',{params:row}).then(res=>{
+                this.loading = false;
                 this.tableData = res.data;
             })
         },

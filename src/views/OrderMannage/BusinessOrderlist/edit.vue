@@ -116,7 +116,13 @@
 
                 <div class="items-table">
                     <Table :style="'width:'+tableWidth+'px'" border :columns="tableColumns" :data="item.product">
-                         <template slot='set' slot-scope='row'>
+                        <template slot='img_number' slot-scope='{row,index}'>
+                            <div>
+                                <Input placeholder="请输入图号" @on-change="changeS(row,item,index)" v-model="row.url_number"></Input>
+                            </div>
+                            
+                        </template>
+                        <template slot='set' slot-scope='row'>
                             <div>
                                 <Icon @click="selectProducts(2,item)"  size='20' style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
                                 <Icon @click="selectProducts(3,item)" size='20' style="margin-right:10px;color:#32C800;cursor:pointer" type="ios-paper-outline" />
@@ -129,10 +135,10 @@
         </div>
 
         <Modal :width="1200" class-name="vertical-center-modal" title="选择产品" v-model="showProduct">
-            <div class="modal-items" v-for="(item,index) of modalArray" :key="index">
+            <div class="modal-items" v-for="(item,idx) in modalArray" :key="idx">
                 <Form inline :label-width="80">
                     <FormItem label="选择产品">
-                        <Select :disabled='productType == 3 ? true : false' v-model="item.product_id" @on-change='changeProduct($event,index)' style="width:186px;">
+                        <Select :disabled='productType == 3 ? true : false' v-model="item.product_id" @on-change='changeProduct($event,idx)' style="width:186px;">
                             <Option v-for="item of productList" :tag='item.img_url' :key="item.id" :label="item.title" :value='item.id'></Option>
                         </Select>
                     </FormItem>
@@ -168,18 +174,18 @@
                     </FormItem>
                 </Form>
                 <Table stripe border :columns="item.part_top" :data="item.product">
-                    <template slot='set' slot-scope='{row,_nums}'>
+                    <template slot='set' slot-scope='{row,index}'>
                         <div>
-                            <Select :disabled='productType == 3 ? true : false' v-model="row.row.route_id" @on-change="changeSelect($event,item,row.row,_nums)">
-                                <Option v-for="_item of row.row.child" :key="_item.id" :value='_item.id' :label="_item.title"></Option>
+                            <Select :disabled='productType == 3 ? true : false' v-model="row.route_id" @on-change="changeSelect($event,item,row,index)">
+                                <Option v-for="_item of row.child" :key="_item.id" :value='_item.id' :label="_item.title"></Option>
                             </Select>
                         </div>
                     </template>
                 </Table>
 
                 <div class="modal-footer-button">
-                    <Button v-if="index<1" @click="addParts(item)" type="success" style="margin-right:10px;" ghost shape="circle">添加</Button>
-                    <Button v-if="index>0" @click="delItems(modalArray,index)" type="error" ghost shape="circle">删除</Button>
+                    <Button v-if="idx<1" @click="addParts(item)" type="success" style="margin-right:10px;" ghost shape="circle">添加</Button>
+                    <Button v-if="idx>0" @click="delItems(modalArray,idx)" type="error" ghost shape="circle">删除</Button>
                 </div>
             </div>
 
@@ -200,6 +206,8 @@ export default {
             id:this.$route.query.id,
             modalArray:[],
             productList:[],
+            tableWidth:null,
+            currentIndex:null,
             proxyObj:{},
             productType:1,
             tableColumns:[
@@ -213,51 +221,35 @@ export default {
                 {title:'产品型号',align:'center',key:'model',width:'100'},
                 {title:'测量数据',align:'center',key:'',width:'100'},
                 {title:'位置',align:'center',key:'',width:'100'},
-                {title:'图号',align:'center',key:'url_number',width:'150',
-                    render(h,params){
-                        return h('Input',{
-                            attrs:{
-                                placeholder:'请输入图号',
-                                value:params.url_number
-                            }
-                        })
-                    }
-                },
+                {title:'图号',align:'center',key:'url_number',width:'150',slot:'img_number',},
                 {title:'图纸',align:'center',key:'',width:'80',
 
                     render(h,params){
                         if(params.row.url){
                             return h('img',{
                                 attrs:{
-                                    src:'http://192.168.0.175:8080'+params.row.url,
+                                    src:'http://121.41.102.225'+params.row.url,
                                     style:'max-width:50px;max-height:50px;position:relative;top:5px;'
                                 },
-                                props:{
-                                    row: params.row
-                                }
                             })
                         }else{
                             return h('Upload',{
                                 props:{
-                                    'show-upload-list':false,
+                                    'show-upload-list':false,        
                                     headers:{'Authorization':sessionStorage.getItem('token')},
                                     'on-success':(e)=>{
-                                        console.log(params)
                                         let src = e.data.url;
                                         params.row.url = src;
                                         return h('img',{
                                             attrs:{
-                                                src:'http://192.168.0.175:8080'+params.row.url,
+                                                src:'http://121.41.102.225'+params.row.url,
                                                 style:'max-width:50px;max-height:50px;position:relative;top:5px;'
                                             },
-                                            props:{
-                                                row: params.row
-                                            }
                                         })
                                     }
                                 },
                                 attrs:{
-                                    action:`/proxy/api/upload_pic`
+                                    action:`/api/upload_pic`
                                 },
                             },[
                                 h('a',{
@@ -290,8 +282,7 @@ export default {
                 salesman:null,//业务员
                 predict_price:null,//预估工价,
                 predict_working:null,//预估工期
-                tableWidth:null,
-                currentIndex:null,
+                
                 house:[
                     {
                         house:null,
@@ -309,20 +300,24 @@ export default {
                                 type:null,
                                 unit:'',
                                 img:'',
-                                productsInfo:[],
                                 model:'',
                                 url_number:'',
                                 url:'',
+                                route_id:'',
                             }
                         ],
                     },
                 ]
-            }
+            },
         }
     },
     created(e){
         this.tableWidth = window.innerWidth-300;
         
+    },
+    destroyed(){
+        console.log(111)
+        this.$loading.hide()
     },
     mounted(){
         this.type = this.$route.query.type
@@ -340,17 +335,19 @@ export default {
         postData(){
             let sendData = JSON.parse(JSON.stringify(this.info));
             let op = this.type == 1 ? 'add' : 'edit';
-            console.log(sendData)
-            // let params = JSON.stringify({op:op,detail:this.info})
-            // this.axios.post('/api/order_save',params).then(res=>{
-            //     if(res.code == 200){
-            //         this.$Message.success(res.msg)
-            //         this.back()
-            //     }
-            // })
+            // let params = JSON.stringify({op:op,detail:sendData})
+            let params = {op:op,detail:sendData}
+            this.axios.post('/api/order_save',params).then(res=>{
+                if(res.code == 200){
+                    this.$Message.success(res.msg)
+                    this.back()
+                }
+            })
         },
         getDate(id){
+            this.$loading.show()
             this.axios('/api/order_detail',{params:{id:id}}).then(res=>{
+                this.$loading.hide()
                 this.info = res.data;
             })
         },
@@ -371,7 +368,7 @@ export default {
                 number:null,
                 product:[
                     {
-                        productsInfo:[]
+                        
                     }
                 ],
             })
@@ -380,7 +377,9 @@ export default {
             this.axios('/api/product').then(res=>this.productList = res.data)
         },
         changeProduct(row,n){
+            
             this.axios('/api/order_product_detail',{params:{id:row}}).then(res=>{
+                console.log(res.data)
                 if(res.code == 200){
                     let data = res.data.product;
                     for(let i in data){
@@ -390,8 +389,6 @@ export default {
                     }
                     this.modalArray[n].part_top = res.data.part_top;
                     this.modalArray[n].product = res.data.list;
-                    console.log(this.modalArray[n])
-
                     this.$forceUpdate()
                 }
             })
@@ -407,16 +404,20 @@ export default {
                 type:null,
                 unit:'',
                 img:'',
-                productsInfo:[]
             })
         },
         changeSelect(e,item,row,n){
             this.axios('/api/parts_routes_detail',{params:{product_id:item.product_id,route_id:e}}).then(res=>{
                 for(let i in res.data){
-                    row[i] = res.data[i]
+                    if(i!='route_id'){
+                        row[i] = res.data[i]
+                        item.product[n][i] = res.data[i]
+                    }else{
+                        item.product[n]['route_id'] = e
+                    }
+                    
                 }
-                console.log(this.modalArray)
-                console.log(item)
+                console.log(row)
                 this.$forceUpdate()
             })
 
@@ -427,6 +428,9 @@ export default {
         },
         cancelModal(){
             this.showProduct = false;
+        },
+        changeS(row,sign,n){
+            sign.product[n] = row;
         }
     }
 }

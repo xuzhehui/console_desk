@@ -4,6 +4,7 @@
         title='商品列表'
         :list='list' 
         @init='init' 
+        :loading='loading'
         @searchData='searchData' 
         @changePage='changePage'
         :tableColums='tableColums'
@@ -58,6 +59,7 @@ export default {
             pageIndex:1,
             total:100,
             searchObj:{},
+            loading:false,
         }
     },
     
@@ -71,7 +73,9 @@ export default {
             this.getData(row)
         },
         getData(row){
+            this.loading = true;
             this.axios('/api/goods',{params:row}).then(res=>{
+                this.loading = false;
                 this.tableData = res.data;
             })
         },

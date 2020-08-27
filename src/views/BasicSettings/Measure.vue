@@ -4,6 +4,7 @@
         title='测量字段'
         :list='list' 
         @init='init' 
+        :loading='loading'
         @searchData='searchData' 
         @changePage='changePage'
         :tableColums='tableColums'
@@ -63,6 +64,7 @@ export default {
             showType:1,
             classInfo:{},
             searchObj:{},
+            loading:false,
         }
     },
     methods:{
@@ -74,7 +76,9 @@ export default {
             this.getData(row)
         },
         getData(row){
+            this.loading = true;
             this.axios('/api/basics_measure_index',{params:row}).then(res=>{
+                this.loading = false;
                 this.tableData = res.data;
             })
         },

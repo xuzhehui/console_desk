@@ -17,7 +17,7 @@
 
             <div slot='text-list' >
                 <div>
-                    <Form inline :label-width="80" >
+                    <Form inline :label-width="70" >
                         <FormItem label="产品名称" label-position='left'>
                             <Input></Input>
                         </FormItem>

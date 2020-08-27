@@ -8,20 +8,14 @@
               </FormItem>
 
               <FormItem label='密码' prop='password'>
-                  <Input size="large" placeholder="请输入您的密码"  v-model="userInfo.password" />
+                  <Input type="password" size="large" placeholder="请输入您的密码"  v-model="userInfo.password" />
               </FormItem>
-
-              <!-- <FormItem label='选择角色' prop='type'>
-                  <Select size="large" v-model="userInfo.type" >
-                      <Option v-for="item of type_list" :key="item.id" :label="item.name" :value="item.id"></Option>
-                  </Select>
-              </FormItem> -->
 
               <div class="auto-login">
                   <Checkbox @on-change="storageUserInfo" v-model="autoLogin">自动登录</Checkbox>
               </div>
 
-              <Button @click="handleSubmit('userInfo')" size='large' long type="primary">登录</Button>
+              <Button :loading="loading" @click="handleSubmit('userInfo')" size='large' long type="primary">登录</Button>
           </Form>
       </div>
   </div>
@@ -45,13 +39,14 @@ export default {
 
             },
             autoLogin:false,
+            loading:false,
         }
     },
     mounted(){
         let flag = JSON.parse(localStorage.getItem('autoLogin'));
         this.autoLogin = flag||false
         if(this.autoLogin){
-            let user = JSON.parse(localStorage.getItem('userInfo'))
+            let user = JSON.parse(localStorage.getItem('loginInfo'))
             this.userInfo = user;
             setTimeout(()=>{
                 this.handleSubmit('userInfo')
@@ -62,12 +57,16 @@ export default {
     methods:{
         submit(){
             let userInfo = JSON.stringify(this.userInfo)
-            localStorage.setItem('userInfo',userInfo)
+            localStorage.setItem('loginInfo',userInfo)
+            this.loading = true
             this.axios.post('/api/login',this.userInfo).then(res=>{
+                this.loading = false
                 if(res.code == 200){
                     this.$Message.success(res.msg||'登陆成功')
                     if(res.data.token){
                         sessionStorage.setItem('token',res.data.token)
+                        let user = JSON.stringify(res.data.user_info);
+                        sessionStorage.setItem('user_info',user)
                         this.$router.push({name:'Cms'})
                     }
                 }

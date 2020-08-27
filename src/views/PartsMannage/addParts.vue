@@ -1,8 +1,8 @@
 <template>
     <div>
         <Toptitle title='新增零部件'>
-            <Button @click="back" style="margin-right:10px;">返回</Button>
-            <Button @click="postData">保存</Button>
+            <Button @click="postData(0)" style="margin-right:10px;">返回</Button>
+            <Button @click="postData(1)">保存</Button>
         </Toptitle>
 
         <Form inline>
@@ -33,7 +33,10 @@
                 <Input v-model="info.requirement" placeholder="请输入工艺要求"></Input>
             </FormItem>
             <FormItem label="标签">
-                <Select style="width:186px;"></Select>
+                <Select style="width:186px;" v-model="info.label">
+                    <Option :value="0" label="是"></Option>
+                    <Option :value="1" label="否"></Option>
+                </Select>
             </FormItem>
         </Form>
 
@@ -58,30 +61,38 @@ export default {
                 long:'',
                 wide:'',
                 thick:'',
-                requirement:''
+                requirement:'',
+                label:null,
             },
             showKey:false,
             logo:1,
-
+            id:null,
+            currentData:null,
         }
     },
     mounted(){
-        this.type = this.$route.query.type;
-        this.id = this.$route.query.id;
+        this.type = this.$route.params.type;
+        this.id = this.$route.params.id;
     },
     methods:{
-        back(){
-            this.$router.go(-1)
-        },
-        postData(){
-
+        postData(flag){
+            flag == 1 ? this.$route.params.tableData.push(this.info) : ''
+            this.$router.push({
+                name:'PartsManageHomeEdit',
+                params:{
+                    info:this.$route.params.info,
+                    id:this.id,
+                    type:this.type,
+                    tableData:this.$route.params.tableData
+                }
+            })
         },
         successKey(str){
-            this.logo == 1 ? this.info.formula_l = str : (this.logo == 2 ? this.info.formula_w = str : this.info.formula_h = str)
+            this.logo == 1 ? this.info.long = str : (this.logo == 2 ? this.info.wide = str : this.info.thick = str)
             this.showKey = false;
         },
         cancelKey(str){
-            this.logo == 1 ? this.info.formula_l = str : (this.logo == 2 ? this.info.formula_w = str : this.info.formula_h = str)
+            this.logo == 1 ? this.info.long = str : (this.logo == 2 ? this.info.wide = str : this.info.thick = str)
             this.showKey = false;
         },
         tapKey(e){

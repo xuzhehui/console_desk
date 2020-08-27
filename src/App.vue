@@ -33,6 +33,10 @@ table-edit-set{margin-right:10px;color:#3764FF;cursor:pointer}
 }
 
 .log-list{display: flex;flex-wrap:wrap;padding:10px 0;color:#666;}
-.log-item{margin-right:40px;margin-bottom:20px;}
+.log-item{margin-right:40px;margin-bottom:20px;
+  span{
+    &:last-child{color:#333;font-weight:bold;}
+  }
+}
 
 </style>

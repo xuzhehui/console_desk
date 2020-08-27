@@ -5,51 +5,54 @@
             <Button v-if="type == 1 || type == 2" type="primary" @click="postData">保存</Button>
         </Toptitle>
 
-        <div class="product-add">
-            <CheckboxGroup v-model="imgIds" class="product-add">
-                <div class="items" v-for='(item,index) of info.img' :key="index">
-                    <img :src="$store.state.ip + item.img_url" alt="">
-                    <Checkbox class="check" :label='item.id'>{{''}}</Checkbox>
-                </div>
-            </CheckboxGroup>
-        </div>
-
-        <Form inline>
-            <FormItem label='商品名称'>
-                <Select :disabled='this.type == 3 ? true : false' @on-change="changeSelect" v-model="info.product_id" style="width:300px;" placeholder="请选择商品名称">
-                    <Option v-for="item of productList" :key='item.id' :label="item.title" :value="item.id"></Option>
-                </Select>
-            </FormItem>
-            <FormItem label='通用销售价格'>
-                <Input :disabled='this.type == 3 ? true : false' v-model="info.price" style="width:300px;"  placeholder="请选择商品名称"></Input>
-            </FormItem>
-        </Form>
-
-        <div class='factor'>
-            <span>代理商</span>
-            <RadioGroup v-model="info.has_agent" >
-                <Radio :disabled='this.type == 3 ? true : false' :label="1">选择代理商</Radio>
-                <Radio :disabled='this.type == 3 ? true : false' :label="0">不选择代理商</Radio>
-            </RadioGroup>
-        </div>
-
-        <div class="agent" v-if="info.has_agent == 1 ? true : false">
-            <div class='agent-item' v-for="(item,index) of info.agent" :key="index">
-                <Form>
-                    <FormItem label='姓名'>
-                        <Select v-model="item.id">
-                            <Option v-for="item of agentNames" :key="item.id" :value="item.id" :label="item.nickname"></Option>
-                        </Select>
-                    </FormItem>
-                    <FormItem label='代理价格'>
-                        <Input v-model="item.price" placeholder="请输入代理商价格"></Input>
-                    </FormItem>
-                </Form>
+        <div class="page-edit">
+            <div class="product-add">
+                <CheckboxGroup v-model="imgIds" class="product-add">
+                    <div class="items" v-for='(item,index) of info.img' :key="index">
+                        <img :src="$store.state.ip + item.img_url" alt="">
+                        <Checkbox :disabled='type == 3 ? true : false' class="check" :label='item.id'>{{''}}</Checkbox>
+                    </div>
+                </CheckboxGroup>
             </div>
 
-            <div class="agent-add">
-                <Icon @click="addAgent" size='100' type="ios-add" />
-                <span>添加代理商</span>
+            <Form inline>
+                <FormItem label='商品名称'>
+                    <Select :disabled='type == 3 ? true : false' @on-change="changeSelect" v-model="info.product_id" style="width:300px;" placeholder="请选择商品名称">
+                        <Option v-for="item of productList" :key='item.id' :label="item.title" :value="item.id"></Option>
+                    </Select>
+                </FormItem>
+                <FormItem label='通用销售价格'>
+                    <Input :disabled='type == 3 ? true : false' v-model="info.price" style="width:300px;"  placeholder="请选择商品名称"></Input>
+                </FormItem>
+            </Form>
+
+            <div class='factor'>
+                <span>代理商</span>
+                <RadioGroup v-model="info.has_agent" >
+                    <Radio :disabled='type == 3 ? true : false' :label="1">选择代理商</Radio>
+                    <Radio :disabled='type == 3 ? true : false' :label="0">不选择代理商</Radio>
+                </RadioGroup>
+            </div>
+
+            <div class="agent" v-if="info.has_agent == 1 ? true : false">
+                <div class='agent-item' v-for="(item,index) of info.agent" :key="index">
+                    <Icon @click="delItems(index,info.agent)" size='20' class="delete-img" type="ios-close-circle" />
+                    <Form>
+                        <FormItem label='姓名'>
+                            <Select v-model="item.id" :disabled='type == 3 ? true : false'>
+                                <Option v-for="item of agentNames" :key="item.id" :value="item.id" :label="item.nickname"></Option>
+                            </Select>
+                        </FormItem>
+                        <FormItem label='代理价格'>
+                            <Input :disabled='type == 3 ? true : false' v-model="item.price" placeholder="请输入代理商价格"></Input>
+                        </FormItem>
+                    </Form>
+                </div>
+
+                <div class="agent-add">
+                    <Icon @click="addAgent" size='100' type="ios-add" />
+                    <span>添加代理商</span>
+                </div>
             </div>
         </div>
     </div>
@@ -86,7 +89,6 @@ export default {
     },
     methods:{
         postData(){
-            console.log(this.imgIds)
             this.info.op = this.type == 1 ? 'add' : 'edit'
             let data = JSON.parse(JSON.stringify(this.info));
             data.img = this.imgIds.join(',')
@@ -129,7 +131,10 @@ export default {
                 this.info.img.map(v=>result.push(v.id))
                 this.imgIds = result;
             })
-        }
+        },
+        delItems(n,arr){
+            arr.splice(n,1)
+        },
     }
 }
 </script>
@@ -145,11 +150,13 @@ export default {
 }
 .factor{display: flex;flex-direction: column;}
 .agent{padding-top:10px;display:flex;flex-wrap:wrap;
-    .agent-item{width:300px;height:200px;background:#F4F5F7;border-radius:5px;margin-right:10px;
-        padding:10px 30px;
+    .agent-item{width:300px;height:200px;background:#F4F5F7;border-radius:5px;margin-right:10px;position: relative;
+        padding:10px 30px;margin-bottom:10px;
     }
     .agent-add{width:300px;height:200px;border-radius:5px;display: flex;justify-content: center;align-items: center;flex-direction: column;
     border:1px dotted #DEDEDE;
     }
 }
+.page-edit{overflow: hidden;overflow-y: auto;position:relative;top:20px;height:85%;}
+.delete-img{position:absolute;right:10px;top:10px;color:red;}
 </style>

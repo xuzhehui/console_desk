@@ -202,8 +202,10 @@ export default {
             })
         },
         getData(row){
+            
             this.axios('/api/product',{params:{id:row}}).then(res=>{
                 this.info = res.data;
+                this.$loading.hide()
             })
         },
     }

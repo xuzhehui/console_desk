@@ -1,8 +1,8 @@
 const state = {
-    userInfo:{},
+    userInfo:null,
     crumbs:[],
     keyBoard_value:'',//计算器值
-    ip:'http://192.168.0.175:8080',
+    ip:'http://121.41.102.225',
     navgationData:[
         {
             title:'订单管理',

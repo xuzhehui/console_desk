@@ -4,6 +4,7 @@
         :title='$route.query.title'
         :list='list' 
         @init='init' 
+        :loading='loading'
         @searchData='searchData' 
         @changePage='changePage'
         :tableColums='tableColums'
@@ -61,6 +62,7 @@ export default {
             tableData:[],
             pageIndex:1,
             total:100,
+            loading:false,
         }
     },
     mounted(){
@@ -74,7 +76,9 @@ export default {
             console.log(row)
         },
         getData(row){
+            this.loading = true;
             this.axios('/api/product',{params:row}).then(res=>{
+                this.loading = false;
                 this.tableData = res.data
             })
         },

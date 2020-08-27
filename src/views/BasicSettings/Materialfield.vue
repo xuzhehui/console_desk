@@ -4,6 +4,7 @@
         title='物料分类字段'
         :list='list' 
         @init='init' 
+        :loading='loading'
         @searchData='searchData' 
         @changePage='changePage'
         :tableColums='tableColums'
@@ -62,6 +63,7 @@ export default {
                 title:''
             },
             searchObj:{},
+            loading:false,
         }
     },
     
@@ -74,7 +76,9 @@ export default {
             this.getData(row)
         },
         getData(row){
+            this.loading = true;
             this.axios('/api/basics_material_index',{params:row}).then(res=>{
+                this.loading = false;
                 this.tableData = res.data;
             })
         },

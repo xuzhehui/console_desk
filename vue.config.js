@@ -6,7 +6,7 @@ module.exports = {
     devServer: {
         proxy: {
           '/proxy': {
-            target: 'http://192.168.0.175:8080', 
+            target: 'http://192.168.0.172:8080', 
             ws: true, // proxy websockets
             changeOrigin: true,
             pathRewrite: {

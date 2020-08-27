@@ -4,6 +4,7 @@
         title='测量订单列表'
         :list='list' 
         @init='init' 
+        :loading='loading'
         @searchData='searchData' 
         @changePage='changePage'
         :tableColums='tableColums'
@@ -17,8 +18,8 @@
             <template slot='set' slot-scope='row'>
                 <div>
                     <a @click="approvalDetails(row.row)" style="margin:0 5px">审批流程</a>
-                    <a style="margin:0 5px" @click="goPage(1,row.row)">编辑</a>
-                    <a style="margin:0 5px" @click="goPage(2,row.row)">查看</a>
+                    <a style="margin:0 5px" @click="goPage(2,row.row)">编辑</a>
+                    <a style="margin:0 5px" @click="goPage(3,row.row)">查看</a>
                     <a style="margin:0 5px" @click="openModal(row.row)">下生产</a>
                 </div>
             </template>
@@ -74,7 +75,8 @@ export default {
                 id:null,
                 start_time:'',
                 end_time:''
-            }
+            },
+            loading:false,
         }
     },
     methods:{
@@ -85,7 +87,9 @@ export default {
             this.getData(row)
         },
         getData(row){
+            this.loading = true;
             this.axios('/api/order_index',{params:row}).then(res=>{
+                this.loading = false;
                 res.data.map(v=>{
                     v.show_type = v.type == 1 ? '业务订单' : '代理商订单'
                 })
@@ -100,6 +104,7 @@ export default {
             this.$router.push({
                 path:'/cms/measurementordermannage/edit',
                 query:{
+                    type:n,
                     id:row.id
                 }
             })

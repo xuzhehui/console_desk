@@ -4,6 +4,7 @@
         title='木材'
         :list='list' 
         @init='init' 
+        :loading='loading'
         @searchData='searchData' 
         @changePage='changePage'
         :tableColums='tableColums'
@@ -54,11 +55,14 @@ export default {
             ],
             pageIndex:1,
             total:100,
+            loading:false,
         }
     },
     methods:{
         init(row){
+            this.loading = true;
             this.axios('/api/material').then(res=>{
+                this.loading = false;
                 this.tableData = res.data;
             })
         },

@@ -4,6 +4,7 @@
         title='用户管理'
         :list='list' 
         @init='init' 
+        :loading='loading'
         @searchData='searchData' 
         @changePage='changePage'
         :tableColums='tableColums'
@@ -50,6 +51,7 @@ export default {
             pageIndex:1,
             total:100,
             searchObj:{},
+            loading:false,
         }
     },
     mounted(){
@@ -65,7 +67,9 @@ export default {
             this.getData(row)
         },
         getRoleList(){
+            this.loading = true;
             this.axios('/api/group').then(res=>{
+                this.loading = false
                 res.data.map(v=>{v.value = v.id;v.label=v.group_title})
                 this.list[2].option = res.data;
             })
