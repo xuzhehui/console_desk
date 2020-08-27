@@ -228,7 +228,7 @@ export default {
                         if(params.row.url){
                             return h('img',{
                                 attrs:{
-                                    src:'http://121.41.102.225'+params.row.url,
+                                    src:'http://121.41.102.225:82'+params.row.url,
                                     style:'max-width:50px;max-height:50px;position:relative;top:5px;'
                                 },
                             })
@@ -242,7 +242,7 @@ export default {
                                         params.row.url = src;
                                         return h('img',{
                                             attrs:{
-                                                src:'http://121.41.102.225'+params.row.url,
+                                                src:'http://121.41.102.225:82'+params.row.url,
                                                 style:'max-width:50px;max-height:50px;position:relative;top:5px;'
                                             },
                                         })

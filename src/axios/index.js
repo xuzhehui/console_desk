@@ -18,7 +18,7 @@ let config = {
 instance.interceptors.request.use(function (config) {
     Vue.prototype.$loading.show()
     let token = sessionStorage.getItem('token');
-    let proxy_url = ' http://121.41.102.225'//打包上线时请改用此处
+    let proxy_url = 'http://121.41.102.225:82'//打包上线时请改用此处
     // let proxy_url = '/proxy'//打包上线时此处请注释掉
     config.url = proxy_url+config.url;
     // 在发送请求之前做些什么，例如加入token
@@ -45,7 +45,7 @@ instance.interceptors.response.use(res => {
       }
     },
     // 对于错误响应的处理
-    err => {Vue.prototype.$Message.error("服务异常"),Vue.prototype.$loading.hide()}
+    err => {Vue.prototype.$Message.error("服务异常");Vue.prototype.$loading.hide();}
 );
 
 export default instance

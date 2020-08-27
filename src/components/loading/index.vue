@@ -1,7 +1,8 @@
 <template>
-<transition name="bounce" >
-    <div v-if='show' class='loading-box' >
-        <div class='loading-padding' >
+
+    <div class='loading-box' >
+      <transition name="bounce" >
+        <div v-if="show" class='loading-padding' >
             <atom-spinner
             :animation-duration="1000"
             :size="60"
@@ -9,8 +10,9 @@
             />
             <span>玩命加载中</span>
         </div>
+      </transition>
     </div>
-</transition>
+
 </template>
 
 <script>

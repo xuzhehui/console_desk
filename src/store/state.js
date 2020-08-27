@@ -2,7 +2,7 @@ const state = {
     userInfo:null,
     crumbs:[],
     keyBoard_value:'',//计算器值
-    ip:'http://121.41.102.225',
+    ip:'http://121.41.102.225:82',
     navgationData:[
         {
             title:'订单管理',
