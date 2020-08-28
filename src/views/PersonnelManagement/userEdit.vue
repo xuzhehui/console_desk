@@ -102,7 +102,7 @@ export default {
         },
         getRoleList(){
             this.axios('/api/group').then(res=>{
-                this.roleList = res.data;
+                this.roleList = res.data.data;
             })
         },
         back(){

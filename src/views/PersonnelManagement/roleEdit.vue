@@ -4,48 +4,49 @@
             <Button @click="back" style="margin-right:10px;">返回</Button>
             <Button v-if="type == 1 || type == 2" type="primary" @click="postData">保存</Button>
         </Toptitle>
+        <div class="page-edit">
+            <Form inline style="margin:10px 0;">
+                <FormItem label="ID" :label-width="20">
+                    <Input v-model="id" disabled placeholder="自动生成"></Input>
+                </FormItem>
+                <FormItem label="角色分类名称" :label-width="100">
+                    <Input v-model="group_title" placeholder="请输入角色分类名称"></Input>
+                </FormItem>
+            </Form>
 
-        <Form inline style="margin:10px 0;">
-            <FormItem label="ID" :label-width="20">
-                <Input disabled placeholder="自动生成"></Input>
-            </FormItem>
-            <FormItem label="角色分类名称" :label-width="100">
-                <Input placeholder="请输入角色分类名称"></Input>
-            </FormItem>
-        </Form>
-
-        <div>
-            <span>使用权限：</span>
-            <div style="padding:10px 0;">
-                <Collapse>
-                    <Panel v-for="(item,index) of jurisdiction" :key="item.id" :name="index+''">
-                        <Checkbox label="订单管理">{{item.title}}</Checkbox>
-                        <div slot="content">
-                            <!-- 此处为菜单项的渲染方式  -->
-                            <Collapse v-if="item.sub">
-                                <Panel v-for="(_item,_index) of item.sub" :key="_item.id" :name="_index+''">
-                                    <Checkbox label="订单管理">{{_item.title}}</Checkbox>
-                                    <div slot="content">
-                                        
-                                        <CheckboxGroup>
-                                            <Checkbox label="香蕉"></Checkbox>
-                                            <Checkbox label="苹果"></Checkbox>
-                                            <Checkbox label="西瓜"></Checkbox>
-                                        </CheckboxGroup>
-                                    </div>
-                                </Panel>
-                            </Collapse>
-                            <!-- 此处为非菜单项渲染方式 -->
-                            <CheckboxGroup v-if=!item.sub>
-                                <Checkbox label="香蕉"></Checkbox>
-                                <Checkbox label="苹果"></Checkbox>
-                                <Checkbox label="西瓜"></Checkbox>
-                            </CheckboxGroup>
-                        </div>
-                    </Panel>
-                </Collapse>
+            <div>
+                <span>使用权限：</span>
+                <div style="padding:10px 0;">
+                    <Collapse>
+                        <Panel v-for="(item,index) of jurisdiction" :key="item.id" :name="index+''">
+                            <Checkbox @on-change="changeCheck($event,item)" v-model="item.show_state" label="订单管理">{{item.title}}</Checkbox>
+                            <div slot="content">
+                                <!-- 此处为菜单项的渲染方式  -->
+                                <Collapse v-if="item.sub">
+                                    <Panel v-for="(_item,_index) of item.sub" :key="_item.id" :name="_index+''">
+                                        <Checkbox @on-change="changeCheck($event,_item)" v-model="_item.show_state" :value="item.state" label="订单管理">{{_item.title}}</Checkbox>
+                                        <div slot="content">
+                                            <CheckboxGroup>
+                                                <!-- <Checkbox label="香蕉"></Checkbox>
+                                                <Checkbox label="苹果"></Checkbox>
+                                                <Checkbox label="西瓜"></Checkbox> -->
+                                            </CheckboxGroup>
+                                        </div>
+                                    </Panel>
+                                </Collapse>
+                                <!-- 此处为非菜单项渲染方式 -->
+                                <CheckboxGroup v-if=!item.sub>
+                                    <!-- <Checkbox label="香蕉"></Checkbox>
+                                    <Checkbox label="苹果"></Checkbox>
+                                    <Checkbox label="西瓜"></Checkbox> -->
+                                </CheckboxGroup>
+                            </div>
+                        </Panel>
+                    </Collapse>
+                </div>
             </div>
         </div>
+        
     </div>
 </template>
 
@@ -55,37 +56,68 @@ export default {
         return {
             type:1,
             id:null,
+            group_id:null,
             jurisdiction:[],//权限列表
-            value1:[]
+            is:true,
+            menu_ids:[],
+            group_title:'',
         }
     },
     mounted(){
         this.type = this.$route.query.type;
-        this.id = this.$route.query.id;
+        this.id = this.$route.query.id||'';
+        this.group_title = this.$route.query.group_title||'';
         if(this.id){
-            this.getUserData(this.id)
+            this.getData({group_id:this.id})
+        }else{
+            this.getData()
         }
-        this.getData()
+        
         
     },
     methods:{
         postData(){
-
-        },
-        getData(){//获取所有权限
-            this.axios('/api/permission').then(res=>{
-                let result = this.deepObjToArray(res.data)
-                this.jurisdiction = result
+            let postInfo,op;
+            if(this.type == 1){
+                postInfo = {
+                    op:'add',
+                    group_title:this.group_title
+                }
+            }else{
+                postInfo = {
+                    op:'edit',
+                    id:this.id,
+                    group_title:this.group_title
+                }
+            }
+            this.axios.post('/api/group',postInfo).then(res=>{
+                if(res.code == 200){
+                    let id = res.data.id
+                    this.postStystem(id)
+                }
             })
         },
-
-        getUserData(id){
-            let data = {}
-            if(id){
-                data.group_id = id
-            }
-            this.axios('/api/user_permission',{params:data}).then(res=>{
-                
+        postStystem(id){
+            let menus = JSON.stringify(this.menu_ids)
+            this.axios.post('/api/user_permission',{id:id,menu:menus,op:this.type == 1 ? 'add' : 'edit'}).then(res=>{
+                if(res.code == 200){
+                    this.$Message.success(res.msg);
+                    this.back();
+                }
+            })
+        },
+        getData(row){//获取所有权限
+            this.axios('/api/permission',{params:row}).then(res=>{
+                let result = this.deepObjToArray(res.data)
+                result.map(v=>{
+                    v.show_state = v.state == 1 ? true : false;
+                    if(Array.isArray(v.sub)){
+                        v.sub.map(k=>{
+                            k.show_state = k.state == 1 ? true : false
+                        })
+                    }
+                })
+                this.jurisdiction = result
             })
         },
         back(){
@@ -95,11 +127,24 @@ export default {
             let result = Object.values(obj);
             result.map(v=> this.func.isType(v.sub) == 'Object' ? v.sub = this.deepObjToArray(v.sub) : '' )
             return result
-        }
+        },
+        changeCheck(evt,row){
+            if(evt){
+                row.state = 1;
+                row.show_state = true;
+                this.menu_ids.push(row.id)
+            }else{
+                row.state = 0;
+                row.show_state = false;
+                let index = this.menu_ids.findIndex(v=>v == row.id);
+                this.menu_ids.splice(index,1)
+            }
+            console.log(this.menu_ids)
+        },
     }
 }
 </script>
 
 <style lang="scss" scoped>
-
+.page-edit{overflow: hidden;overflow-y: auto;position:relative;top:20px;height:85%;padding-bottom: 20px;;}
 </style>

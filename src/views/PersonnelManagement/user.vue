@@ -5,8 +5,9 @@
         :list='list' 
         @init='init' 
         :loading='loading'
-        @searchData='searchData' 
+        @searchData='init' 
         @changePage='changePage'
+        @changeSize='changeSize'
         :tableColums='tableColums'
         :tableData='tableData'
         :pageIndex='pageIndex'
@@ -49,8 +50,9 @@ export default {
             roleList:[],
             tableData:[],
             pageIndex:1,
-            total:100,
-            searchObj:{},
+            total:0,
+            pageSize:10,
+            proxyObj:{},
             loading:false,
         }
     },
@@ -59,24 +61,23 @@ export default {
     },
     methods:{
         init(row){
-            this.searchObj = row
-            this.getData(row)
-        },
-        searchData(row){
-            this.searchObj = row;
+            row.page_index = this.pageIndex;
+            row.page_size = this.pageSize;
+            this.proxyObj = row
             this.getData(row)
         },
         getRoleList(){
             this.loading = true;
             this.axios('/api/group').then(res=>{
                 this.loading = false
-                res.data.map(v=>{v.value = v.id;v.label=v.group_title})
-                this.list[2].option = res.data;
+                res.data.data.map(v=>{v.value = v.id;v.label=v.group_title})
+                this.list[2].option = res.data.data;
             })
         },
         getData(row){
             this.axios('/api/user',{params:row}).then(res=>{
-                this.tableData = res.data;
+                this.tableData = res.data.data;
+                this.total = res.data.total;
             })
         },
         delItems(row){
@@ -85,7 +86,7 @@ export default {
                 then:()=>{
                     this.axios.post('/api/user',{id:row.id,state:0}).then(res=>{
                         this.$Message.success(res.msg||'11')
-                        this.getData(this.searchObj)
+                        this.getData(this.proxyObj)
                     })
                 }
             })
@@ -93,6 +94,13 @@ export default {
         
         changePage(e){
             this.pageIndex = e;
+            this.proxyObj.page_index = this.pageIndex;
+            this.getData(this.proxyObj)
+        },
+        changeSize(e){
+            this.pageSize = e;
+            this.proxyObj.page_size = this.pageSize;
+            this.getData(this.proxyObj)
         },
         goPage(n,row){
             let id = row ? row.id : ''

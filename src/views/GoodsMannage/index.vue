@@ -5,8 +5,9 @@
         :list='list' 
         @init='init' 
         :loading='loading'
-        @searchData='searchData' 
+        @searchData='init' 
         @changePage='changePage'
+        @changeSize='changeSize'
         :tableColums='tableColums'
         :tableData='tableData'
         :pageIndex='pageIndex'
@@ -57,30 +58,38 @@ export default {
             ],
             tableData:[],
             pageIndex:1,
-            total:100,
-            searchObj:{},
+            total:0,
+            pageSize:10,
+            proxyObj:{},
             loading:false,
         }
     },
     
     methods:{
         init(row){
-            this.searchObj = row;
-            this.getData(row)
-        },
-        searchData(row){
-            this.searchObj = row;
+            console.log(row)
+            row.page_index = this.pageIndex;
+            row.page_size = this.pageSize;
+            this.proxyObj = row;
             this.getData(row)
         },
         getData(row){
             this.loading = true;
             this.axios('/api/goods',{params:row}).then(res=>{
                 this.loading = false;
-                this.tableData = res.data;
+                this.tableData = res.data.data;
+                this.total = res.data.total;
             })
         },
         changePage(e){
             this.pageIndex = e;
+            this.proxyObj.page_index = this.pageIndex;
+            this.getData(this.proxyObj)
+        },
+        changeSize(e){
+            this.pageSize = e;
+            this.proxyObj.page_size = this.page_size;
+            this.getData(this.proxyObj)
         },
         delItems(row){
             this.confirmDelete({

@@ -29,7 +29,7 @@
 
             <slot></slot>
         </div>
-        <Footer :pageIndex='pageIndex' :total='total' @change='changePage' />
+        <Footer :pageIndex='pageIndex' :total='total' @changeSize='changeSize' @change='changePage' />
     </div>
 </template>
 
@@ -68,10 +68,6 @@ export default {
             type:Boolean,
             default:false,
         },
-        // showLog:{
-        //     type:Boolean,
-        //     default:false,
-        // },
         logList:{
             type:Array,
             default:null,
@@ -98,6 +94,10 @@ export default {
         },
         selectTable(e){
             this.$emit('selectTable',e)
+        },
+        changeSize(e){
+            console.log(e)
+            this.$emit('changeSize',e)
         }
     }
 }

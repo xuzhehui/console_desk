@@ -5,8 +5,9 @@
         :list='list' 
         @init='init' 
         :loading='loading'
-        @searchData='searchData' 
+        @searchData='init' 
         @changePage='changePage'
+        @changeSize='changeSize'
         :tableColums='tableColums'
         :tableData='tableData'
         :pageIndex='pageIndex'
@@ -46,13 +47,16 @@ export default {
     data(){
         return {
             list:[
-                {title:'订单编号',name:'Input',value:'',serverName:'id',placeholder:'请输入订单号'},
-                {title:'紧急程度',name:'Select',serverName:'id1',placeholder:'请选择',value:'',
+                {title:'订单编号',serverName:'order_no',name:'Input',value:'',placeholder:'请输入订单号'},
+                {title:'紧急程度',name:'Select',serverName:'warning_state',placeholder:'请选择',value:'',
                     option:[
-                        {label:'紧急',value:1}
+                        {label:'不急',value:0},
+                        {label:'比较急',value:1},
+                        {label:'紧急',value:2},
+                        {label:'非常急',value:3},
                     ]
                 },
-                {title:'测量日期范围',name:'Input',start_value:'',end_value:'',isDate:true,serverName:'id2',start_placeholder:'开始日期',end_placeholder:'结束日期'},
+                {title:'测量日期范围',name:'Input',start_server:'start_time',end_server:'end_time',start_value:'',end_value:'',isDate:true,start_placeholder:'开始日期',end_placeholder:'结束日期'},
             ],
             tableColums:[
                 {title:'订单编号',align:'center',key:'order_no'},
@@ -69,7 +73,9 @@ export default {
             ],
             tableData:[],
             pageIndex:1,
-            total:100,
+            total:0,
+            proxyObj:{},
+            pageSize:10,
             showPlan:false,
             planInfo:{
                 id:null,
@@ -81,6 +87,9 @@ export default {
     },
     methods:{
         init(row){
+            row.page_index = this.pageIndex;
+            row.page_size = this.pageSize;
+            this.proxyObj = row
             this.getData(row)
         },
         searchData(row){
@@ -90,14 +99,22 @@ export default {
             this.loading = true;
             this.axios('/api/order_index',{params:row}).then(res=>{
                 this.loading = false;
-                res.data.map(v=>{
+                res.data.data.map(v=>{
                     v.show_type = v.type == 1 ? '业务订单' : '代理商订单'
                 })
-                this.tableData = res.data;
+                this.tableData = res.data.data;
+                this.total = res.data.total;
             })
         },
         changePage(e){
             this.pageIndex = e;
+            this.proxyObj.page_index = this.pageIndex;
+            this.getData(this.proxyObj)
+        },
+        changeSize(e){
+            this.pageSize = e;
+            this.proxyObj.page_size = this.pageSize;
+            this.getData(this.proxyObj)
         },
         goPage(n,row){
             let id = row ? row.id : '';

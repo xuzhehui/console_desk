@@ -87,8 +87,8 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-.page{
-    .login-form{width:610px;height:558px;padding:56px 105px;position:absolute;left:50%;top:50%;transform: translate(10%,-50%);
+.page{width:100%;height:100%;background:url('http://121.41.102.225:82/api/pic/15985774899575.png/');background-size:100% 100%;
+    .login-form{width:610px;height:558px;padding:56px 105px;position:absolute;left:50%;top:50%;transform: translate(10%,-50%);background: #fff;
     box-shadow: 0 2px 7px rgba(0,0,0,.15);border-color: transparent;
         p{text-align: center;font-size:30px;color:#333333;font-family: '苹方-简 中黑体';}
         .auto-login{padding:30px 0 50px 0;}

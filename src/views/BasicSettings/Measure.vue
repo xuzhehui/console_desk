@@ -5,8 +5,9 @@
         :list='list' 
         @init='init' 
         :loading='loading'
-        @searchData='searchData' 
+        @searchData='init' 
         @changePage='changePage'
+        @changeSize='changeSize'
         :tableColums='tableColums'
         :tableData='tableData'
         :pageIndex='pageIndex'
@@ -19,7 +20,7 @@
             <template slot='set' slot-scope='row'>
                 <div>
                     <Icon size='20' @click="addItems(row.row)" style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
-                    <Icon size='20' style="margin-left:10px;color:red;cursor:pointer" type="ios-trash-outline" />
+                    <Icon size='20' @click="delItems(row.row)" style="margin-left:10px;color:red;cursor:pointer" type="ios-trash-outline" />
                 </div>
             </template>
 
@@ -59,31 +60,39 @@ export default {
             ],
             tableData:[],
             pageIndex:1,
-            total:100,
+            pageSize:10,
+            total:0,
             showModal:false,
             showType:1,
             classInfo:{},
-            searchObj:{},
+            proxyObj:{},
             loading:false,
         }
     },
     methods:{
         init(row){
-            this.searchObj = row;
-            this.getData(row)
-        },
-        searchData(row){
+            row.page_index = this.pageIndex;
+            row.page_size = this.pageSize;
+            this.proxyObj = row;
             this.getData(row)
         },
         getData(row){
             this.loading = true;
             this.axios('/api/basics_measure_index',{params:row}).then(res=>{
                 this.loading = false;
-                this.tableData = res.data;
+                this.tableData = res.data.data;
+                this.total = res.data.total;
             })
         },
         changePage(e){
             this.pageIndex = e;
+            this.proxyObj.page_index = this.pageIndex;
+            this.getData(this.proxyObj);
+        },
+        changeSize(e){
+            this.pageSize = e;
+            this.proxyObj.page_size = this.pageSize;
+            this.getData(this.proxyObj);
         },
         addItems(obj){
             this.showModal = true;
@@ -106,7 +115,20 @@ export default {
         },
         vivibleModal(e){
             if(!e){this.classInfo = {};}
-        }
+        },
+        delItems(row){
+            this.confirmDelete({
+                content:'确认删除么？',
+                then:()=>{
+                    this.axios.post('/api/basics_measure_del',{id:row.id,state:0}).then(res=>{
+                        if(res.code == 200){
+                            this.$Message.success(res.msg)
+                            this.getData(this.proxyObj)
+                        } 
+                    })
+                }
+            })
+        },
     }
 }
 </script>

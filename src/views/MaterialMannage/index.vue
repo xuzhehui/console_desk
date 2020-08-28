@@ -5,8 +5,9 @@
         :list='list' 
         @init='init' 
         :loading='loading'
-        @searchData='searchData' 
+        @searchData='init' 
         @changePage='changePage'
+        @changeSize='changeSize'
         :tableColums='tableColums'
         :tableData='tableData'
         :pageIndex='pageIndex'
@@ -33,7 +34,7 @@ export default {
         return {
             list:[
                 {title:'ID',name:'Input',serverName:'id',placeholder:'请输入ID',value:''},
-                {title:'材质',name:'Input',serverName:'id',placeholder:'请输入材质',value:''}
+                {title:'材质',name:'Input',serverName:'title',placeholder:'请输入材质',value:''}
             ],
             tableColums:[
                 {title:'ID',align:'center',key:'id',fixed:'left',},
@@ -50,28 +51,41 @@ export default {
                 {title:'描述',align:'center',key:'remark'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'150'},
             ],
-            tableData:[
-                {id:'1',title:'222'}
-            ],
+            tableData:[],
             pageIndex:1,
-            total:100,
+            total:0,
+            pageSize:10,
             loading:false,
+            proxyObj:{},
         }
     },
     methods:{
         init(row){
+            row.page_index = this.pageIndex;
+            row.page_size = this.pageSize;
+            this.proxyObj = row
+            this.getData(row)
+        },
+        getData(row){
             this.loading = true;
-            this.axios('/api/material').then(res=>{
+            this.axios('/api/material',{params:row}).then(res=>{
                 this.loading = false;
-                this.tableData = res.data;
+                this.tableData = res.data.data;
+                this.total = res.data.total;
             })
         },
-        searchData(row){
 
-        },
         changePage(e){
-
+            this.pageIndex = e;
+            this.proxyObj.page_index = this.pageIndex;
+            this.getData(this.proxyObj)
         },
+        changeSize(e){
+            this.pageSize = e;
+            this.proxyObj.page_size = this.pageSize;
+            this.getData(this.proxyObj)
+        },
+
         goDetial(n,row){// n = 1 新增 2 编辑 3 查看 
             let id = row ? row.id : ''
             this.$router.push({

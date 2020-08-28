@@ -5,7 +5,7 @@
         :list='list' 
         @init='init'
         :loading='loading' 
-        @searchData='searchData' 
+        @searchData='init' 
         @changePage='changePage'
         @selectTable='selectTable'
         :tableColums='tableColums'
@@ -76,12 +76,15 @@ export default {
     data(){
         return {
             list:[
-                {title:'订单编号',name:'Input',serverName:'id',placeholder:'请输入订单编号',value:''},
-                {title:'小区名字',name:'Input',serverName:'id1',placeholder:'请选择',value:''},
-                {title:'出库日期范围',name:'Input',start_value:'',end_value:'',isDate:true,serverName:'id2',start_placeholder:'开始日期',end_placeholder:'结束日期'},
-                {title:'紧急程度',name:'Select',serverName:'id1',placeholder:'请选择',value:'',
+                {title:'订单编号',name:'Input',placeholder:'请输入订单编号',value:'',serverName:'order_no'},
+                {title:'小区名字',name:'Input',placeholder:'请选择',value:'',serverName:'residential_name'},
+                {title:'出库日期范围',name:'Input',start_server:'start_time',end_server:'end_time',start_value:'',end_value:'',isDate:true,start_placeholder:'开始日期',end_placeholder:'结束日期'},
+                {title:'紧急程度',name:'Select',placeholder:'请选择',serverName:'warning_state',value:'',
                     option:[
-                        {label:'紧急',value:1}
+                        {label:'不急',value:0},
+                        {label:'比较急',value:1},
+                        {label:'紧急',value:2},
+                        {label:'非常急',value:3},
                     ]
                 },
             ],
@@ -97,11 +100,10 @@ export default {
                 {title:'交货日期',align:'center',key:'predict_time'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'150'},
             ],
-            tableData:[
-                {id:'1',title:'222'}
-            ],
+            tableData:[],
             pageIndex:1,
-            total:100,
+            total:0,
+            pageSize:10,
             showTableColums:false,
             show_lower:false,
             postInfo:{//下测量数据
@@ -113,31 +115,40 @@ export default {
             users:[],
             selectIds:null,
             loading:false,
+            proxyObj:{},
         }
     },
 
     methods:{
         init(row){
-            this.getData({id:1})
-            this.axios('/api/menu')
-        },
-        searchData(row){
-
+            row.page_index = this.pageIndex;
+            row.page_size = this.pageSize;
+            this.proxyObj = row
+            console.log(row)
+            this.getData(row)
         },
         getData(row){
             this.loading = true;
             this.axios('/api/order_index',{params:row}).then(res=>{
                 this.loading = false;
-                res.data.map(v=>{
+                res.data.data.map(v=>{
                     v.show_type = v.type == 1 ? '业务订单' : '代理商订单'
                     v.show_state = v.state == 0 ? '未审核' : (v.state == 1 ? '审核中' : (v.state == 2 ? '审核通过' : (v.state == 3 ? '订单生产中' : '完成'))),
                     v.show_warning_state = v.warning_state == 0 ? '不急' : (v.warning_state == 1 ? '比较急' : (v.warning_state == 2 ? '紧急' : '非常急'))
                 })
-                this.tableData = res.data;
+                this.tableData = res.data.data;
+                this.total = res.data.total;
             })
         },
         changePage(e){
-            console.log(e)
+            this.pageIndex = e;
+            this.proxyObj.page_index = this.pageIndex;
+            this.getData(this.proxyObj)
+        },
+        changeSize(e){
+            this.pageSize = e;
+            this.proxyObj.page_size = this.pageSize;
+            this.getData(this.proxyObj)
         },
         setTableColums(){//设置表头
             this.showTableColums = true;

@@ -5,8 +5,9 @@
         :list='list' 
         @init='init' 
         :loading='loading'
-        @searchData='searchData' 
+        @searchData='init' 
         @changePage='changePage'
+        @changeSize='changeSize'
         :tableColums='tableColums'
         :tableData='tableData'
         :pageIndex='pageIndex'
@@ -44,47 +45,58 @@ export default {
             ],
             tableData:[],
             pageIndex:1,
-            total:100,
-            searchObj:{},
+            total:0,
+            pageSize:10,
+            proxyObj:{},
             loading:false,
         }
     },
     methods:{
         init(row){
-            this.searchObj = row;
-            this.getData(row)
-        },
-        searchData(row){
-            this.searchObj = row;
+            row.page_index = this.pageIndex;
+            row.page_size = this.pageSize;
+            this.proxyObj = row
             this.getData(row)
         },
         getData(row){
             this.loading = true
             this.axios('/api/group',{params:row}).then(res=>{
                 this.loading = false
-                this.tableData = res.data;
+                res.data.data.map(v=>{v.value = v.id;v.label=v.group_title})
+                this.list[1].option = res.data.data;
+                this.tableData = res.data.data;
+                this.total = res.data.total;
             })
         },
         changePage(e){
             this.pageIndex = e;
+            this.proxyObj.page_index = this.pageIndex;
+            this.getData(this.proxyObj)
+        },
+        changeSize(e){
+            this.pageSize = e;
+            this.proxyObj.page_size = this.pageSize;
+            this.getData(this.proxyObj)
         },
         deleteItems(row){
             this.confirmDelete({
                 content:'删除后该角色下的所有信息将被删除，订单中已使用的角色信息将会保留不变',
                 then:()=>{
                     this.axios.post('/api/group',{id:row.id,state:0}).then(res=>{
-                        this.getData(this.searchObj)
+                        this.getData(this.proxyObj)
                     })
                 }
             })
         },
         goPage(n,row){
-            let id = row ? row.id : ''
+            let id = row ? row.id : '';
+            let group_title = row ? row.group_title : ''
             this.$router.push({
                 path:'/cms/personnelmanagement/role/edit',
                 query:{
                     type:n,
-                    id:id
+                    id:id,
+                    group_title:group_title,
                 }
             })
         }

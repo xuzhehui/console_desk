@@ -5,8 +5,9 @@
         :list='list' 
         @init='init' 
         :loading='loading'
-        @searchData='searchData' 
+        @searchData='init' 
         @changePage='changePage'
+        @changeSize='changeSize'
         :tableColums='tableColums'
         :tableData='tableData'
         :pageIndex='pageIndex'
@@ -36,7 +37,7 @@ export default {
         return {
             list:[
                 {title:'ID',name:'Input',value:'',serverName:'id',placeholder:'请输入ID'},
-                {title:'产品型号',name:'Input',value:'',serverName:'name',placeholder:'请输入产品型号'},
+                {title:'产品型号',name:'Input',value:'',serverName:'model',placeholder:'请输入产品型号'},
                 {title:'产品名称',name:'Input',value:'',serverName:'title',placeholder:'请输入产品名称'},
             ],
             tableColums:[
@@ -61,7 +62,9 @@ export default {
             ],
             tableData:[],
             pageIndex:1,
-            total:100,
+            total:0,
+            pageSize:10,
+            proxyObj:{},
             loading:false,
         }
     },
@@ -70,28 +73,41 @@ export default {
     },
     methods:{
         init(row){
+            row.page_index = this.pageIndex;
+            row.page_size = this.pageSize;
+            this.proxyObj = row
             this.getData(row)
-        },
-        searchData(row){
-            console.log(row)
         },
         getData(row){
             this.loading = true;
             this.axios('/api/product',{params:row}).then(res=>{
                 this.loading = false;
-                this.tableData = res.data
+                this.tableData = res.data.data;
+                this.total = res.data.total;
             })
         },
         delItems(row){
             this.confirmDelete({
                 content:'确认删除么？',
                 then:()=>{
-                    this.getData({id:row.id,state:0})
+                    this.axios.post('/api/product',{id:row.id,state:0}).then(res=>{
+                        if(res.code == 200){
+                            this.$Message.success(res.msg)
+                            this.getData(this.proxyObj)
+                        }
+                    })
                 }
             })
         },
         changePage(e){
             this.pageIndex = e;
+            this.proxyObj.page_index = this.pageIndex;
+            this.getData(this.proxyObj)
+        },
+        changeSize(e){
+            this.pageSize = e;
+            this.proxyObj.page_size = this.pageSize;
+            this.getData(this.proxyObj)
         },
         goPage(n,row){//n = 1 新增 2 编辑 3 查看
             let id = row ? row.id : ''

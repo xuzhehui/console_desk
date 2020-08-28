@@ -4,7 +4,7 @@
         title='工装审批列表'
         :list='list' 
         @init='init' 
-        @searchData='searchData' 
+        @searchData='init' 
         @changePage='changePage'
         :tableColums='tableColums'
         :tableData='tableData'
@@ -43,7 +43,7 @@ export default {
     data(){
         return {
             list:[
-                {title:'按房号',name:'Input',value:'',serverName:'title',placeholder:'请输入房号'},
+                {title:'按房号',name:'Input',value:'',placeholder:'请输入房号'},
             ],
             tableColums:[
                 {type:'selection',width:'60'},
@@ -58,26 +58,26 @@ export default {
             ],
             tableData:[],
             pageIndex:1,
-            total:100,
+            total:0,
             showModal:false,
             showType:1,
             info:{},
-            searchObj:{},
+            proxyObj:{},
             logList:[],
+            pageIndex:1,
+            pageSize:10,
         }
     },
     methods:{
         init(row){
-            this.searchObj = row;
+            this.proxyObj = row;
             this.getData({id:this.$route.query.id})
-        },
-        searchData(row){
-            console.log(row)
         },
         getData(row){
             this.axios('/api/order_industry_list',{params:row}).then(res=>{
-                this.tableData = res.data.oil;
+                this.tableData = res.data.data.oil;
                 this.logList = res.data.detail;
+                this.total = res.data.total;
             })
         },
         goDetail(row){
@@ -87,6 +87,13 @@ export default {
         },
         changePage(e){
             this.pageIndex = e;
+            this.proxyObj.page_index = this.pageIndex;
+            this.getData(this.proxyObj)
+        },
+        changeSize(e){
+            this.pageSize = e;
+            this.proxyObj.page_size = this.pageSize;
+            this.getData(this.proxyObj)
         },
         back(){
             this.$router.go(-1)

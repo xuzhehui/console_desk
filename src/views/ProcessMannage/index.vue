@@ -5,8 +5,9 @@
         :list='list' 
         @init='init' 
         :loading='loading'
-        @searchData='searchData' 
+        @searchData='init' 
         @changePage='changePage'
+        @changeSize='changeSize'
         :tableColums='tableColums'
         :tableData='tableData'
         :pageIndex='pageIndex'
@@ -16,10 +17,10 @@
                 <Button @click="addItems" type="primary" ghost icon='md-add'>新增{{title}}</Button>
             </div>
             
-            <template slot='set' slot-scope='row'>
+            <template slot='set' slot-scope='{row}'>
                 <div>
-                    <Icon size='20' @click="addItems(row.row)" style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
-                    <Icon size='20' style="margin-left:10px;color:red;cursor:pointer" type="ios-trash-outline" />
+                    <Icon size='20' @click="addItems(row)" style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
+                    <Icon size='20' @click="delItems(row)" style="margin-left:10px;color:red;cursor:pointer" type="ios-trash-outline" />
                 </div>
             </template>
 
@@ -62,21 +63,23 @@ export default {
             ],
             tableData:[],
             pageIndex:1,
-            total:100,
+            total:0,
+            pageSize:10,
             showModal:false,
             showType:1,
             classInfo:{},
             attribute:[{title:''}],
             title:'',
             id:null,
-            searchObj:{},
+            proxyObj:{},
             loading:false,
         }
     },
     mounted(){
         this.title = this.$route.query.title
         if(this.$route.query.id){
-            this.watchData(this.$route.query.id)
+            this.proxyObj.id = this.$route.query.id;
+            this.getData(this.proxyObj)
         }
 
     },
@@ -84,25 +87,21 @@ export default {
         $route(to){
             this.title = to.query.title;
             this.id = to.query.id;
+            this.proxyObj.id = this.id
             this.list[1].title = `${this.title}名称`;
             this.list[1].placeholder = `请输入${this.title}名称`
             this.tableColums[1].title = this.title
-            this.watchData(this.id)
+            console.log(this.proxyObj)
+            this.getData(this.proxyObj)
             this.classInfo.id = this.id;
         }
     },
     methods:{
         init(row){
-            this.searchObj = row;
-            // this.getData(row)
-        },
-        searchData(row){
-            this.getData(row)
-        },
-        getData(row){
-            this.axios('/api/properties_index',{params:row}).then(res=>{
-                this.tableData = res.data;
-            })
+            row.page_index = this.pageIndex;
+            row.page_size = this.pageSize;
+            this.proxyObj = row;
+            this.getData(this.proxyObj)
         },
         addItems(obj){
             this.showModal = true;
@@ -117,11 +116,18 @@ export default {
         },
         changePage(e){
             this.pageIndex = e;
+            this.proxyObj.page_index = this.pageIndex;
+            this.getData(this.proxyObj)
+        },
+        changeSize(e){
+            this.pageSize = e;
+            this.proxyObj.page_size = this.pageSize;
+            this.getData(this.proxyObj)
         },
         vivibleModal(e){
             if(!e){
                 this.showType == 1 ? this.attribute=[{title:''}] : this.classInfo={}
-                this.watchData(this.$route.query.id)
+                this.getData(this.proxyObj)
             }
         },
         postInfo(){
@@ -131,7 +137,7 @@ export default {
                 let result = []
                 this.attribute.map(v=>result.push(v.title))
                 post_data = {
-                    id:this.classInfo.id,
+                    id:this.$route.query.id,
                     title:result.join(',')
                 }
             }else{
@@ -140,19 +146,33 @@ export default {
             }
             this.axios.post(post_url,post_data).then(res=>{
                 this.$Message.success(res.msg)
-                this.watchData(this.id)
+                this.getData(this.proxyObj)
             })
         },
         addAttr(n){
             n == 0 ? this.attribute.push({title:''}) : this.attribute.splice(n,1)
         },
-        watchData(id){
+        getData(row){
             this.loading = true;
-            this.axios('/api/properties_index',{params:{id:id}}).then(res=>{
+            this.axios('/api/properties_index',{params:row}).then(res=>{
                 this.loading = false;
-                this.tableData = res.data;
+                this.tableData = res.data.data;
+                this.total = res.data.total;
             })
-        }
+        },
+        delItems(row){
+            this.confirmDelete({
+                content:'确认删除么？',
+                then:()=>{
+                    this.axios.post('/api/properties_edit',{id:row.id,state:0}).then(res=>{
+                        if(res.code == 200){
+                            this.$Message.success(res.msg)
+                            this.getData(this.proxyObj)
+                        } 
+                    })
+                }
+            })
+        },
     }
 }
 </script>

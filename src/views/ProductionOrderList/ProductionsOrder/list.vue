@@ -4,8 +4,9 @@
         title='生产订单列表'
         :list='list' 
         @init='init' 
-        @searchData='searchData' 
+        @searchData='init' 
         @changePage='changePage'
+        @changeSize='changeSize'
         :tableColums='tableColums'
         :tableData='tableData'
         :pageIndex='pageIndex'
@@ -65,20 +66,24 @@ export default {
     data(){
         return {
             list:[
-                {title:'订单编号',name:'Input',serverName:'id',placeholder:'请输入订单编号',value:''},
-                {title:'订单类型',name:'Select',serverName:'id1',placeholder:'请选择',value:'',
+                {title:'订单编号',name:'Input',serverName:'order_no',placeholder:'请输入订单编号',value:''},
+                {title:'订单类型',name:'Select',serverName:'type',placeholder:'请选择',value:'',
                     option:[
-                        {label:'紧急',value:1}
+                        {label:'业务订单',value:1},
+                        {label:'代理商订单',value:2}
                     ]
                 },
-                {title:'客户名字',name:'Input',serverName:'id1',placeholder:'请选择',value:''},
-                {title:'手机号',name:'Input',serverName:'id1',placeholder:'请选择',value:''},
-                {title:'紧急程度',name:'Select',serverName:'id1',placeholder:'请选择',value:'',
+                {title:'客户名字',name:'Input',serverName:'client_name',placeholder:'请选择',value:''},
+                {title:'手机号',name:'Input',serverName:'mobile',placeholder:'请选择',value:''},
+                {title:'紧急程度',name:'Select',serverName:'warning_state',placeholder:'请选择',value:'',
                     option:[
-                        {label:'紧急',value:1}
+                        {label:'不急',value:0},
+                        {label:'比较急',value:1},
+                        {label:'紧急',value:2},
+                        {label:'非常急',value:3},
                     ]
                 },
-                {title:'下单日期范围',name:'Input',start_value:'',end_value:'',isDate:true,serverName:'id2',start_placeholder:'开始日期',end_placeholder:'结束日期'},
+                {title:'下单日期范围',name:'Input',start_server:'start_time',end_server:'end_time',start_value:'',end_value:'',isDate:true,serverName:'id2',start_placeholder:'开始日期',end_placeholder:'结束日期'},
                 
             ],
             tableColums:[
@@ -93,7 +98,8 @@ export default {
             ],
             tableData:[],
             pageIndex:1,
-            total:100,
+            total:0,
+            pageSize:10,
             showTableColums:false,
             showPlan:false,
             planInfo:{
@@ -105,17 +111,25 @@ export default {
     },
     methods:{
         init(row){
-            this.getData()
-        },
-        searchData(row){
-
+            row.page_index = this.pageIndex;
+            row.page_size = this.pageSize;
+            this.proxyObj = row
+            this.getData(row)
         },
         changePage(e){
-
+            this.pageIndex = e;
+            this.proxyObj.page_index = this.pageIndex;
+            this.getData(this.proxyObj)
+        },
+        changeSize(e){
+            this.pageSize = e;
+            this.proxyObj.page_size = this.pageSize;
+            this.getData(this.proxyObj)
         },
         getData(row){
             this.axios('/api/produce_list',{params:row}).then(res=>{
-                this.tableData = res.data;
+                this.tableData = res.data.data;
+                this.total = res.data.total;
             })
         },
         setTableColums(){//设置表头

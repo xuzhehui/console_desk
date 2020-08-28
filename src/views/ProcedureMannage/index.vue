@@ -5,8 +5,9 @@
         :list='list' 
         @init='init' 
         :loading='loading'
-        @searchData='searchData' 
+        @searchData='init' 
         @changePage='changePage'
+        @changeSize='changeSize'
         :tableColums='tableColums'
         :tableData='tableData'
         :pageIndex='pageIndex'
@@ -51,11 +52,12 @@ export default {
             ],
             tableData:[],
             pageIndex:1,
-            total:100,
+            total:0,
+            pageSize:10,
             showModal:false,
             showType:1,
             classInfo:{},
-            searchObj:{},
+            proxyObj:{},
             id:null,
             loading:false,
         }
@@ -63,31 +65,41 @@ export default {
     watch:{
         $route(to){
             this.id = to.query.id;
-            this.getData({id:this.id})
+            this.proxyObj.id = this.id
+            this.getData(this.proxyObj)
         }
     },
     mounted(){
         if(this.$route.query.id){
             this.id = this.$route.query.id
-            this.getData({id:this.id})
+            this.proxyObj.id = this.id;
+            this.getData(this.proxyObj)
         }
     },
     methods:{
         init(row){
-            this.searchObj = row;
-            // this.getData(row)
-        },
-        searchData(row){
+            row.page_index = this.pageIndex;
+            row.page_size = this.pageSize;
+            this.proxyObj = row
+            this.getData(row)
         },
         getData(row){
             this.loading = true;
             this.axios('/api/procedure_index',{params:row}).then(res=>{
                 this.loading = false;
-                this.tableData = res.data;
+                this.tableData = res.data.data;
+                this.total = res.data.total;
             })
         },
         changePage(e){
             this.pageIndex = e;
+            this.proxyObj.page_index = this.pageIndex;
+            this.getData(this.proxyObj)
+        },
+        changeSize(e){
+            this.pageSize = e;
+            this.proxyObj.page_size = this.pageSize;
+            this.getData(this.proxyObj)
         },
         goPage(n,row){
             let id = row ? row.id : this.id

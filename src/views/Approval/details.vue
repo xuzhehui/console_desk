@@ -44,9 +44,10 @@ export default {
                 {title:'出库时间',align:'center'},
                 {title:'操作',align:'center'},
             ],
-            tableData:[{type:'123'}],
+            tableData:[],
             pageIndex:1,
-            total:100,
+            pageSize:10,
+            total:0,
         }
     },
     methods:{

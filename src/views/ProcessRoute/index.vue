@@ -5,8 +5,9 @@
         :list='list' 
         @init='init' 
         :loading='loading'
-        @searchData='searchData' 
+        @searchData='init' 
         @changePage='changePage'
+        @changeSize='changeSize'
         :tableColums='tableColums'
         :tableData='tableData'
         :pageIndex='pageIndex'
@@ -36,32 +37,42 @@ export default {
         return {
             list:[
                 {title:'ID',name:'Input',value:'',serverName:'id',placeholder:'请输入ID'},
-                {title:'工艺组合名称',name:'Input',value:'',serverName:'',placeholder:'请输入工艺组合名称'},
+                {title:'工艺组合名称',name:'Input',value:'',serverName:'title',placeholder:'请输入工艺组合名称'},
             ],
             tableColums:[],
             tableData:[],
             pageIndex:1,
-            total:100,
+            total:0,
+            pageSize:10,
+            proxyObj:{},
             loading:false,
         }
     },
     methods:{
         init(row){
+            row.page_index = this.pageIndex;
+            row.page_size = this.pageSize;
+            this.proxyObj = row
             this.getData(row)
-        },
-        searchData(row){
-            console.log(row)
         },
         getData(row){
             this.loading = true;
             this.axios('/api/process_route_index',{params:row}).then(res=>{
                 this.loading = false;
-                this.tableColums = res.data.top;
-                this.tableData = res.data.detail;
+                this.tableColums = res.data.data.top;
+                this.tableData = res.data.data.detail;
+                this.total = res.data.total;
             })
         },
         changePage(e){
             this.pageIndex = e;
+            this.proxyObj.page_index = this.pageIndex;
+            this.getData(this.proxyObj)
+        },
+        changeSize(e){
+            this.pageSize = e;
+            this.proxyObj.page_size = this.pageSize;
+            this.getData(this.proxyObj)
         },
         goPage(n,row){
             let id = row ? row.id : '' 

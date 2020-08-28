@@ -9,8 +9,8 @@
             <FormItem label="ID">
                 <Input v-model="info.id" disabled :placeholder="type == 1||type == 2 ? '自定生成': '12'"/>
             </FormItem>
-            <FormItem  label="分类名称">
-                <Input :disabled='type == 3 ? true : false' v-model="info.type_name"  placeholder="请选择分类"/>
+            <FormItem  label="物料名称">
+                <Input :disabled='type == 3 ? true : false' v-model="info.type_name"  placeholder="请输入物料名称"/>
             </FormItem>
             <FormItem label="材质">
                 <Select style="width:186px;" v-model="info.m_id" :disabled='type == 3 ? true : false' placeholder="请选择材质">
@@ -63,7 +63,7 @@ export default {
         this.type = this.$route.query.type;
         this.id = this.$route.query.id||''
         this.axios('/api/basics_material_index').then(res=>{
-            this.materialList = res.data;
+            this.materialList = res.data.data;
         })
         if(this.id){
             this.getData(this.id)

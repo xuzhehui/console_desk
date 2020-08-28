@@ -5,8 +5,9 @@
         :list='list' 
         @init='init' 
         :loading='loading'
-        @searchData='searchData' 
+        @searchData='init' 
         @changePage='changePage'
+        @changeSize='changeSize'
         :tableColums='tableColums'
         :tableData='tableData'
         :pageIndex='pageIndex'
@@ -55,35 +56,43 @@ export default {
             ],
             tableData:[],
             pageIndex:1,
-            total:100,
+            total:0,
+            pageSize:10,
             showModal:false,
             showType:1,
             classInfo:{
                 id:'',
                 title:''
             },
-            searchObj:{},
+            proxyObj:{},
             loading:false,
         }
     },
     
     methods:{
         init(row){
-            this.searchObj = row;
-            this.getData(row)
-        },
-        searchData(row){
+            row.page_index = this.pageIndex;
+            row.page_size = this.pageSize;
+            this.proxyObj = row;
             this.getData(row)
         },
         getData(row){
             this.loading = true;
             this.axios('/api/basics_material_index',{params:row}).then(res=>{
                 this.loading = false;
-                this.tableData = res.data;
+                this.tableData = res.data.data;
+                this.total = res.data.total;
             })
         },
         changePage(e){
             this.pageIndex = e;
+            this.proxyObj.page_index = e;
+            this.getData(this.proxyObj)
+        },
+        changeSize(e){
+            this.pageSize = e;
+            this.proxyObj.page_size = this.pageSize;
+            this.getData(this.proxyObj)
         },
         addItems(obj){
             this.showModal = true;
@@ -100,7 +109,12 @@ export default {
             this.confirmDelete({
                 content:'确认删除么？',
                 then:()=>{
-
+                    this.axios.post('/api/basics_material_del',{id:row.id,state:0}).then(res=>{
+                        if(res.code == 200){
+                            this.$Message.success(res.msg)
+                            this.getData(this.proxyObj)
+                        } 
+                    })
                 }
             })
         },

@@ -5,8 +5,9 @@
         :list='list' 
         @init='init' 
         :loading='loading'
-        @searchData='searchData' 
+        @searchData='init' 
         @changePage='changePage'
+        @changeSize='changeSize'
         :tableColums='tableColums'
         :tableData='tableData'
         :pageIndex='pageIndex'
@@ -20,10 +21,10 @@
                 <Button type="primary" ghost icon='md-add' @click="goPage(1)">新增部件</Button>
             </div>
             
-            <template slot='set' slot-scope='row'>
+            <template slot='set' slot-scope='{row}'>
                 <div>
-                    <Icon size='20' @click="goPage(2,row.row)" style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
-                    <Icon size='20' style="margin-left:10px;color:red;cursor:pointer" type="ios-trash-outline" />
+                    <Icon size='20' @click="goPage(2,row)" style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
+                    <Icon size='20' @click="delItems(row)" style="margin-left:10px;color:red;cursor:pointer" type="ios-trash-outline" />
                 </div>
             </template>
         </FullPage>
@@ -36,7 +37,7 @@ export default {
         return {
             list:[
                 {title:'ID',name:'Input',value:'',serverName:'id',placeholder:'请输入ID'},
-                {title:'部件名称',name:'Input',value:'',serverName:'user_name',placeholder:'请输入部件名称'},
+                {title:'部件名称',name:'Input',value:'',serverName:'title',placeholder:'请输入部件名称'},
             ],
             tableColums:[
                 {title:'ID',align:'center',key:'id'},
@@ -47,26 +48,35 @@ export default {
             ],
             tableData:[],
             pageIndex:1,
-            total:100,
+            total:0,
+            pageSize:10,
             loading:false,
         }
     },
     methods:{
         init(row){
+            row.page_index = this.pageIndex;
+            row.page_size = this.pageSize;
+            this.proxyObj = row
             this.getData(row)
-        },
-        searchData(row){
-            console.log(row)
         },
         getData(row){
             this.loading = true;
-            this.axios('/api/parts_index').then(res=>{
+            this.axios('/api/parts_index',{params:row}).then(res=>{
                 this.loading = false;
-                this.tableData = res.data
+                this.tableData = res.data.data
+                this.total = res.data.total;
             })
         },
         changePage(e){
             this.pageIndex = e;
+            this.proxyObj.page_index = this.pageIndex;
+            this.getData(this.proxyObj)
+        },
+        changeSize(e){
+            this.pageSize = e;
+            this.proxyObj.page_size = this.pageSize;
+            this.getData(this.proxyObj)
         },
         goPage(n,row){//n = 1 新增 2 编辑 3 查看
             let id = row ? row.id : ''
@@ -77,7 +87,20 @@ export default {
                     id:id
                 }
             })
-        }
+        },
+        delItems(row){
+            this.confirmDelete({
+                content:'确认删除么？',
+                then:()=>{
+                    this.axios.post('/api/parts_del',{id:row.id,state:0}).then(res=>{
+                        if(res.code == 200){
+                            this.$Message.success(res.msg)
+                            this.getData(this.proxyObj)
+                        } 
+                    })
+                }
+            })
+        },
     }
 }
 </script>
