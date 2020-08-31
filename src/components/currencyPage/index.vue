@@ -42,11 +42,9 @@ export default {
         },
         tableColums:{
             type:Array,
-            default:[],
         },
         tableData:{
             type:Array,
-            default:[]
         },
         pageIndex:{
             type:Number,

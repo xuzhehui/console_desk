@@ -64,9 +64,9 @@ export default {
                 if(res.code == 200){
                     this.$Message.success(res.msg||'登陆成功')
                     if(res.data.token){
-                        sessionStorage.setItem('token',res.data.token)
+                        localStorage.setItem('token',res.data.token)
                         let user = JSON.stringify(res.data.user_info);
-                        sessionStorage.setItem('user_info',user)
+                        localStorage.setItem('user_info',user)
                         this.$router.push({name:'Cms'})
                     }
                 }

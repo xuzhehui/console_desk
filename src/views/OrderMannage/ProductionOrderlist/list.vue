@@ -14,7 +14,7 @@
         :total='total'
         >
             <div slot='titleButton'>
-                <Button  type="primary" ghost>打印二维码</Button>
+                <Button  type="primary" style="margin-right:10px;" ghost>打印二维码</Button>
                 <Button  type="primary" ghost>批量打印二维码</Button>
             </div>
 

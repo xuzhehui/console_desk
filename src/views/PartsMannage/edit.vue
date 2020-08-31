@@ -42,7 +42,7 @@
                 <span class="footer-log">备注:适用于 ＋(加)  -(减)   ×(乘)  ÷(除)不输入就是不设定公式，支持单项输入)</span>
             </div>
             <Table stripe border :columns="tableColums" :data="tableData">
-                <template slot-scope="{row,index}" slot="set">
+                <template slot-scope="{index}" slot="set">
                     <a style="color:red;" @click="delItems(tableData,index)">删除</a>
                 </template>
             </Table>
@@ -105,7 +105,7 @@ export default {
         },
         getParts(){
             this.axios('/api/basics_parts_index').then(res=>{
-                this.partList = res.data;
+                this.partList = res.data.data;
             })
         },
         postData(){
@@ -145,7 +145,7 @@ export default {
         },
         getParoducts(){
             this.axios('/api/product_list').then(res=>{
-                this.product_list = res.data;
+                this.product_list = res.data.data;
             })
         }
     }

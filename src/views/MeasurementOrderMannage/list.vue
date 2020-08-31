@@ -99,6 +99,7 @@ export default {
             this.loading = true;
             this.axios('/api/order_index',{params:row}).then(res=>{
                 this.loading = false;
+                if(!res.data.data){return this.$Message.error('列表数据返回格式不正确')}
                 res.data.data.map(v=>{
                     v.show_type = v.type == 1 ? '业务订单' : '代理商订单'
                 })

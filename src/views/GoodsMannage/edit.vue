@@ -103,7 +103,7 @@ export default {
         },
         getData(row){
             this.axios('/api/product',{params:row}).then(res=>{
-                this.productList = res.data
+                this.productList = res.data.data
             })
         },
         back(){
@@ -121,7 +121,7 @@ export default {
         },
         getUser(){
             this.axios('/api/user').then(res=>{
-                this.agentNames = res.data;
+                this.agentNames = res.data.data;
             })
         },
         getGoodsDetail(row){

@@ -11,7 +11,7 @@ const mutations  = {
         state.keyBoard_value = val
     },
     saveUser(state){
-        let userInfo = sessionStorage.getItem('user_info');
+        let userInfo = localStorage.getItem('user_info');
         state.userInfo = JSON.parse(userInfo)
     }
 }

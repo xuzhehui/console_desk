@@ -225,47 +225,42 @@ export default {
                 {title:'图纸',align:'center',key:'',width:'80',
 
                     render(h,params){
-                        if(params.row.url){
-                            return h('img',{
+                        return h('Upload',{
+                            props:{
+                                'show-upload-list':false,        
+                                headers:{'Authorization':localStorage.getItem('token')},
+                                'on-success':(e)=>{
+                                    let src = e.data.url;
+                                    params.row.url = src;
+                                    return h('img',{
+                                        attrs:{
+                                            src:'http://121.41.102.225:82'+params.row.url,
+                                            style:'max-width:50px;max-height:50px;position:relative;top:5px;'
+                                        },
+                                    })
+                                }
+                            },
+                            attrs:{
+                                action:`http://121.41.102.225:82/api/upload_pic`
+                            },
+                        },[
+                            params.row.url ? h('img',{
                                 attrs:{
                                     src:'http://121.41.102.225:82'+params.row.url,
                                     style:'max-width:50px;max-height:50px;position:relative;top:5px;'
                                 },
-                            })
-                        }else{
-                            return h('Upload',{
-                                props:{
-                                    'show-upload-list':false,        
-                                    headers:{'Authorization':sessionStorage.getItem('token')},
-                                    'on-success':(e)=>{
-                                        let src = e.data.url;
-                                        params.row.url = src;
-                                        return h('img',{
-                                            attrs:{
-                                                src:'http://121.41.102.225:82'+params.row.url,
-                                                style:'max-width:50px;max-height:50px;position:relative;top:5px;'
-                                            },
-                                        })
-                                    }
-                                },
+                            }) : h('a',{
                                 attrs:{
-                                    action:`/api/upload_pic`
-                                },
-                            },[
-                                h('a',{
-                                    attrs:{
-                                        style:'position:relative;'
-                                    }
-                                },'上传')
-                            ])
-                        }
-                        
+                                    style:'position:relative;'
+                                }
+                            },'上传')
+                        ])
                     }
                 },
                 {title:'预估工期',align:'center',key:'',width:'200'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'150'},
             ],
-            tableData:[{type:'123'}],
+            tableData:[],
             showProduct:false,
             info:{
                 residential_name:'',
@@ -345,9 +340,7 @@ export default {
             })
         },
         getDate(id){
-            this.$loading.show()
             this.axios('/api/order_detail',{params:{id:id}}).then(res=>{
-                this.$loading.hide()
                 this.info = res.data;
             })
         },
@@ -374,7 +367,7 @@ export default {
             })
         },
         getProducts(){
-            this.axios('/api/product').then(res=>this.productList = res.data)
+            this.axios('/api/product').then(res=>this.productList = res.data.data)
         },
         changeProduct(row,n){
             

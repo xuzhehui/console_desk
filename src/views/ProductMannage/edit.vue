@@ -43,9 +43,9 @@
                 <span class="custom-title">产品自定义属性</span>
                 <div class="custom-item" v-for='(item,index) of info.remark' :key="index">
                     <span>属性:</span>
-                    <Input v-model="item.style" style="width:150px;"></Input>
+                    <Input disabled v-model="item.title" style="width:150px;margin-left:10px"></Input>
                     <span style="margin-left:20px;">属性内容:</span>
-                    <Input v-model="item.explain" style="width:300px;"></Input>
+                    <Input disabled v-model="item.content" style="width:300px;margin-left:10px"></Input>
                 </div>
                 <Button style="width:150px;margin:10px 0;" type="primary" @click="openCustom" ghost>新增自定义属性</Button>
             </div>
@@ -71,9 +71,9 @@
                 </template>
             </Table>
 
-            <Modal class-name="vertical-center-modal" title='新增自定义属性' v-model="showCustom" :width='867'>
+            <Modal class-name="vertical-center-modal" title='新增自定义属性' v-model="showCustom" :width='867' @on-ok="saveCustom">
                 <div class="modal-custom">
-                    <div class="modal-custom-item" v-for="(item,index) of info.remark" :key="index">
+                    <div class="modal-custom-item" v-for="(item,index) of coustom" :key="index">
                         <div class="left">
                             {{'自定义属性:'+(index+1)}}
                         </div>
@@ -81,11 +81,11 @@
                             <Input v-model="item.title" style="width:200px;" placeholder="请输入属性名称"></Input>
                             <Input v-model="item.content" style="width:400px;" placeholder="请输入属性内容"></Input>
                         </div>
-                        <Icon @click="delItems(index,info.remark)" size='20' class="delete-img" type="ios-close-circle" />
+                        <Icon @click="delItems(index,coustom)" size='20' class="delete-img" type="ios-close-circle" />
                     </div>
                     <div class="modal-custom-add">
-                        <Icon @click="addCustom" size='50' type="ios-add" />
-                        <span>添加自定义属性</span>
+                        <Icon @click="addCustom"  size='50' type="ios-add" />
+                        <span @click="addCustom">添加自定义属性</span>
                     </div>
                 </div>
             </Modal>
@@ -105,7 +105,7 @@ export default {
             productFiled:[],
             measureList:[],//基础测量展示字段(仅展示)
             tableColums:[
-                {title:'部件名称',align:'center',key:'part_name'},
+                {title:'部件名称',align:'center',key:'title'},
                 {title:'长(L)',align:'center',key:'formula_l'},
                 {title:'宽(W)',align:'center',key:'formula_w'},
                 {title:'高(H)',align:'center',key:'formula_h'},
@@ -123,12 +123,14 @@ export default {
                 part:[],//部件,
                 remark:[],//自定义属性列表
                 id:'',
-            }
+            },
+            coustom:[]
         }
     },
     mounted(){
         this.type = this.$route.query.type||1;
         this.id = this.$route.query.id||null;
+        this.type == 1 ? this.info.bp_id = this.$route.query.back_id*1 : this.info.bp_id;
         if(this.id){
             this.getData(this.id)
         }
@@ -137,6 +139,7 @@ export default {
         }
         this.getProductFiledData();
         this.getMeasureList()
+        
     },
     methods:{
         postData(){
@@ -146,14 +149,20 @@ export default {
             data.part = JSON.stringify(data.part)
             data.remark = JSON.stringify(data.remark)
             this.axios.post('/api/product',data).then(res=>{
-                if(res.data.code == 200){
+                if(res.code == 200){
                     this.$Message.success(res.msg)
+                    this.back()
                 }
             })
         },
         back(){
             this.$router.push({
-                name:'Products'
+                path:'/cms/product/index',
+                query:{
+                    id:this.$route.query.back_id ? this.$route.query.back_id : '',
+                    title:this.$route.query.title||''
+                }
+                
             })
         },
         goPage(n,row){
@@ -172,13 +181,16 @@ export default {
             arr.splice(n,1)
         },
         addCustom(){//添加自定义属性
-            this.info.remark.push({style:'',explain:''})
+            // this.info.remark.push({style:'',explain:''});
+            this.coustom.push({title:'',content:''})
+        },
+        saveCustom(){
+            this.info.remark = this.info.remark.concat(this.coustom);
         },
         postImg(file){
             let formData = new FormData()
             formData.append('file',file)
             this.axios.post('/api/upload_pic',formData).then(res=>{
-                console.log(res)
                 this.info.img.push(res.data.url)
             })
         },
@@ -192,20 +204,17 @@ export default {
         },
         getProductFiledData(){
             this.axios('/api/basics_product_index').then(res=>{
-                this.productFiled = res.data;
+                this.productFiled = res.data.data;
             })
         },
         getMeasureList(){
             this.axios('/api/basics_measure_index').then(res=>{
-                this.measureList = res.data;
-                console.log(this.measureList)
+                this.measureList = res.data.data;
             })
         },
         getData(row){
-            
             this.axios('/api/product',{params:{id:row}}).then(res=>{
                 this.info = res.data;
-                this.$loading.hide()
             })
         },
     }

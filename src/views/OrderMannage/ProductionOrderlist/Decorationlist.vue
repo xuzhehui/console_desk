@@ -65,7 +65,7 @@ export default {
                 {title:'预估房间工期',align:'center',key:'number'},
                 
             ],
-            tableData:[{type:'123'}],
+            tableData:[],
             pageIndex:1,
             total:100,
         }

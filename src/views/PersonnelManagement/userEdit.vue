@@ -39,14 +39,15 @@
         </div>
 
         <div class="approval">
-            <div class="items" v-for="item of info.flow" :key="item.level">
-                <span>{{item.level}}级审批员</span>
+            <div class="items" v-for="(item,index) of info.flow" :key="item.level">
+                <Icon size='20' @click="delItems(index,info.flow)" class="delete-img" type="ios-close-circle" />
+                <span>{{item.level}}级{{item.type == 1 ? '测量' : '审批'}}审批员</span>
                 <Select
                     v-model="item.flow_user"
                     filterable
                     remote
                     :remote-method='romoteFn'>
-                    <Option v-for="(option, index) in approvalList" :value="option.id" :key="index">{{option.account}}</Option>
+                    <Option v-for="(option, index) in approvalList" :value="option.id" :key="index">{{option.nickname}}</Option>
                 </Select>
             </div>
             <div class="item-add" @click="addApproval">
@@ -94,8 +95,9 @@ export default {
         postData(){
             let op = this.type == 1 ? 'add' : 'edit';
             this.info.op = op;
-            this.info.flow = JSON.stringify(this.info.flow)
-            this.axios.post('/api/user',this.info).then(res=>{
+            let postInfo = JSON.parse(JSON.stringify(this.info));
+            postInfo.flow = JSON.stringify(postInfo.flow)
+            this.axios.post('/api/user',postInfo).then(res=>{
                 this.$Message.success(res.msg||'新增成功')
                 this.back()
             })
@@ -110,7 +112,7 @@ export default {
         },
         getapprovalList(){
             this.axios('/api/user').then(res=>{
-                this.approvalList = res.data;
+                this.approvalList = res.data.data;
             })
         },
         
@@ -120,7 +122,10 @@ export default {
         addApproval(){
             let len = this.info.flow.length
             this.info.flow.push({type:this.approvalType,level:len+1,flow_user:null})
-        }
+        },
+        delItems(n,arr){
+            arr.splice(n,1)
+        },
     }
 }
 </script>
@@ -130,6 +135,7 @@ export default {
     .item-add{width:340px;height:120px;display: flex;flex-direction: column;justify-content: center;align-items: center;border:1px dotted #DEDEDE ;
         border-radius:5px;
     }
-    .items{width:340px;height:120px;margin-right:10px;display: flex;flex-direction: column;justify-content: center;background:#F4F5F7;padding:0 20px;margin-bottom:10px;}
+    .items{width:340px;height:120px;margin-right:10px;display: flex;flex-direction: column;justify-content: center;background:#F4F5F7;padding:0 20px;margin-bottom:10px;position: relative;}
 }
+.delete-img{position:absolute;right:10px;top:10px;color:red;}
 </style>

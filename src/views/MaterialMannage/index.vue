@@ -1,7 +1,7 @@
 <template>
     <div>
         <FullPage 
-        title='木材'
+        :title='$route.query.title'
         :list='list' 
         @init='init' 
         :loading='loading'
@@ -17,11 +17,11 @@
                 <Button @click="goDetial(1)" type="primary" ghost icon='md-add'>新增物料</Button>
             </div>
             
-            <template slot='set' slot-scope='row'>
+            <template slot='set' slot-scope='{row}'>
                 <div>
-                    <Icon @click="goDetial(2,row.row)" size='20' style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
-                    <Icon @click="goDetial(3,row.row)" size='20' style="margin-right:10px;color:#32C800;cursor:pointer" type="ios-paper-outline" />
-                    <Icon size='20' style="color:red;cursor:pointer"  type="ios-trash-outline" />
+                    <Icon @click="goDetial(2,row)" size='20' style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
+                    <Icon @click="goDetial(3,row)" size='20' style="margin-right:10px;color:#32C800;cursor:pointer" type="ios-paper-outline" />
+                    <Icon @click="delItems(row)" size='20' style="color:red;cursor:pointer"  type="ios-trash-outline" />
                 </div>
             </template>
         </FullPage>
@@ -59,10 +59,17 @@ export default {
             proxyObj:{},
         }
     },
+    watch:{
+        $route(to){
+            this.proxyObj.type_id = to.query.id;
+            this.getData(this.proxyObj)
+        }
+    },
     methods:{
         init(row){
             row.page_index = this.pageIndex;
             row.page_size = this.pageSize;
+            row.type_id = this.$route.query.id;
             this.proxyObj = row
             this.getData(row)
         },
@@ -89,9 +96,27 @@ export default {
         goDetial(n,row){// n = 1 新增 2 编辑 3 查看 
             let id = row ? row.id : ''
             this.$router.push({
-                path:`/cms/materialmannage/edit?id=${id}&type=${n}`,
+                path:`/cms/materialmannage/edit`,
+                query:{
+                    id:id,
+                    type:n,
+                    back_id:this.$route.query.id
+                }
             })
-        }
+        },
+        delItems(row){
+            this.confirmDelete({
+                content:'确认删除么？',
+                then:()=>{
+                    this.axios.post('/api/material',{id:row.id,state:0}).then(res=>{
+                        if(res.code == 200){
+                            this.$Message.success(res.msg)
+                            this.getData(this.proxyObj)
+                        } 
+                    })
+                }
+            })
+        },
     }
 }
 </script>

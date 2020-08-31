@@ -187,7 +187,7 @@ export default {
             this.showOrderMenu = true;
         },
         getUsers(){
-            this.axios('/api/user').then(res=>this.users = res.data)
+            this.axios('/api/user').then(res=>this.users = res.data.data)
         },
         sendDispatchInfo(){
             try{

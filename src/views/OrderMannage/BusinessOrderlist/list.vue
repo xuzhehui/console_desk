@@ -23,12 +23,12 @@
                 <Button @click="addOrder(1)" type="primary" ghost icon='ios-cog'>新增订单</Button>
             </div>
             
-            <template slot='set' slot-scope='row'>
+            <template slot='set' slot-scope='{row}'>
                 <div>
-                    <a @click="openLower(row.row)" style="margin:0 5px">下测量</a>
-                    <a style="margin:0 5px" @click="addOrder(2,row.row)">编辑</a>
-                    <a style="margin:0 5px" @click="goDetial(row.row)">详情</a>
-                    <a style="margin:0 5px">删除</a>
+                    <a @click="openLower(row)" style="margin:0 5px">下测量</a>
+                    <a style="margin:0 5px" @click="addOrder(2,row)">编辑</a>
+                    <a style="margin:0 5px" @click="goDetial(row)">详情</a>
+                    <a style="margin:0 5px" @click="delItems(row)">删除</a>
                 </div>
             </template>
 
@@ -131,12 +131,13 @@ export default {
             this.loading = true;
             this.axios('/api/order_index',{params:row}).then(res=>{
                 this.loading = false;
-                res.data.data.map(v=>{
+                // if(!res.data.data){return this.$Message.error('列表数据返回格式不正确')}
+                res.data.map(v=>{
                     v.show_type = v.type == 1 ? '业务订单' : '代理商订单'
                     v.show_state = v.state == 0 ? '未审核' : (v.state == 1 ? '审核中' : (v.state == 2 ? '审核通过' : (v.state == 3 ? '订单生产中' : '完成'))),
                     v.show_warning_state = v.warning_state == 0 ? '不急' : (v.warning_state == 1 ? '比较急' : (v.warning_state == 2 ? '紧急' : '非常急'))
                 })
-                this.tableData = res.data.data;
+                this.tableData = res.data;
                 this.total = res.data.total;
             })
         },
@@ -175,7 +176,7 @@ export default {
             if(!row){return this.$Message.warning('请至少选择一项')}
             this.postInfo.id = Array.isArray(row) ? row.join(',') : row.id
             this.show_lower = true;
-            this.axios('/api/user').then(res=>this.users = res.data)
+            this.axios('/api/user').then(res=>this.users = res.data.data)
         },
         lowerMeter(postData){
             try{
@@ -195,6 +196,19 @@ export default {
             let result = [];
             e.map(v=>result.push(v.id))
             this.selectIds = result;
+        },
+        delItems(row){
+            this.confirmDelete({
+                content:'确认删除么？',
+                then:()=>{
+                    this.axios.post('/api/basics_material_del',{id:row.id,state:0}).then(res=>{
+                        if(res.code == 200){
+                            this.$Message.success(res.msg)
+                            this.getData(this.proxyObj)
+                        } 
+                    })
+                }
+            })
         },
     }
 }

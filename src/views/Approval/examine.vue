@@ -61,7 +61,7 @@
                         </th>
                         <th style="width:40%;">
                             <tr>D19140</tr>
-                            <tr v-for="item of left_table" :key="item.id">{{item.title}}</tr>
+                            <tr v-for="item of left_table" :key="item.id">{{item.nickname}}</tr>
                             <tr>2020-8-20</tr>
                         </th>
                         <th style="width:10%;background:#F4F8FF">
@@ -71,7 +71,7 @@
                         </th>
                         <th>
                             <tr>{{func.replaceDate(examMineData.crt_time)}}</tr>
-                            <tr v-for="item of right_table" :key="item.id">{{item.title}}</tr>
+                            <tr v-for="item of right_table" :key="item.id">{{item.nickname}}</tr>
                             <tr>否</tr>
                         </th>
                     </table>
@@ -83,13 +83,13 @@
                 <div class="time-ling-box">
                     <Timeline>
                         <TimelineItem :color='index == 0 ? "#2d8cf0" : "#c5c8ce" ' v-for="(item,index) of reverseArray" :key=item.id>
-                            <p class="time">{{item.time}}</p>
+                            <p class="time">{{item.crt_time}}</p>
                             <div class="content">
                                 <div>
-                                    <div>审批人：{{item.approve_user||'暂无数据'}}</div>
+                                    <div>审批人：{{item.nickname||'暂无数据'}}</div>
                                     <div>审批流程：{{item.content||'暂无数据'}}</div>
                                     <div>订单号：{{item.order_no}}</div>
-                                    <div>用时：{{item.time||'暂无数据'}}</div>
+                                    <div>用时：{{item.time+'分钟'||'暂无数据'}}</div>
                                 </div>
                             </div>
                         </TimelineItem>
@@ -151,7 +151,7 @@ export default {
                 this.current = this.examMineData.orders_oa.length-2||0;
                 this.reverseArray = copyData.orders_oa.reverse();
                 this.reverseArray.map(v=>{
-                    v.time = this.func.replaceDate(v.upt_time)
+                    v.crt_time = this.func.replaceDate(v.crt_time*1)
                 })
             })
         },

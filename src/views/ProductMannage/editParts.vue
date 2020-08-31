@@ -70,7 +70,7 @@ export default {
         getPartsData(row){
             this.axios('/api/basics_parts_index').then(res=>{
                 console.log(res)
-                this.partsList = res.data
+                this.partsList = res.data.data
             })
         },
         postData(){

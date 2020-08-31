@@ -71,10 +71,17 @@ export default {
     mounted(){
         console.log(this.$route.query)
     },
+    watch:{
+        $route(to){
+            this.proxyObj.type_id = to.query.id;
+            this.getData(this.proxyObj)
+        }
+    },
     methods:{
         init(row){
             row.page_index = this.pageIndex;
             row.page_size = this.pageSize;
+            row.type_id = this.$route.query.id;//产品管理因为无法使用id 所以用type_id替代
             this.proxyObj = row
             this.getData(row)
         },
@@ -115,7 +122,9 @@ export default {
                 path:'/cms/product/edit',
                 query:{
                     type:n,
-                    id:id
+                    id:id,
+                    back_id:this.$route.query.id,
+                    title:this.$route.query.title,
                 }
             })
         }

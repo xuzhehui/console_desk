@@ -132,7 +132,7 @@ export default {
         },
         getParts(){
             this.axios('/api/parts_index').then(res=>{
-                this.partsList = res.data
+                this.partsList = res.data.data
             })
         },
         editRouter(){

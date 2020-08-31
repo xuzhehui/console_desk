@@ -17,7 +17,7 @@ let config = {
 //请求拦截，后期可能会用到，先注册在此
 instance.interceptors.request.use(function (config) {
     Vue.prototype.$loading.show()
-    let token = sessionStorage.getItem('token');
+    let token = localStorage.getItem('token');
     let proxy_url = 'http://121.41.102.225:82'//打包上线时请改用此处
     // let proxy_url = '/proxy'//打包上线时此处请注释掉
     config.url = proxy_url+config.url;
