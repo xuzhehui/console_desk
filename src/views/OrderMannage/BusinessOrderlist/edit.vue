@@ -311,8 +311,6 @@ export default {
         
     },
     destroyed(){
-        console.log(111)
-        this.$loading.hide()
     },
     mounted(){
         this.type = this.$route.query.type
@@ -372,7 +370,6 @@ export default {
         changeProduct(row,n){
             
             this.axios('/api/order_product_detail',{params:{id:row}}).then(res=>{
-                console.log(res.data)
                 if(res.code == 200){
                     let data = res.data.product;
                     for(let i in data){

@@ -33,6 +33,11 @@
                         <FormItem label="产品分类名称：">
                             <Input placeholder="请输入产品分类名称" v-model="classInfo.title"/>
                         </FormItem>
+                        <FormItem label="父级名称：">
+                            <Select v-model="classInfo.p_id">
+                                <Option v-for="item of parentIds" :value="item.id" :key="item.id" :label="item.title"></Option>
+                            </Select>
+                        </FormItem>
                         <FormItem label="基础测量字段：">
                             <CheckboxGroup v-model="classInfo.measure_id">
                                 <Checkbox style="margin-right:10px;margin-bottom:10px;" v-for="item of measureList" :key="item.id" :label="item.id" border>
@@ -48,6 +53,7 @@
 </template>
 
 <script>
+import {mapActions} from 'vuex'
 export default {
     data(){
         return {
@@ -72,9 +78,11 @@ export default {
             measureList:[],//测量字段列表
             proxyObj:{},
             loading:false,
+            parentIds:[],
         }
     },
     methods:{
+        ...mapActions(['undata_navData']),
         init(row){
             row.page_index = this.pageIndex;
             row.page_size = this.pageSize;
@@ -94,6 +102,11 @@ export default {
                 this.measureList = res.data.data;
             })
         },
+        getParent(){
+            this.axios('/api/basics_product_list').then(res=>{
+                this.parentIds = res.data;
+            })
+        },
         changePage(e){
             this.pageIndex = e;
             this.proxyObj.page_index = this.pageIndex;
@@ -107,6 +120,7 @@ export default {
         addItems(obj){
             this.showModal = true;
             this.getMeasure()
+            this.getParent()
             if(obj.id){
                 this.showType=2
                 this.classInfo.id = obj.id;
@@ -125,6 +139,7 @@ export default {
             this.axios.post(post_url,post_data).then(res=>{
                 this.$Message.success(res.msg)
                 this.getData(this.searchObj)
+                this.undata_navData()
             })
         },
         vivibleModal(e){
@@ -138,6 +153,7 @@ export default {
                         if(res.code == 200){
                             this.$Message.success(res.msg)
                             this.getData(this.proxyObj)
+                            this.undata_navData()
                         } 
                     })
                 }

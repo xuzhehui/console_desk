@@ -39,17 +39,24 @@
                 <Input :disabled='type == 3 ? true : false' v-model="info.warning_number" placeholder="请输入预警值"/>
             </FormItem>
             <FormItem label="公式">
-                <Input :disabled='type == 3 ? true : false' v-model="info.formula" placeholder="请输入公式"/>
+                <Input :disabled='type == 3 ? true : false' @on-focus="popKeyBoard" v-model="info.formula" placeholder="请输入公式"/>
             </FormItem>
             <FormItem label="描述">
                 <Input :disabled='type == 3 ? true : false' v-model="info.remark" placeholder="请输入描述"/>
             </FormItem>
         </Form>
+        <Modal v-model="showKey" :width="1300" :mask-closable='false' :closable='false'>
+            <div>
+                 <KeyBoard @cancel='successKey' @success='successKey' class='key-co'/>
+            </div>
+            <div slot='footer'></div>
+        </Modal>
     </div>
 </template>
 
 <script>
 import Toptitle from '../../components/TopTitle/index'
+import KeyBoard from '../../components/keyboard/index'
 export default {
     data(){
         return {
@@ -57,8 +64,10 @@ export default {
             info:{},
             id:null,
             materialList:[],
+            showKey:false,
         }
     },
+    components:{KeyBoard},
     mounted(){
         this.type = this.$route.query.type;
         this.id = this.$route.query.id||''
@@ -88,7 +97,14 @@ export default {
         },
         back(){
             this.$router.go(-1)
-        }
+        },
+        successKey(str){
+            this.info.formula = str;
+            this.showKey = false;
+        },
+        popKeyBoard(){
+            this.showKey = true;
+        },
     }
 }
 </script>

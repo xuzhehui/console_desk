@@ -67,9 +67,9 @@ export default {
                 {title:'测量开始时间',align:'center',key:'crt_time'},
                 {title:'测量结束时间',align:'center',key:'upd_time'},
                 {title:'实际完成时间',align:'center',key:'upd_time'},
-                {title:'订单状态',align:'center',key:'state'},
+                {title:'订单状态',align:'center',key:'show_sub_state'},
                 {title:'备注',align:'center',key:'remark'},
-                {title:'操作',align:'center',slot:'set',width:'220'},
+                {title:'操作',align:'center',slot:'set',width:'250'},
             ],
             tableData:[],
             pageIndex:1,
@@ -89,11 +89,9 @@ export default {
         init(row){
             row.page_index = this.pageIndex;
             row.page_size = this.pageSize;
+            row.sub_state = 2;
             this.proxyObj = row
-            this.getData(row)
-        },
-        searchData(row){
-            this.getData(row)
+            this.getData(this.proxyObj)
         },
         getData(row){
             this.loading = true;
@@ -101,7 +99,9 @@ export default {
                 this.loading = false;
                 if(!res.data.data){return this.$Message.error('列表数据返回格式不正确')}
                 res.data.data.map(v=>{
-                    v.show_type = v.type == 1 ? '业务订单' : '代理商订单'
+                    v.show_type = v.type == 1 ? '业务订单' : '代理商订单';
+                    v.show_sub_state = v.sub_state == 0 ? '测量未审核' : (v.sub_state == 1 ? '测量审核' : 
+                    (v.sub_state == 2 ? '测量通过' : (v.sub_state == 3 ? '生产审核中' : (v.sub_state == 4 ? '生产通过' : '到生产计划'))))
                 })
                 this.tableData = res.data.data;
                 this.total = res.data.total;
@@ -128,7 +128,6 @@ export default {
             })
         },
         approvalDetails(row){
-            console.log(row)
             this.$router.push({
                 path:'/cms/approval/examine',
                 query:{

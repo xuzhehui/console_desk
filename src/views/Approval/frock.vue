@@ -75,7 +75,7 @@ export default {
         },
         getData(row){
             this.axios('/api/order_industry_list',{params:row}).then(res=>{
-                this.tableData = res.data.data.oil;
+                this.tableData = res.data.oil;
                 this.logList = res.data.detail;
                 this.total = res.data.total;
             })

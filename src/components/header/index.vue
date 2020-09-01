@@ -52,10 +52,9 @@ export default {
         loginOut(){
             this.axios.post('/api/login_out').then(res=>{
                 if(res.code == 200){
-                    this.$Message.success(res.msg);
-                    this.$router.push({
-                        name:'Login'
-                    })
+                    this.$Message.success(res.msg||'已退出登录');
+                    localStorage.removeItem('token')
+                    setTimeout(()=>this.$router.push({name:'Login'}),500)
                 }
             })
         },

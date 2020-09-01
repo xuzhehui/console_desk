@@ -94,7 +94,6 @@ export default {
             this.$emit('selectTable',e)
         },
         changeSize(e){
-            console.log(e)
             this.$emit('changeSize',e)
         }
     }

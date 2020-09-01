@@ -47,16 +47,16 @@
                             <p>工序：{{12}}</p>
                             <p>价值：{{12}}</p>
                         </div>
-                        <Tag color="primary" type="border" closable>标签四</Tag>
+                        <Tag @on-close='closeTag(key,selectTags)' v-for="(item,key) of selectTags" :key="key" color="primary" type="border" closable>{{item.title}}</Tag>
                     </Tooltip>
                 </div>
             </div>
             <div class="pro-select" v-for="(item,index) of info.bps" :key="index">
-                <div>{{item.title}}：</div>
+                <div>{{item.name}}：</div>
                 <div>
-                    <CheckboxGroup v-model="item.select">
-                        <Checkbox style="padding:0px 5px;" v-for="_item of item.cld" :key='_item.id'  :label="_item.id" border>{{_item.title}}</Checkbox>
-                    </CheckboxGroup>
+                    <!-- <CheckboxGroup @on-change="changeGroup($event,item)" v-model="item.select"> -->
+                    <Checkbox @on-change="changeCheck($event,_item,selectTags)" v-model="_item.show" style="padding:0px 5px;" v-for="(_item,_index) of item.cld" :key='_index'  border>{{_item.title}}</Checkbox>
+                    <!-- </CheckboxGroup> -->
                 </div>
             </div>
         </Modal>
@@ -96,6 +96,17 @@ export default {
                 this.info.list = res.data;
             });
             this.axios('/api/bpp_list').then(res=>{
+                res.data.map(v=>{
+                    if(v.select){
+                        v.cld.map(z=>{
+                            v.select.map(k=>{
+                                z.show = k == z.id ? true : false
+                            })
+                        })
+                    }else{
+                        v.cld.map(v=>v.show = false)
+                    }
+                })
                 this.info.bps = res.data;
             })
         }
@@ -110,14 +121,14 @@ export default {
             let data = JSON.parse(JSON.stringify(this.info))
             let properties = [],procedure = [];
             data.list.map(v=>v.select ? procedure.push(v.select) : '')
-            data.bps.map(v=>{
-                if(v.select){
-                    properties = properties.concat(v.select)
-                }
+            this.selectTags.map(v=>{
+                properties.push(v.id)
             })
+            delete data.list
+            delete data.bps
             data.properties = properties.join(',')
             data.procedure = procedure.join(',')
-            this.axios.post('api/process_route_save',data).then(res=>{
+            this.axios.post('/api/process_route_save',data).then(res=>{
                 if(res.code == 200){
                     this.$Message.success(res.msg)
                     setTimeout(()=>{this.back()},500)
@@ -126,7 +137,6 @@ export default {
         },
         getData(row){
             this.axios('/api/process_route_detail',{params:{id:row}}).then(res=>{
-                console.log(res)
                 this.info = res.data
             })
         },
@@ -137,6 +147,20 @@ export default {
         },
         editRouter(){
             this.show_add = true;
+        },
+        changeCheck(e,item,selectArray){
+            item.show = e;
+            
+            if(e){
+                selectArray.push(item)
+            }else{
+                let id = item.id;
+                let id_index = selectArray.findIndex(v=>v.id=id)
+                selectArray.splice(id_index,1)
+            }
+        },
+        closeTag(key,arr){
+            arr.splice(key,1)
         }
     },
 }
@@ -149,11 +173,7 @@ export default {
 .hierarchy{
     .radio-g{padding:10px 0;}
 }
-.vertical-center-modal{display: flex;align-items: center;justify-content: center;
-    .ivu-modal{top: 0;}
-}
+.vertical-center-modal{display: flex;align-items: center;justify-content: center;.ivu-modal{top: 0;}}
 .modal-tags{display: flex;align-items: center;}
-.pro-select{display: flex;padding:10px 0;
-    
-}
+.pro-select{display: flex;padding:10px 0;align-items:center;}
 </style>

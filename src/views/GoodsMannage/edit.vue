@@ -110,7 +110,6 @@ export default {
             this.$router.go(-1)
         },
         addAgent(){
-            console.log(this.info)
             this.info.agent.push({id:'',price:''})
         },
         changeSelect(e){

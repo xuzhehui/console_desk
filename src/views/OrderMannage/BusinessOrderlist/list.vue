@@ -7,6 +7,7 @@
         :loading='loading' 
         @searchData='init' 
         @changePage='changePage'
+        @changeSize='changeSize'
         @selectTable='selectTable'
         :tableColums='tableColums'
         :tableData='tableData'
@@ -78,7 +79,24 @@ export default {
             list:[
                 {title:'订单编号',name:'Input',placeholder:'请输入订单编号',value:'',serverName:'order_no'},
                 {title:'小区名字',name:'Input',placeholder:'请选择',value:'',serverName:'residential_name'},
-                {title:'出库日期范围',name:'Input',start_server:'start_time',end_server:'end_time',start_value:'',end_value:'',isDate:true,start_placeholder:'开始日期',end_placeholder:'结束日期'},
+                {title:'客户昵称',name:'Input',placeholder:'请选择',value:'',serverName:'client_name'},
+                {title:'手机号',name:'Input',placeholder:'请选择',value:'',serverName:'mobile'},
+                {title:'订单状态',name:'Select',placeholder:'请选择',serverName:'sub_state',value:'',
+                    option:[
+                        {label:'测量未审核',value:0},
+                        {label:'测量审核',value:1},
+                        {label:'测量通过',value:2},
+                        {label:'生产审核中',value:3},
+                        {label:'生产通过',value:4},
+                        {label:'到生产计划',value:5},
+                    ]
+                },
+                {title:'订单类型',name:'Select',placeholder:'请选择',serverName:'type',value:'',
+                    option:[
+                        {label:'业务订单',value:1},
+                        {label:'代理商订单',value:2},
+                    ]
+                },
                 {title:'紧急程度',name:'Select',placeholder:'请选择',serverName:'warning_state',value:'',
                     option:[
                         {label:'不急',value:0},
@@ -124,20 +142,21 @@ export default {
             row.page_index = this.pageIndex;
             row.page_size = this.pageSize;
             this.proxyObj = row
-            console.log(row)
             this.getData(row)
         },
         getData(row){
             this.loading = true;
             this.axios('/api/order_index',{params:row}).then(res=>{
                 this.loading = false;
-                // if(!res.data.data){return this.$Message.error('列表数据返回格式不正确')}
-                res.data.map(v=>{
+                if(!res.data.data){return this.$Message.error('列表数据返回格式不正确')}
+                res.data.data.map(v=>{
                     v.show_type = v.type == 1 ? '业务订单' : '代理商订单'
-                    v.show_state = v.state == 0 ? '未审核' : (v.state == 1 ? '审核中' : (v.state == 2 ? '审核通过' : (v.state == 3 ? '订单生产中' : '完成'))),
+                    v.show_state = v.state == 0 ? '未审核' : (v.state == 1 ? '审核中' : (v.state == 2 ? '审核通过' : (v.state == 3 ? '订单生产中' : '完成')))
                     v.show_warning_state = v.warning_state == 0 ? '不急' : (v.warning_state == 1 ? '比较急' : (v.warning_state == 2 ? '紧急' : '非常急'))
+                    v.show_sub_state = v.sub_state == 0 ? '测量未审核' : (v.sub_state == 1 ? '测量审核' : 
+                    (v.sub_state == 2 ? '测量通过' : (v.sub_state == 3 ? '生产审核中' : (v.sub_state == 4 ? '生产通过' : '到生产计划'))))
                 })
-                this.tableData = res.data;
+                this.tableData = res.data.data;
                 this.total = res.data.total;
             })
         },

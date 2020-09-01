@@ -41,6 +41,7 @@
 </template>
 
 <script>
+import {mapActions} from 'vuex'
 export default {
     data(){
         return {
@@ -65,6 +66,7 @@ export default {
         }
     },
     methods:{
+        ...mapActions(['undata_navData']),
         init(row){
             row.page_size = this.pageSize;
             row.page_index = this.pageIndex;
@@ -94,6 +96,7 @@ export default {
             this.axios.post(post_url,this.classInfo).then(res=>{
                 this.$Message.success(res.msg)
                 this.getData(this.searchObj)
+                this.undata_navData()
             })
         },
         vivibleModal(e){
@@ -123,6 +126,7 @@ export default {
                         if(res.code == 200){
                             this.$Message.success(res.msg)
                             this.getData(this.proxyObj)
+                            this.undata_navData()
                         } 
                     })
                 }

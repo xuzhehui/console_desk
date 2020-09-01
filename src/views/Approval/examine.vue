@@ -29,7 +29,7 @@
                             <tr>{{examMineData.order_no}}</tr>
                             <tr>工装</tr>
                             <tr>{{examMineData.predict_price}}</tr>
-                            <tr>{{func.replaceDate(examMineData.crt_time)}}</tr>
+                            <tr>{{func.replaceDate(examMineData.crt_time*1)}}</tr>
                             <tr>{{func.replaceDate(examMineData.upt_time)}}</tr>
                         </th>
                         <th style="width:10%;background:#F4F8FF">
@@ -70,7 +70,7 @@
                             <tr>通知他人</tr>
                         </th>
                         <th>
-                            <tr>{{func.replaceDate(examMineData.crt_time)}}</tr>
+                            <tr>{{func.replaceDate(examMineData.crt_time*1)}}</tr>
                             <tr v-for="item of right_table" :key="item.id">{{item.nickname}}</tr>
                             <tr>否</tr>
                         </th>
@@ -134,7 +134,6 @@ export default {
         },
         getDetails(id){
             this.axios('/api/order_oa_list',{params:{id:id}}).then(res=>{
-                console.log(res)
                 let copyData = JSON.parse(JSON.stringify(res.data))
                 res.data.orders_oa.map((v,i)=>{
                     if((i+1)%2){
@@ -186,7 +185,7 @@ export default {
 <style lang="scss" scoped>
 table { border-collapse: collapse;text-align:center;width:100%;border:1px solid #DEDEDE;
     th{border-right:1px solid #DEDEDE;
-        tr{display: flex;flex-direction:column;border-bottom:1px solid #DEDEDE;padding:10px;align-items:center;
+        tr{display: flex;flex-direction:column;border-bottom:1px solid #DEDEDE;padding:10px;align-items:center;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;
             &:last-child{border-bottom: none;}
         }
     }

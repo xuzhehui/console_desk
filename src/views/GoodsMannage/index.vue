@@ -67,7 +67,6 @@ export default {
     
     methods:{
         init(row){
-            console.log(row)
             row.page_index = this.pageIndex;
             row.page_size = this.pageSize;
             this.proxyObj = row;

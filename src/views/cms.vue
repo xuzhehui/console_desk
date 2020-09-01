@@ -18,7 +18,7 @@
 import Header from '../components/header/index'
 import Navgation from '../components/navgation/index'
 import Crumbs from '../components/crumbs/index'
-import {mapState,mapMutations} from 'vuex'
+import {mapState,mapMutations,mapActions} from 'vuex'
 export default {
     data(){
         return {
@@ -37,7 +37,7 @@ export default {
         ...mapState(['navgationData','crumbs'])
     },
     created(){
-        this.getMenuData()
+        this.undata_navData()
     },
     mounted(){
         if(sessionStorage.getItem('crumbs')){
@@ -47,6 +47,7 @@ export default {
     },
     methods:{
         ...mapMutations(['updateCrumbs']),
+        ...mapActions(['undata_navData']),
         menuSelect(name,data){
             sessionStorage.setItem('open-menu',name)
             sessionStorage.removeItem('crumbs')
@@ -66,30 +67,6 @@ export default {
                 }
             })
         },
-        deepObjToArray(obj){
-            let result = Object.values(obj);
-            result.map(v=> this.func.isType(v.sub) == 'Object' ? v.sub = this.deepObjToArray(v.sub) : '' )
-            return result
-        },
-        deepData(row){
-           row.map(v=>{
-               if(v.sub_action!=0){
-                   v.sub.map(k=>k.page=v.page)
-                   v.page = '';
-               }
-               v.page = ''
-           })
-           return row
-        },
-
-        getMenuData(){
-            this.axios('/api/menu').then(res=>{
-                let result = this.deepObjToArray(res.data)
-                result = this.deepData(result)
-                this.$store.state.navgationData = result;
-                
-            })
-        }
     },
     components:{Header,Navgation,Crumbs}
 }

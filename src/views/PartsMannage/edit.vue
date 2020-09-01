@@ -82,7 +82,6 @@ export default {
         }
     },
     mounted(){
-        console.log(this.$route.params)
         this.getParoducts()
         this.type = this.$route.query.type||this.$route.params.type;
         this.id = this.$route.query.id||this.$route.params.id;
@@ -114,7 +113,6 @@ export default {
             for(let i in postInfo){
                 i == 'detail' ? sendData.detail = postInfo['detail'] : sendData.top[i] = postInfo[i]
             }
-            console.log(sendData)
             this.axios.post('/api/parts_save',sendData).then(res=>{
                 if(res.code == 200){
                     this.$Message.success(res.msg)

@@ -49,6 +49,7 @@
 </template>
 
 <script>
+import {mapActions} from 'vuex'
 export default {
     data(){
         return {
@@ -74,6 +75,7 @@ export default {
         }
     },
     methods:{
+        ...mapActions(['undata_navData']),
         init(row){
             row.page_size = this.pageSize;
             row.page_index = this.pageIndex;
@@ -130,7 +132,8 @@ export default {
             }
             this.axios.post(post_url,post_data).then(res=>{
                 this.$Message.success(res.msg)
-                this.getData()
+                this.getData(this.proxyObj)
+                this.undata_navData()
             })
         },
         addAttr(n){
@@ -144,6 +147,7 @@ export default {
                         if(res.code == 200){
                             this.$Message.success(res.msg)
                             this.getData(this.proxyObj)
+                            this.undata_navData()
                         } 
                     })
                 }

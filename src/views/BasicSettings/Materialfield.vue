@@ -42,6 +42,7 @@
 </template>
 
 <script>
+import {mapActions} from 'vuex'
 export default {
     data(){
         return {
@@ -70,6 +71,7 @@ export default {
     },
     
     methods:{
+        ...mapActions(['undata_navData']),
         init(row){
             row.page_index = this.pageIndex;
             row.page_size = this.pageSize;
@@ -113,6 +115,7 @@ export default {
                         if(res.code == 200){
                             this.$Message.success(res.msg)
                             this.getData(this.proxyObj)
+                            this.undata_navData()
                         } 
                     })
                 }
@@ -131,6 +134,7 @@ export default {
             this.axios.post(post_url,this.classInfo).then(res=>{
                 this.$Message.success(res.msg)
                 this.getData(this.searchObj)
+                this.undata_navData()
             })
         }
     }
@@ -138,13 +142,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.nav{display: flex;justify-content: space-between;align-items: center;}
-.vertical-center-modal{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        .ivu-modal{
-            top: 0;
-        }
-    }
+// .nav{display: flex;justify-content: space-between;align-items: center;}
 </style>

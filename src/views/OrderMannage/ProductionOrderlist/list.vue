@@ -115,7 +115,6 @@ export default {
             })
         },
         goDetial(row){
-            console.log(row)
             this.$router.push({
                 path:'/cms/ordermannage/productionorderlist/decorationlist',
                 query:{

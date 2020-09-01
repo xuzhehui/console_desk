@@ -79,8 +79,8 @@ export default {
              
         },
         getData(row){
-            this.axios('/api/basics_parts_index').then(res=>{
-                this.perSonnel = res.data;
+            this.axios('/api/basics_procedure_index').then(res=>{
+                this.perSonnel = res.data.data;
             })
         },
         getDetails(row){

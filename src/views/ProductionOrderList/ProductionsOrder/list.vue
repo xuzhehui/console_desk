@@ -105,7 +105,8 @@ export default {
             planInfo:{
                 id:null,
                 start_time:'',
-                end_time:''
+                end_time:'',
+                state:3,
             }
         }
     },
