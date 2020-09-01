@@ -103,7 +103,6 @@ export default {
         },
         goPage(n,row){
             let id = row ? row.id : this.id
-            console.log(id)
             this.$router.push({
                 path:'/cms/proceduremannage/edit',
                 query:{

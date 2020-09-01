@@ -57,7 +57,6 @@ export default {
     mounted(){
         this.type = this.$route.query.type;
         this.id = this.$route.query.id;
-        console.log(this.id)
         if(this.id&&this.type == 2){
             this.getDetails(this.id)
         }

@@ -10,8 +10,10 @@
                 <Input disabled placeholder="自动生成"></Input>
             </FormItem>
 
-            <FormItem label="零部件名称">
-                <Input v-model="info.title" placeholder="请输入零部件名称"></Input>
+            <FormItem label="物料名称">
+                <Select v-model="info.title" style="width:186px">
+                    <Option v-for="item of partsData" :key="item.id" :value='item.id' :label="item.title"></Option>
+                </Select>
             </FormItem>
 
             <FormItem label="数量">
@@ -68,11 +70,13 @@ export default {
             logo:1,
             id:null,
             currentData:null,
+            partsData:[],
         }
     },
     mounted(){
         this.type = this.$route.params.type;
         this.id = this.$route.params.id;
+        this.getPartsData()
     },
     methods:{
         postData(flag){
@@ -95,13 +99,13 @@ export default {
             this.logo == 1 ? this.info.long = str : (this.logo == 2 ? this.info.wide = str : this.info.thick = str)
             this.showKey = false;
         },
-        tapKey(e){
-            console.log(e)
-        },
         popKeyBoard(n){
             this.logo = n;
             this.showKey = true;
         },
+        getPartsData(){
+            this.axios('/api/material').then(res=>this.partsData = res.data.data)
+        }
     },
     components:{
         KeyBoard,

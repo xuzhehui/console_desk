@@ -193,9 +193,7 @@ export default {
             try{
                 this.dispatchInfo.start_time = new Date(this.dispatchInfo.start_time).toLocaleDateString().replace(/\//g,"-")
                 this.dispatchInfo.end_time = new Date(this.dispatchInfo.end_time).toLocaleDateString().replace(/\//g,"-")
-            }catch(e){
-                console.log(e)
-            }
+            }catch(e){}
             this.axios.post('/api/orders_plan_dispatch',this.dispatchInfo).then(res=>{
                 if(res.code == 200){
                     this.$Message.success(res.msg)

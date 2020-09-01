@@ -4,7 +4,7 @@
         title='工装订单列表2'
         :list='list' 
         @init='init' 
-        @searchData='searchData' 
+        @searchData='init' 
         @changePage='changePage'
         :tableColums='tableColums'
         :tableData='tableData'
@@ -104,9 +104,6 @@ export default {
             this.searchObj = row;
             this.getData({id:this.$route.query.id})
         },
-        searchData(row){
-            console.log(row)
-        },
         getData(row){
             this.axios('/api/order_industry_list',{params:row}).then(res=>{
                 this.tableData = res.data.oil;
@@ -131,9 +128,7 @@ export default {
             try{
                 this.planInfo.start_time = new Date(this.planInfo.start_time).toLocaleDateString().replace(/\//g,"-")
                 this.planInfo.end_time = new Date(this.planInfo.end_time).toLocaleDateString().replace(/\//g,"-")
-            }catch(e){
-                console.log(e)
-            }
+            }catch(e){}
             this.axios.post('/api/orders_plan',this.planInfo).then(res=>{
                 if(res.code == 200){
                     this.$Message.success(res.msg)

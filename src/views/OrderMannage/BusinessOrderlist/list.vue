@@ -201,9 +201,7 @@ export default {
             try{
                 postData.start_time = new Date(postData.start_time).toLocaleDateString().replace(/\//g,"-")
                 postData.end_time = new Date(postData.end_time).toLocaleDateString().replace(/\//g,"-")
-            }catch(e){
-                console.log(e)
-            }
+            }catch(e){}
             this.axios.post('/api/orders_set_measure',postData).then(res=>{
                 if(res.code == 200){
                     this.$Message.success(res.msg)

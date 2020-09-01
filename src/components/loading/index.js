@@ -16,7 +16,6 @@ const loading = {
   hide() { // 隐藏方法
     instance.show = false
     // let dom = document.querySelector('.loading-box')
-    // console.log(1)
     // if(dom){
     //   setTimeout(()=>document.body.removeChild(dom),1000)
     // }

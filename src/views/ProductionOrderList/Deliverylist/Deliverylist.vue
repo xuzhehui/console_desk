@@ -4,7 +4,7 @@
         title='出库表'
         :list='list' 
         @init='init' 
-        @searchData='searchData' 
+        @searchData='init' 
         @changePage='changePage'
         :tableColums='tableColums'
         :tableData='tableData'
@@ -74,9 +74,6 @@ export default {
             // this.axios('/api/material').then(res=>{
             //     this.tableData = res.data;
             // })
-        },
-        searchData(row){
-            console.log(row)
         },
         changePage(e){
 

@@ -102,7 +102,6 @@ export default {
             this.showTableColums = true;
         },
         selectTable(pre){
-            console.log(pre)
         }
     }
 }

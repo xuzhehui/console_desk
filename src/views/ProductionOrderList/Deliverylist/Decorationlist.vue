@@ -4,7 +4,7 @@
         title='工装订单列表'
         :list='list' 
         @init='init' 
-        @searchData='searchData' 
+        @searchData='init' 
         @changePage='changePage'
         :tableColums='tableColums'
         :tableData='tableData'
@@ -62,9 +62,6 @@ export default {
         init(row){
             this.searchObj = row;
             this.getData(row)
-        },
-        searchData(row){
-            console.log(row)
         },
         getData(row){
             this.axios('/api/basics_parts_index').then(res=>{

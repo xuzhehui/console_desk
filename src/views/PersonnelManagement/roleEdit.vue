@@ -139,7 +139,6 @@ export default {
                 let index = this.menu_ids.findIndex(v=>v == row.id);
                 this.menu_ids.splice(index,1)
             }
-            console.log(this.menu_ids)
         },
     }
 }

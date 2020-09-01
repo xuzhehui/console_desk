@@ -47,16 +47,14 @@
                             <p>工序：{{12}}</p>
                             <p>价值：{{12}}</p>
                         </div>
-                        <Tag @on-close='closeTag(key,selectTags)' v-for="(item,key) of selectTags" :key="key" color="primary" type="border" closable>{{item.title}}</Tag>
+                        <Tag @on-close='closeTag(key,selectTags,item)' v-for="(item,key) of selectTags" :key="key" color="primary" type="border" closable>{{item.title}}</Tag>
                     </Tooltip>
                 </div>
             </div>
             <div class="pro-select" v-for="(item,index) of info.bps" :key="index">
                 <div>{{item.name}}：</div>
                 <div>
-                    <!-- <CheckboxGroup @on-change="changeGroup($event,item)" v-model="item.select"> -->
                     <Checkbox @on-change="changeCheck($event,_item,selectTags)" v-model="_item.show" style="padding:0px 5px;" v-for="(_item,_index) of item.cld" :key='_index'  border>{{_item.title}}</Checkbox>
-                    <!-- </CheckboxGroup> -->
                 </div>
             </div>
         </Modal>
@@ -148,19 +146,23 @@ export default {
         editRouter(){
             this.show_add = true;
         },
-        changeCheck(e,item,selectArray){
+        changeCheck(e,item,selectArray){//复选框选中与非选中同时同步tag标签跟随操作
             item.show = e;
-            
             if(e){
                 selectArray.push(item)
             }else{
                 let id = item.id;
-                let id_index = selectArray.findIndex(v=>v.id=id)
+                let id_index = selectArray.findIndex(v=>v.id == id)
                 selectArray.splice(id_index,1)
             }
         },
-        closeTag(key,arr){
+        closeTag(key,arr,row){//取消tag标签展示操作并同步下方的复选框ui同步
             arr.splice(key,1)
+            this.info.bps.map(v=>{
+                v.cld.map(p=>{
+                    p.id == row.id ? p.show = false : ''
+                })
+            })
         }
     },
 }

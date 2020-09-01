@@ -85,7 +85,6 @@ export default {
         },
         getData(row){
             this.axios('/api/order_product_list',{params:row}).then(res=>{
-                console.log(res)
             })
         },
         changePage(e){}

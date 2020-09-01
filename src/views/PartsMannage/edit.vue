@@ -127,7 +127,6 @@ export default {
             })
         },
         addNewsPart(){
-            console.log(this.info)
             this.$router.push({
                 name:'PartsManageHomeAddParts',
                 params:{

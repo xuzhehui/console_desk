@@ -69,7 +69,6 @@ export default {
         }
     },
     mounted(){
-        console.log(this.$route.query)
     },
     watch:{
         $route(to){

@@ -91,7 +91,6 @@ export default {
             this.list[1].title = `${this.title}名称`;
             this.list[1].placeholder = `请输入${this.title}名称`
             this.tableColums[1].title = this.title
-            console.log(this.proxyObj)
             this.getData(this.proxyObj)
             this.classInfo.id = this.id;
         }

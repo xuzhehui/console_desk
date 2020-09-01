@@ -136,7 +136,7 @@ export default {
                 this.planInfo.start_time = new Date(this.planInfo.start_time).toLocaleDateString().replace(/\//g,"-")
                 this.planInfo.end_time = new Date(this.planInfo.end_time).toLocaleDateString().replace(/\//g,"-")
             }catch(e){
-                console.log(e)
+
             }
             this.axios.post('/api/orders_plan',this.planInfo).then(res=>{
                 if(res.code == 200){

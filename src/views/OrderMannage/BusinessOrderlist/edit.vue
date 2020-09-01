@@ -407,7 +407,6 @@ export default {
                     }
                     
                 }
-                console.log(row)
                 this.$forceUpdate()
             })
 
