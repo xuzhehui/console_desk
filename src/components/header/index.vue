@@ -7,7 +7,15 @@
                     <Icon type="ios-search" slot="suffix" />
                 </Input>
 
-                <Avatar style="margin-right:10px;" src="https://i.loli.net/2017/08/21/599a521472424.jpg" />
+                <Dropdown @on-click='dropClick'>
+                    <Avatar style="margin-right:10px;" src="https://i.loli.net/2017/08/21/599a521472424.jpg" />
+                    <DropdownMenu slot="list">
+                        <DropdownItem :name='1'>修改密码</DropdownItem>
+                        <DropdownItem :name="2">退出登录</DropdownItem>
+                    </DropdownMenu>
+                </Dropdown>
+
+                <!-- <Avatar style="margin-right:10px;" src="https://i.loli.net/2017/08/21/599a521472424.jpg" /> -->
 
                 <label style="margin-right:20px;">{{userInfo.nickname}}</label>
 
@@ -40,13 +48,26 @@ export default {
     mounted(){
     },
     methods:{
-        ...mapMutations(['saveUser'])
+        ...mapMutations(['saveUser']),
+        loginOut(){
+            this.axios.post('/api/login_out').then(res=>{
+                if(res.code == 200){
+                    this.$Message.success(res.msg);
+                    this.$router.push({
+                        name:'Login'
+                    })
+                }
+            })
+        },
+        dropClick(name){
+            name == 2 ? this.loginOut() : '';
+        }
     },
 }
 </script>
 
 <style lang="scss" scoped>
-.header{position:fixed;top:0;left:0;width:100%;
+.header{position:fixed;top:0;left:0;width:100%;z-index:99;
     .content{width:100%;height:80px;background-image:linear-gradient(to right,#3764FF,#3764FF,#794495);;display: flex;align-items: center;justify-content: space-between;padding:0 20px;color:#fff;
         .title{font-size:36px;color:#fff;font-family:'Arial Bold Italic';font-weight: bold;}
         .header-right{display: flex;align-items: center;}

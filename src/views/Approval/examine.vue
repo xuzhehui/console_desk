@@ -3,7 +3,7 @@
         <Toptitle title='审批详情'>
             <Button  @click="back"  style="margin-right:10px;">返回</Button>
             <Button @click="showModal = true" type="error" style="margin-right:10px;" ghost>驳回审批</Button>
-            <Button type="success" @click="approved" ghost>通过审批</Button>
+            <Button type="success" :disabled='examMineData.state == 0' @click="approved" ghost>通过审批</Button>
         </Toptitle>
 
         <div class="page-edit">
@@ -134,6 +134,7 @@ export default {
         },
         getDetails(id){
             this.axios('/api/order_oa_list',{params:{id:id}}).then(res=>{
+                console.log(res)
                 let copyData = JSON.parse(JSON.stringify(res.data))
                 res.data.orders_oa.map((v,i)=>{
                     if((i+1)%2){
@@ -144,7 +145,6 @@ export default {
                         this.right_table.push(v)
                     }
                 })
-                console.log(res.data.orders_oa)
                 res.data.orders_oa.unshift({title:'提交审批'})
                 res.data.orders_oa.push({title:'审批完成'})
                 this.examMineData = res.data;
