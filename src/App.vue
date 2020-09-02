@@ -38,5 +38,12 @@ table-edit-set{margin-right:10px;color:#3764FF;cursor:pointer}
     &:last-child{color:#333;font-weight:bold;}
   }
 }
-
+.icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+}
+.page-edit{overflow: hidden;overflow-y: auto;position:relative;top:20px;height:85%;padding-bottom: 20px;;}
 </style>

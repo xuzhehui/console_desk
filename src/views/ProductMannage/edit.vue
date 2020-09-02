@@ -128,7 +128,7 @@ export default {
         }
     },
     mounted(){
-        this.type = this.$route.query.type||1;
+        this.type = this.$route.query.type||this.$route.params.type||1;
         this.id = this.$route.query.id||null;
         this.type == 1 ? this.info.bp_id = this.$route.query.back_id*1 : this.info.bp_id;
         if(this.id){
@@ -170,7 +170,8 @@ export default {
             this.$router.push({
                 name:'ProductsEditParts',
                 params:{
-                    info:this.info
+                    info:this.info,
+                    type:this.$route.query.type,
                 }
             })
         },

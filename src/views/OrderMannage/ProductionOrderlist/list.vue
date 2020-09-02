@@ -66,16 +66,16 @@ export default {
                 },
             ],
             tableColums:[
-                {title:'订单编号',align:'center',key:'order_no',fixed:'left',},
-                {title:'订单类型',align:'center',key:'type',width:'150'},
-                {title:'小区',align:'center',key:'residential_name',width:'150'},
-                {title:'紧急程度',align:'center',key:'warning_state'},
-                {title:'测量开始时间',align:'center',key:'start_time'},
-                {title:'测量结束时间',align:'center',key:'end_time'},
-                {title:'实际测量时间',align:'center',key:'upd_time'},
-                {title:'完成进度',align:'center',key:'sub_state'},
-                {title:'交货日期',align:'center',key:'predict_time'},
-                {title:'备注',align:'center',key:'remark'},
+                {title:'订单编号',align:'center',key:'order_no',fixed:'left',width:'200'},
+                {title:'订单类型',align:'center',key:'type',width:'100'},
+                {title:'小区',align:'center',key:'residential_name',width:'200'},
+                {title:'紧急程度',align:'center',key:'warning_state',width:'100'},
+                {title:'测量开始时间',align:'center',key:'start_time',width:'200'},
+                {title:'测量结束时间',align:'center',key:'end_time',width:'200'},
+                {title:'实际测量时间',align:'center',key:'upd_time',width:'200'},
+                {title:'完成进度',align:'center',key:'sub_state',width:'100'},
+                {title:'交货日期',align:'center',key:'predict_time',width:'200'},
+                {title:'备注',align:'center',key:'remark',width:'200'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'150'},
             ],
             tableData:[],
@@ -127,12 +127,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.vertical-center-modal{
-    display: flex;
-     align-items: center;
-    justify-content: center;
-    .ivu-modal{
-        top: 0;
-    }
-}
 </style>

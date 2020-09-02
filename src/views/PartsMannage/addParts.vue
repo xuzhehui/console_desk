@@ -11,8 +11,8 @@
             </FormItem>
 
             <FormItem label="物料名称">
-                <Select v-model="info.title" style="width:186px">
-                    <Option v-for="item of partsData" :key="item.id" :value='item.id' :label="item.title"></Option>
+                <Select label-in-value @on-change="changeOriginal" v-model="info.title" style="width:186px">
+                    <Option v-for="item of partsData" :tag='item.high' :key="item.id" :value='item.id' :label="item.title"></Option>
                 </Select>
             </FormItem>
 
@@ -23,13 +23,13 @@
                 <Input v-model="info.company" placeholder="请输入单位"></Input>
             </FormItem>
             <FormItem label="长(L)">
-                <Input v-model="info.long" @on-focus="popKeyBoard(1)" placeholder="请输入公式(自动唤出软键盘)"></Input>
+                <Input v-model="info.long" placeholder="请输入长度"></Input>
             </FormItem>
             <FormItem label="宽(W)">
-                <Input v-model="info.wide" @on-focus="popKeyBoard(2)" placeholder="请输入公式(自动唤出软键盘)"></Input>
+                <Input v-model="info.wide" placeholder="请输入宽度"></Input>
             </FormItem>
             <FormItem label="厚(H)">
-                <Input v-model="info.thick" @on-focus="popKeyBoard(3)" placeholder="请输入公式(自动唤出软键盘)"></Input>
+                <Input disabled v-model="info.thick"  placeholder="请输入厚度"></Input>
             </FormItem>
             <FormItem label="工艺要求">
                 <Input v-model="info.requirement" placeholder="请输入工艺要求"></Input>
@@ -41,18 +41,10 @@
                 </Select>
             </FormItem>
         </Form>
-
-        <Modal v-model="showKey" :width="1300" :mask-closable='false' :closable='false'>
-            <div>
-                 <KeyBoard @cancel='successKey' @success='successKey' class='key-co'/>
-            </div>
-            <div slot='footer'></div>
-        </Modal>
     </div>
 </template>
 
 <script>
-import KeyBoard from '../../components/keyboard/index'
 export default {
     data(){
         return {
@@ -66,10 +58,7 @@ export default {
                 requirement:'',
                 label:null,
             },
-            showKey:false,
-            logo:1,
             id:null,
-            currentData:null,
             partsData:[],
         }
     },
@@ -91,25 +80,13 @@ export default {
                 }
             })
         },
-        successKey(str){
-            this.logo == 1 ? this.info.long = str : (this.logo == 2 ? this.info.wide = str : this.info.thick = str)
-            this.showKey = false;
-        },
-        cancelKey(str){
-            this.logo == 1 ? this.info.long = str : (this.logo == 2 ? this.info.wide = str : this.info.thick = str)
-            this.showKey = false;
-        },
-        popKeyBoard(n){
-            this.logo = n;
-            this.showKey = true;
-        },
         getPartsData(){
             this.axios('/api/material').then(res=>this.partsData = res.data.data)
+        },
+        changeOriginal(e){
+            this.info.thick = e.tag
         }
     },
-    components:{
-        KeyBoard,
-    }
 }
 </script>
 

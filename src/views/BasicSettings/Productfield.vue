@@ -81,6 +81,10 @@ export default {
             parentIds:[],
         }
     },
+    mounted(){
+        this.getMeasure()
+        this.getParent()
+    },
     methods:{
         ...mapActions(['undata_navData']),
         init(row){
@@ -119,12 +123,11 @@ export default {
         },
         addItems(obj){
             this.showModal = true;
-            this.getMeasure()
-            this.getParent()
+            this.getDetails(obj.id)
             if(obj.id){
                 this.showType=2
-                this.classInfo.id = obj.id;
-                this.classInfo.title = obj.title;
+                // this.classInfo.id = obj.id;
+                // this.classInfo.title = obj.title;
             }else{
                 //新增
                 this.showType=1
@@ -144,6 +147,14 @@ export default {
         },
         vivibleModal(e){
             if(!e){this.classInfo = {}}
+        },
+        getDetails(id){
+            this.axios('/api/basics_product_detail',{params:{id:id}}).then(res=>{
+                let result = [];
+                res.data.measure_id.map(v=>result.push(v*1))
+                this.classInfo = res.data;
+                this.classInfo.measure_id = result;
+            })
         },
         delItems(row){
             this.confirmDelete({

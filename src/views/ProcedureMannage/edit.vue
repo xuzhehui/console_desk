@@ -5,7 +5,39 @@
             <Button type="primary" @click="postData">保存</Button>
         </Toptitle>
 
-        <Form style="width:40%" >
+        <div class="page-edit">
+            <Form style="width:40%" >
+                <FormItem label="ID">
+                    <Input v-model="info.id" disabled placeholder="自动生成"></Input>
+                </FormItem>
+                <FormItem label="工序分类">
+                    <Select v-model="info.p_id" placeholder="请选择分类">
+                        <Option v-for="item of perSonnel" :key="item.id" :value="item.id" :label="item.title"></Option>
+                    </Select>
+                </FormItem>
+                <FormItem  label="工序名称">
+                    <Input v-model="info.title" placeholder="请输入工序分类名称"></Input>
+                </FormItem>
+                <FormItem label="工时">
+                    <Input v-model="info.time" placeholder="请输入工时"></Input>
+                </FormItem>
+                <FormItem label="产能">
+                    <Input v-model="info.capacity" placeholder="请输入产能"></Input>
+                </FormItem>
+                <FormItem label="工价">
+                    <div style="display:flex;width:100%;">
+                        <Select v-model="info.type" style="width:200px;margin-right:10px;">
+                            <Option label="按天" :value='0'></Option>
+                            <Option label="按件" :value='1'></Option>
+                        </Select>
+                        <Input v-model="info.wages" placeholder="请输入价格"></Input>
+                    </div>
+                    
+                </FormItem>
+            </Form>
+        </div>
+
+        <!-- <Form style="width:40%" >
             <FormItem label="ID">
                 <Input v-model="info.id" disabled placeholder="自动生成"></Input>
             </FormItem>
@@ -33,7 +65,7 @@
                 </div>
                 
             </FormItem>
-        </Form>
+        </Form> -->
     </div>
 </template>
 
@@ -67,7 +99,7 @@ export default {
             this.$router.go(-1)
         },
         postData(){//保存时提交info
-            let postUrl = this.type == 1 ? '/api/procedure_add' : 'api/procedure_edit';
+            let postUrl = this.type == 1 ? '/api/procedure_add' : '/api/procedure_edit';
             this.info.id = this.type == 1 ? this.id : this.info.id;
             this.axios.post(postUrl,this.info).then(res=>{
                 if(res.code == 200){
@@ -92,5 +124,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.page-edit{overflow: hidden;overflow-y: auto;position:relative;top:20px;height:85%;padding-bottom: 20px;;}
 </style>

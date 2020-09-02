@@ -21,7 +21,7 @@
                 <slot name='text-list'></slot>
             </div>
 
-            <Table :loading='loading' @on-selection-change='selectTable'   stripe border :columns="tableColums" :data="tableData">
+            <Table :width="tableWidth" :loading='loading' @on-selection-change='selectTable'   stripe border :columns="tableColums" :data="tableData">
                 <template slot-scope="{ row }" slot="set">
                     <slot name='set' :row='row'></slot>
                 </template>
@@ -75,8 +75,12 @@ export default {
     },
     data(){
         return {
-            
+            tableWidth:null,
         }
+    },
+    created(){this.tableWidth = window.innerWidth-300;},
+    mounted(){
+        window.addEventListener('resize',(e)=>{this.tableWidth = e.target.innerWidth - 300;this.$forceUpdate()})
     },
     
     methods:{

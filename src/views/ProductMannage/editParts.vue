@@ -68,16 +68,18 @@ export default {
             this.$router.go(-1)
         },
         getPartsData(row){
-            this.axios('/api/basics_parts_index').then(res=>{
+            this.axios('/api/parts_index').then(res=>{
                 this.partsList = res.data.data
             })
         },
         postData(){
+            console.log(this.info)
             this.$route.params.info.part.push(this.info)
             this.$router.push({
                 name:'ProductsEdit',
                 params:{
                     info:this.$route.params.info, 
+                    type:this.$route.params.type
                 }
             })
         },
@@ -97,7 +99,7 @@ export default {
             this.showKey = true;
         },
         changeSelect(e){
-            this.info.part_name = e.label
+            this.info.title = e.label
         }
         
     },

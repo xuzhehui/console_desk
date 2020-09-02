@@ -7,10 +7,13 @@ import axios from './axios/index'
 import ViewUI from 'view-design';
 import 'view-design/dist/styles/iview.css';
 import untilFn from './untils/until'
+import IconFont from './assets/iconfont/iconfont.js'
 
 import ConfirmDelete from './components/confirm-delete/index.js'
 
 Vue.use(ViewUI)
+
+Vue.use(IconFont)
 
 Vue.use(components)
 

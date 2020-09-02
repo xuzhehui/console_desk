@@ -132,7 +132,14 @@
                     </Table>
                 </div>
             </div>
+            <div class="original-part">
+                <Table border :columns="originalTableColumns" :data="originalData">
+
+                </Table>
+            </div>
         </div>
+
+        
 
         <Modal :width="1200" class-name="vertical-center-modal" title="选择产品" v-model="showProduct">
             <div class="modal-items" v-for="(item,idx) in modalArray" :key="idx">
@@ -210,6 +217,16 @@ export default {
             currentIndex:null,
             proxyObj:{},
             productType:1,
+            originalTableColumns:[
+                {title:'原材料名称',align:'center'},
+                {title:'原材料库存',align:'center'},
+                {title:'所需原材料数量',align:'center'},
+                {title:'原材料单价',align:'center'},
+                {title:'规格型号',align:'center'},
+                {title:'原材料单位',align:'center'},
+                {title:'原材料预估费用',align:'center'},
+            ],
+            originalData:[],
             tableColumns:[
                 {title:'产品类型',align:'center',key:'product_id',width:'100',fixed:'left'},
                 {title:'指导价格(元)',align:'center',key:'price',width:'100'},
@@ -446,4 +463,5 @@ export default {
 .modal-footer-button{display: flex;justify-content:flex-end;padding:10px 0;}
 .items-table{width:100%;overflow-x: scroll;}
 /deep/ .ivu-table-wrapper{overflow:visible;color:red;}//穿透iview
+.original-part{padding-top:20px;}
 </style>

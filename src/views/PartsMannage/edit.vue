@@ -8,7 +8,7 @@
         <div class="page-edit">
             <Form style="width:50%">
                 <FormItem label="部件分类名称">
-                    <Select v-model="info.bp_id">
+                    <Select v-model="info.p_id">
                         <Option v-for="item of partList" :key="item.id" :value="item.id" :label="item.title"></Option>
                     </Select>
                 </FormItem>
@@ -23,7 +23,7 @@
                 </FormItem>
                 <FormItem label="关联产品">
                     <div style="width:100%;display:flex;" >
-                        <Select v-model="info.p_id" >
+                        <Select v-model="info.bp_id" >
                             <Option v-for="item of product_list" :key="item.id" :value="item.id" :label="item.title"></Option>
                         </Select>
                     </div>
@@ -113,9 +113,11 @@ export default {
             for(let i in postInfo){
                 i == 'detail' ? sendData.detail = postInfo['detail'] : sendData.top[i] = postInfo[i]
             }
+            sendData.detail = this.tableData;
             this.axios.post('/api/parts_save',sendData).then(res=>{
                 if(res.code == 200){
                     this.$Message.success(res.msg)
+                    this.back()
                 }
             })
         },

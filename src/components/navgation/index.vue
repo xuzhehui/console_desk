@@ -1,35 +1,28 @@
 <template>
     <div class="content">
-        <Menu :active-name='activeMenu' :open-names='openMenu' @on-select='menuSelect($event,navgationData)'>
+        <Menu  :active-name='activeMenu' :open-names='openMenu' @on-select='menuSelect($event,navgationData)'>
             <Submenu v-for="(item,index) of navgationData" :key="index" :name="index">
                 <template slot="title">
-                    <Icon type="ios-analytics" />
-                    {{item.title}}
+                    <div class="sort">
+                        <svg class="icon icon-nav" aria-hidden="true">
+                            <use style="font-size:20px" :xlink:href="item.icon"></use>
+                        </svg>
+                        <span>{{item.title}}</span>
+                    </div>
                 </template>
                 
                 <MenuItem v-if="_item.page" v-for="(_item,_index) of item.sub" :key="_index" :name="index+'-'+_index">{{_item.title}}</MenuItem>
-                <Submenu v-else name="2">
+                <Submenu v-else :name="index+'-'+_index">
                     <template slot="title">
-                        <Icon type="ios-filing" />
+                        <svg class="icon icon-nav" aria-hidden="true">
+                            <use style="font-size:20px" :xlink:href="_item.icon"></use>
+                        </svg>
                         {{_item.title}}
                     </template>
                     <MenuItem v-for="(__item,__index) of _item.sub" :key="__index" :name="index+'-'+_index+'-'+__index">{{__item.title}}</MenuItem>
                 </Submenu>
 
             </Submenu>
-            <!-- <Submenu name="2">
-                <template slot="title">
-                    <Icon type="ios-filing" />
-                    财务管理
-                </template>
-                <MenuItem name="2-1">Option 5</MenuItem>
-                <MenuItem name="2-2">Option 6</MenuItem>
-                <Submenu name="3">
-                    <template slot="title">Submenu</template>
-                    <MenuItem name="3-1">Option 7</MenuItem>
-                    <MenuItem name="3-2">Option 8</MenuItem>
-                </Submenu>
-            </Submenu> -->
             
         </Menu>
     </div>
@@ -47,6 +40,7 @@ export default {
         return {
             activeMenu:'',
             openMenu:[],
+            c:'#icongongyiluxian'
         }
     },
     created(){
@@ -69,7 +63,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.content{overflow-y: scroll;
-        overflow-x:hidden;
+.content{overflow-y: scroll;overflow-x:hidden;}
+.sort{display: flex;align-items: center;
+    .icon-nav{margin-right:5px;font-size:16px;}
 }
 </style>
