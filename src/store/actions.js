@@ -8,18 +8,18 @@ const actions = {
                 result.map(v=> fn.isType(v.sub) == 'Object' ? v.sub = deepObjToArray(v.sub) : '' )
                 return result
             };
-            let deepData = function(row){
-                row.map(v=>{
-                    if(v.sub_action!=0){
-                        v.sub.map(k=>k.page=v.page)
-                        v.page = '';
-                    }
-                    v.page = ''
-                })
-                return row
-            };
+            // let deepData = function(row){
+            //     row.map(v=>{
+            //         if(v.sub_action!=0){
+            //             v.sub.map(k=>k.page=v.page)
+            //             v.page = '';
+            //         }
+            //         v.page = ''
+            //     })
+            //     return row
+            // };
             let result = deepObjToArray(res.data)
-            result = deepData(result)
+            // result = deepData(result)
             store.commit('updataNavgation',result)
         })
     }

@@ -123,9 +123,9 @@ export default {
         },
         addItems(obj){
             this.showModal = true;
-            this.getDetails(obj.id)
             if(obj.id){
                 this.showType=2
+                this.getDetails(obj.id)
                 // this.classInfo.id = obj.id;
                 // this.classInfo.title = obj.title;
             }else{

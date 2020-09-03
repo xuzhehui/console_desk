@@ -1,5 +1,11 @@
 const routerMap = [
     {
+        path:'/cms/home',
+        name:'Home',//首页
+        meta:{index:3},
+        component: resolve => require(['@/views/Home/index'], resolve)
+    },
+    {
         path:'/cms/personnelmanagement/user',
         name:'PersonnelManagementUser',//人员管理-->用户管理
         meta:{index:3},

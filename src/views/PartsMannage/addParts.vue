@@ -7,7 +7,7 @@
 
         <Form inline>
             <FormItem label="零部件ID">
-                <Input disabled placeholder="自动生成"></Input>
+                <Input v-model='info.id' disabled placeholder="自动生成"></Input>
             </FormItem>
 
             <FormItem label="物料名称">

@@ -51,9 +51,10 @@ export default {
         menuSelect(name,data){
             sessionStorage.setItem('open-menu',name)
             sessionStorage.removeItem('crumbs')
-            if(this.func.isType(name) == 'Number'){
+            if(this.func.isType(name) == 'Number'){//若一级菜单带page的情况下
                 let s = data[name]
                 this.$store.commit('updateCrumbs',{s})
+                sessionStorage.setItem('crumbs',JSON.stringify({parantData,childData,lastChild}))
                 return this.$router.push({
                     path:data[name].page,
                     query:{
@@ -62,7 +63,6 @@ export default {
                     }
                 })
             }
-            
             let split_array = name.split('-');
             let [parant,child,last] = split_array;
             let parantData = data[parant],childData = parantData.sub[child],lastChild;

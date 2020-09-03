@@ -112,11 +112,11 @@ export default {
                 {title:'订单类型',align:'center',key:'show_type',width:'100'},
                 {title:'紧急程度',align:'center',key:'show_warning_state',width:'100'},
                 {title:'小区',align:'center',key:'address',width:'200'},
-                {title:'计划开始时间',align:'center',key:'start_time',width:'180'},
-                {title:'计划结束时间',align:'center',key:'end_time',width:'180'},
+                {title:'计划开始时间',align:'center',key:'show_start_time',width:'180'},
+                {title:'计划结束时间',align:'center',key:'show_end_time',width:'180'},
                 {title:'完成进度',align:'center',key:'show_state',width:'180'},
                 {title:'交货日期',align:'center',key:'predict_time',width:'200'},
-                {title:'操作',align:'center',slot:'set',fixed:'right',width:'150',fixed:'right'},
+                {title:'操作',align:'center',slot:'set',fixed:'right',width:'220',fixed:'right'},
             ],
             tableData:[],
             pageIndex:1,
@@ -155,6 +155,8 @@ export default {
                     v.show_warning_state = v.warning_state == 0 ? '不急' : (v.warning_state == 1 ? '比较急' : (v.warning_state == 2 ? '紧急' : '非常急'))
                     v.show_sub_state = v.sub_state == 0 ? '测量未审核' : (v.sub_state == 1 ? '测量审核' : 
                     (v.sub_state == 2 ? '测量通过' : (v.sub_state == 3 ? '生产审核中' : (v.sub_state == 4 ? '生产通过' : '到生产计划'))))
+                    v.show_start_time = this.func.replaceDate(v.start_time)
+                    v.show_end_time = this.func.replaceDate(v.end_time)
                 })
                 this.tableData = res.data.data;
                 this.total = res.data.total;

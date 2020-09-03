@@ -2,13 +2,13 @@
   <div>
         <Toptitle :title='$route.query.type == 1 ? "新增订单" : "编辑订单"'>
             <Button @click="back" style="margin-right:10px;">返回</Button>
-            <Button type="primary" @click="postData">保存</Button>
+            <Button type="primary" @click="handleSubmit('infoOrder')">保存</Button>
         </Toptitle>
 
         <div class="page-edit">
-            <Form inline :label-width="100" style="padding:10px 0;">
-                <FormItem label="订单类型:">
-                    <RadioGroup v-model="info.type" class="auto-width">
+            <Form ref='infoOrder' inline :label-width="100" :model="info" style="padding:10px 0;" :rules="infoRules">
+                <FormItem label="订单类型:" prop='renovation_type'>
+                    <RadioGroup v-model="info.renovation_type" class="auto-width">
                         <Radio :label="1">楼栋(工装)</Radio>
                         <Radio :label="2">单户(家装)</Radio>
                     </RadioGroup>
@@ -18,15 +18,15 @@
                     <Input disabled v-model="info.order_no" class="auto-width" placeholder="自动生成"></Input>
                 </FormItem>
 
-                <FormItem label="小区名称:">
+                <FormItem label="小区名称:" prop='residential_name'>
                     <Input v-model="info.residential_name" class="auto-width" placeholder="请输入小区名称"></Input>
                 </FormItem>
 
-                <FormItem label="客户姓名:">
+                <FormItem label="客户姓名:" prop='client_name'>
                     <Input v-model="info.client_name" class="auto-width" placeholder="请输入客户姓名"></Input>
                 </FormItem>
 
-                <FormItem label="紧急程度:">
+                <FormItem label="紧急程度:" prop='warning_state'>
                     <Select class="auto-width" v-model="info.warning_state">
                         <Option label='不急' :value='0'></Option>
                         <Option label='比较急' :value='1'></Option>
@@ -36,28 +36,28 @@
                 </FormItem>
 
                 <FormItem label="业务员:">
-                    <Select v-model="info.salesman" class="auto-width"></Select>
+                    <Select disabled v-model="info.salesman" class="auto-width"></Select>
                 </FormItem>
 
-                <FormItem label="收款:">
+                <FormItem label="收款:" prop='pay_state'>
                     <RadioGroup v-model="info.pay_state" class="auto-width">
                         <Radio :label="0">未收款</Radio>
                         <Radio :label="1">已收款</Radio>
                     </RadioGroup>
                 </FormItem>
 
-                <FormItem label="详细地址:">
+                <FormItem label="详细地址:" prop='address'>
                     <Input v-model="info.address" class="auto-width" placeholder="请输入小区名称"></Input>
                 </FormItem>
 
-                <FormItem label="手机号:">
+                <FormItem label="手机号:" prop='mobile'>
                     <Input v-model="info.mobile" class="auto-width" placeholder="请输入手机号"></Input>
                 </FormItem>
-                <FormItem label="开始日期:">
+                <FormItem label="开始日期:" prop='start_time'>
                     <DatePicker v-model="info.start_time" type="date" placeholder="开始日期" class="auto-width"></DatePicker>
                 </FormItem>
 
-                <FormItem label="交付日期:">
+                <FormItem label="交付日期:" prop='end_time'>
                     <DatePicker v-model="info.end_time" type="date" placeholder="交付日期" class="auto-width"></DatePicker>
                 </FormItem>
 
@@ -74,7 +74,7 @@
                 </FormItem>
 
                 <FormItem label="订单备注:">
-                    <Input v-model="info.remark" class="auto-width" placeholder="请输入小区名称"></Input>
+                    <Input v-model="info.remark" class="auto-width" placeholder="请输入订单备注"></Input>
                 </FormItem>
             </Form>
             <div class="items" v-for="(item,index) of info.house" :key="index">
@@ -231,7 +231,7 @@ export default {
                 {title:'产品类型',align:'center',key:'product_id',width:'100',fixed:'left'},
                 {title:'指导价格(元)',align:'center',key:'price',width:'100'},
                 {title:'议价(元)',align:'center',key:'real_price',width:'100'},
-                {title:'产品名称',align:'center',key:'',width:'100'},
+                {title:'产品名称',align:'center',key:'title',width:'100'},
                 {title:'长',align:'center',key:'long',width:'100'},
                 {title:'宽',align:'center',key:'wide',width:'100'},
                 {title:'高',align:'center',key:'high',width:'100'},
@@ -279,10 +279,21 @@ export default {
             ],
             tableData:[],
             showProduct:false,
+            infoRules:{
+                residential_name:[{required: true,message:'请输入小区名称',trigger:'blur'}],
+                client_name:[{required: true,message:'请输入客户名称',trigger:'blur'}],
+                warning_state:[{required: true,message:'请选择紧急程度'}],
+                pay_state:[{required: true,message:'是否收款'}],
+                address:[{required: true,message:'请输入详细地址',trigger:'blur'}],
+                mobile:[{required: true,message:'请输入手机号',trigger:'blur'}],
+                start_time:[{required: true,message:'请选择开始日期'}],
+                end_time:[{required: true,message:'请选择结束日期'}],  
+                renovation_type:[{required: true,message:'请选择结束日期'}]
+            },
             info:{
-                residential_name:'',
+                residential_name:'',//小区名称
                 order_no:'',//订单号
-                type:null,//订单类型
+                renovation_type:null,//订单类型
                 client_name:'',//客户名称
                 address:'',//
                 mobile:'',//手机号
@@ -345,7 +356,22 @@ export default {
         postData(){
             let sendData = JSON.parse(JSON.stringify(this.info));
             let op = this.type == 1 ? 'add' : 'edit';
-            // let params = JSON.stringify({op:op,detail:sendData})
+            try{
+                sendData.start_time = new Date(sendData.start_time).toLocaleDateString().replace(/\//g,"-")
+                sendData.end_time = new Date(sendData.end_time).toLocaleDateString().replace(/\//g,"-")
+            }catch(e){}
+            sendData.house.map(v=>{
+                v.product.map(k=>{
+                    if(k.part_top){
+                        delete k.part_top
+                    }
+                    k.product.map(t=>{
+                        for(let i in t){
+                            i == 'route_id' ? '' : delete t[i]
+                        }
+                    })
+                })
+            })
             let params = {op:op,detail:sendData}
             this.axios.post('/api/order_save',params).then(res=>{
                 if(res.code == 200){
@@ -387,6 +413,7 @@ export default {
         changeProduct(row,n){
             
             this.axios('/api/order_product_detail',{params:{id:row}}).then(res=>{
+                console.log(res)
                 if(res.code == 200){
                     let data = res.data.product;
                     for(let i in data){
@@ -437,7 +464,15 @@ export default {
         },
         changeS(row,sign,n){
             sign.product[n] = row;
-        }
+        },
+        handleSubmit(name) {
+            this.$refs[name].validate((valid) => {
+                if(valid){
+                    console.log(this.postData)
+                    this.postData()
+                }
+            })
+        },
     }
 }
 </script>

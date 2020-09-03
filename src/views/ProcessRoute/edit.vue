@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Toptitle title='新增工艺'>
+        <Toptitle :title='type == 1 ? "新增工艺" : "编辑工艺"'>
             <Button @click="back" style="margin-right:10px;">返回</Button>
             <Button @click="postData">保存</Button>
         </Toptitle>
@@ -29,15 +29,7 @@
                 <span>{{item.name||item.title}}(单选)：</span>
                 <div class="radio-g">
                     <RadioGroup v-model="item.select" type="button">
-                        <Tooltip>
-                            <div slot='content'>
-                                <p>工序：{{12}}</p>
-                                <p>价值：{{12}}</p>
-                                <p>工时：{{12}}</p>
-                            </div>
-                            <Radio v-for='_item of item.cld' :key="_item.id" :label="_item.id">{{_item.title}}</Radio>
-                        </Tooltip>
-                        <!-- <Radio v-for='_item of item.cld' :key="_item.id" :label="_item.id">{{_item.title}}</Radio> -->
+                        <Radio v-for='_item of item.cld' :key="_item.id" :label="_item.id">{{_item.title}}</Radio>
                     </RadioGroup>
                 </div>
             </div>
@@ -52,19 +44,27 @@
             <div class="modal-tags">
                 <div>已选：</div>
                 <div class="select-tag">
-                    <Tooltip>
+                    <!-- <Tooltip>
                         <div slot='content'>
                             <p>工序：{{12}}</p>
                             <p>价值：{{12}}</p>
-                        </div>
+                        </div> -->
                         <Tag @on-close='closeTag(key,selectTags,item)' v-for="(item,key) of selectTags" :key="key" color="primary" type="border" closable>{{item.title}}</Tag>
-                    </Tooltip>
+                    <!-- </Tooltip> -->
                 </div>
             </div>
             <div class="pro-select" v-for="(item,index) of info.bps" :key="index">
-                <div>{{item.name}}：</div>
+                <div>{{item.title}}：</div>
                 <div>
-                    <Checkbox @on-change="changeCheck($event,_item,selectTags)" v-model="_item.show" style="padding:0px 5px;" v-for="(_item,_index) of item.cld" :key='_index'  border>{{_item.title}}</Checkbox>
+                     <Tooltip v-for="(_item,_index) of item.cld" :key='_index'>
+                        <div slot='content'>
+                            <p>工时：{{_item.time}}</p>
+                            <p>工价：{{_item.wages}}</p>
+                            <p>产能：{{_item.capacity}}</p>
+                        </div>
+                        <Checkbox @on-change="changeCheck($event,_item,selectTags)" v-model="_item.show" style="padding:0px 5px;"   border>{{_item.title}}</Checkbox>
+                    </Tooltip>
+                    <!-- <Checkbox @on-change="changeCheck($event,_item,selectTags)" v-model="_item.show" style="padding:0px 5px;" v-for="(_item,_index) of item.cld" :key='_index'  border>{{_item.title}}</Checkbox> -->
                 </div>
             </div>
         </Modal>
@@ -101,7 +101,8 @@ export default {
         }
         if(this.type == 1){
             this.axios('/api/bp_list').then(res=>{
-                this.info.list = res.data;
+                // this.info.list = res.data;
+                this.info.bps = res.data;
             });
             this.axios('/api/bpp_list').then(res=>{
                 res.data.map(v=>{
@@ -115,7 +116,8 @@ export default {
                         v.cld.map(v=>v.show = false)
                     }
                 })
-                this.info.bps = res.data;
+                // this.info.bps = res.data;
+                this.info.list = res.data;
             })
         }
         this.getParts()
@@ -125,15 +127,14 @@ export default {
             this.$router.go(-1)
         },
         postData(){
-            this.info.op = this.type = 1 ? 'add' : 'edit'
+            this.info.op = this.type == 1 ? 'add' : 'edit'
             let data = JSON.parse(JSON.stringify(this.info))
             let properties = [],procedure = [];
-            data.list.map(v=>v.select ? procedure.push(v.select) : '')
-            this.selectTags.map(v=>{
-                properties.push(v.id)
-            })
+            data.list.map(v=>v.select ? properties.push(v.select) : '')
+            this.selectTags.map(v=>{procedure.push(v.id)})
             delete data.list
             delete data.bps
+            this.type == 1 ? delete data.id : '';
             data.properties = properties.join(',')
             data.procedure = procedure.join(',')
             this.axios.post('/api/process_route_save',data).then(res=>{
@@ -144,7 +145,23 @@ export default {
             })
         },
         getData(row){
-            this.axios('/api/process_route_detail',{params:{id:row}}).then(res=>{this.info = res.data})
+            this.axios('/api/process_route_detail',{params:{id:row}}).then(res=>{
+                this.info = res.data
+                this.info.bps.map(v=>{
+                    console.log(v)
+                    if(v.select){
+                        v.cld.map(z=>{
+                            v.select.map(k=>{
+                                z.show = k == z.id ? true : false
+                                z.show ? this.selectTags.push(z) : ''
+                            })
+                        })
+                    }else{
+                        v.cld.map(v=>v.show = false)
+                    }
+                })
+                console.log(this.info.list)
+            })
         },
         getParts(){
             this.axios('/api/parts_index').then(res=>{this.partsList = res.data.data})

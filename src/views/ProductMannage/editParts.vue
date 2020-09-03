@@ -73,13 +73,15 @@ export default {
             })
         },
         postData(){
-            console.log(this.info)
             this.$route.params.info.part.push(this.info)
             this.$router.push({
                 name:'ProductsEdit',
                 params:{
                     info:this.$route.params.info, 
-                    type:this.$route.params.type
+                    type:this.$route.params.type,
+                    id:this.$route.params.id,
+                    title:this.$route.params.title,
+                    back_id:this.$route.params.back_id,
                 }
             })
         },

@@ -151,7 +151,15 @@ export default {
             this.axios.post('/api/product',data).then(res=>{
                 if(res.code == 200){
                     this.$Message.success(res.msg)
-                    this.back()
+                    setTimeout(()=>{
+                        this.$router.push({
+                            path:'/cms/product/index',
+                            query:{
+                                title:this.$route.query.title||this.$route.params.title,
+                                id:this.$route.query.back_id||this.$route.params.back_id
+                            },
+                        })
+                    },500)   
                 }
             })
         },
@@ -160,7 +168,7 @@ export default {
                 path:'/cms/product/index',
                 query:{
                     id:this.$route.query.back_id ? this.$route.query.back_id : '',
-                    title:this.$route.query.title||''
+                    title:this.$route.query.title||this.$route.query.title||''
                 }
                 
             })
@@ -172,6 +180,9 @@ export default {
                 params:{
                     info:this.info,
                     type:this.$route.query.type,
+                    id:this.$route.query.id||this.$route.params.id,
+                    title:this.$route.query.title||this.$route.params.title,
+                    back_id:this.$route.query.back_id
                 }
             })
         },
