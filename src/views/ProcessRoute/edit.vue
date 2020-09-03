@@ -29,7 +29,15 @@
                 <span>{{item.name||item.title}}(单选)：</span>
                 <div class="radio-g">
                     <RadioGroup v-model="item.select" type="button">
-                        <Radio v-for='_item of item.cld' :key="_item.id" :label="_item.id">{{_item.title}}</Radio>
+                        <Tooltip>
+                            <div slot='content'>
+                                <p>工序：{{12}}</p>
+                                <p>价值：{{12}}</p>
+                                <p>工时：{{12}}</p>
+                            </div>
+                            <Radio v-for='_item of item.cld' :key="_item.id" :label="_item.id">{{_item.title}}</Radio>
+                        </Tooltip>
+                        <!-- <Radio v-for='_item of item.cld' :key="_item.id" :label="_item.id">{{_item.title}}</Radio> -->
                     </RadioGroup>
                 </div>
             </div>
@@ -39,39 +47,6 @@
                 <Button @click="editRouter">新增工艺路线</Button>
             </div>
         </div>
-
-        <!-- <Form inline>
-            <FormItem label="ID">
-                <Input v-model="info.id" disabled placeholder="自动生成"></Input>
-            </FormItem>
-
-            <FormItem label="部件名称">
-                <Select v-model="info.parts_id" style="width:186px;">
-                    <Option v-for="item of partsList" :key="item.id" :value="item.id" :label="item.title"></Option>
-                </Select>
-            </FormItem>
-
-            <FormItem label="工艺组合名称">
-                <Input v-model="info.title" placeholder="请输入工艺组合名称"></Input>
-            </FormItem>
-            <FormItem label="价格">
-                <Input v-model="info.price" placeholder="请输入价格"></Input>
-            </FormItem>
-        </Form>
-
-        <div class="hierarchy" v-for="item of info.list" :key="item.id">
-            <span>{{item.name||item.title}}(单选)：</span>
-            <div class="radio-g">
-                <RadioGroup v-model="item.select" type="button">
-                    <Radio v-for='_item of item.cld' :key="_item.id" :label="_item.id">{{_item.title}}</Radio>
-                </RadioGroup>
-            </div>
-        </div>
-
-        <div style="padding:10px 0;">
-            <span>工艺路线：</span>
-            <Button @click="editRouter">新增工艺路线</Button>
-        </div> -->
 
         <Modal class-name="vertical-center-modal" v-model="show_add" title="新增工艺路线">
             <div class="modal-tags">
@@ -209,4 +184,9 @@ export default {
 .vertical-center-modal{display: flex;align-items: center;justify-content: center;.ivu-modal{top: 0;}}
 .modal-tags{display: flex;align-items: center;}
 .pro-select{display: flex;padding:10px 0;align-items:center;}
+
+</style>
+
+<style lang="scss">
+.ivu-tooltip-popper{z-index: 999999!important;}
 </style>

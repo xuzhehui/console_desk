@@ -34,7 +34,6 @@ instance.interceptors.response.use(res => {
       Vue.prototype.$loading.hide()
       if(res.status == 200){
         if(res.data.code == 200){
-            // Vue.prototype.$Message.success(res.data.message)
             return res.data
         }else{//若code 非 200
             Vue.prototype.$Message.error(res.data.msg)

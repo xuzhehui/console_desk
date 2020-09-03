@@ -1,7 +1,7 @@
 <template>
     <div class="content">
         <Menu  :active-name='activeMenu' :open-names='openMenu' @on-select='menuSelect($event,navgationData)'>
-            <Submenu v-for="(item,index) of navgationData" :key="index" :name="index">
+            <Submenu v-if="!item.page" v-for="(item,index) of navgationData" :key="index" :name="index">
                 <template slot="title">
                     <div class="sort">
                         <svg class="icon icon-nav" aria-hidden="true">
@@ -19,10 +19,22 @@
                         </svg>
                         {{_item.title}}
                     </template>
-                    <MenuItem v-for="(__item,__index) of _item.sub" :key="__index" :name="index+'-'+_index+'-'+__index">{{__item.title}}</MenuItem>
-                </Submenu>
+                    <MenuItem v-if='__item.page' v-for="(__item,__index) of _item.sub" :key="__index" :name="index+'-'+_index+'-'+__index">{{__item.title}}</MenuItem>
 
+                    <Submenu v-else :name="index+'-'+_index+'-'+__index">
+                        <template slot="title">
+                            {{__item.title}}
+                        </template>
+                        <MenuItem v-for="(___item,___index) of __item.sub" :key="___index" :name="index+'-'+_index+'-'+__index+'-'+___index">{{___item.title}}</MenuItem>
+                    </Submenu>
+                </Submenu>
             </Submenu>
+            <MenuItem v-else="item.page" :name="index">
+                <svg class="icon icon-nav" aria-hidden="true">
+                    <use style="font-size:20px" :xlink:href="item.icon"></use>
+                </svg>
+                {{item.title}}
+            </MenuItem>
             
         </Menu>
     </div>

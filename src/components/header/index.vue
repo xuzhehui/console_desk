@@ -123,6 +123,10 @@ export default {
             this.axios.post('/api/replace_userinfo',this.info).then(res=>{
                 if(res.code == 200){
                     this.$Message.success(res.msg)//这里可以继续取出缓存更换头像再存入缓存以达到同步更新效果
+                    let user = JSON.parse(localStorage.getItem('user_info'));
+                    user.nickname = this.info.nickname;
+                    user.avatar = this.info.avatar;
+                    localStorage.setItem('user_info',JSON.stringify(user))
                 }
             })
         },
@@ -136,7 +140,9 @@ export default {
                     this.axios.post('/api/replace_password',this.passwordInfo).then(res=>{
                         if(res.code == 200){
                             this.$Message.success(res.msg)
-                            this.replacePassword = false
+                            this.replacePassword = false;
+                            localStorage.removeItem('token')
+                            setTimeout(()=>this.$router.push({name:'Login'}),500)
                         }
                     })
                 }
