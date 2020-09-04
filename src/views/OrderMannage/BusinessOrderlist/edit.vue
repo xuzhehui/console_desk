@@ -133,7 +133,7 @@
                 </div>
             </div>
             <div class="original-part">
-                <Table border :columns="originalTableColumns" :data="originalData">
+                <Table border :span-method="handleSpan" :columns="originalTableColumns" :data="originalData">
 
                 </Table>
             </div>
@@ -141,17 +141,17 @@
 
         
 
-        <Modal :width="1200" class-name="vertical-center-modal" title="选择产品" v-model="showProduct">
+        <Modal :width="1200" class-name="vertical-center-modal" title="选择产品" v-model="showProduct" @on-ok="tapProduct">
             <div class="modal-items" v-for="(item,idx) in modalArray" :key="idx">
                 <Form inline :label-width="80">
                     <FormItem label="选择产品">
-                        <Select :disabled='productType == 3 ? true : false' v-model="item.product_id" @on-change='changeProduct($event,idx)' style="width:186px;">
+                        <Select size='small' :disabled='productType == 3 ? true : false' v-model="item.product_id" @on-change='changeProduct($event,idx)' style="width:186px;">
                             <Option v-for="item of productList" :tag='item.img_url' :key="item.id" :label="item.title" :value='item.id'></Option>
                         </Select>
                     </FormItem>
 
                     <FormItem label="产品图">
-                        <img style="max-width:50px;max-height:50px;"  :src="$store.state.ip+item.img">
+                        <img v-if="item.img" style="max-width:50px;max-height:50px;"  :src="$store.state.ip+item.img">
                     </FormItem>
 
                     <FormItem label="产品价格">
@@ -159,22 +159,25 @@
                     </FormItem>
 
                     <FormItem label="议价">
-                        <Input :disabled='productType == 3 ? true : false' v-model="item.real_price" placeholder="请输入议价"></Input>
+                        <Input size='small' :disabled='productType == 3 ? true : false' v-model="item.real_price" placeholder="请输入议价"></Input>
                     </FormItem>
                     <FormItem label="长">
-                        <Input :disabled='productType == 3 ? true : false' v-model="item.long" placeholder="请输入长"></Input>
+                        <Input size='small' :disabled='productType == 3 ? true : false' v-model="item.long" placeholder="请输入长"></Input>
                     </FormItem>
                     <FormItem label="宽">
-                        <Input :disabled='productType == 3 ? true : false' v-model="item.wide" placeholder="请输入宽"></Input>
+                        <Input size='small' :disabled='productType == 3 ? true : false' v-model="item.wide" placeholder="请输入宽"></Input>
                     </FormItem>
                     <FormItem label="高">
-                        <Input :disabled='productType == 3 ? true : false' v-model="item.high" placeholder="请输入高"></Input>
+                        <Input size='small' :disabled='productType == 3 ? true : false' v-model="item.high" placeholder="请输入高"></Input>
                     </FormItem>
                     <FormItem label="计量单位">
-                        <Input :disabled='productType == 3 ? true : false' v-model="item.unit" placeholder="请输入计量单位"></Input>
+                        <Input size='small' :disabled='productType == 3 ? true : false' v-model="item.unit" placeholder="请输入计量单位"></Input>
+                    </FormItem>
+                    <FormItem label="位置">
+                        <Input size='small' :disabled='productType == 3 ? true : false' v-model="item.position" placeholder="请输入位置"></Input>
                     </FormItem>
                     <FormItem label="左右式">
-                        <Select :disabled='productType == 3 ? true : false' style="width:186px;" v-model="item.type">
+                        <Select size='small' :disabled='productType == 3 ? true : false' style="width:186px;" v-model="item.type">
                             <Option label='左式' :value='1'></Option>
                             <Option label='右式' :value='2'></Option>
                         </Select>
@@ -218,26 +221,26 @@ export default {
             proxyObj:{},
             productType:1,
             originalTableColumns:[
-                {title:'原材料名称',align:'center'},
-                {title:'原材料库存',align:'center'},
-                {title:'所需原材料数量',align:'center'},
-                {title:'原材料单价',align:'center'},
+                {title:'原材料名称',align:'center',key:'title'},
+                {title:'原材料库存',align:'center',key:'stock'},
+                {title:'所需原材料数量',align:'center',key:'num'},
+                {title:'原材料单价',align:'center',key:'price'},
                 {title:'规格型号',align:'center'},
-                {title:'原材料单位',align:'center'},
-                {title:'原材料预估费用',align:'center'},
+                {title:'原材料单位',align:'center',key:'unit'},
+                {title:'原材料预估费用',align:'center',key:'num_price'},
             ],
             originalData:[],
             tableColumns:[
                 {title:'产品类型',align:'center',key:'product_id',width:'100',fixed:'left'},
-                {title:'指导价格(元)',align:'center',key:'price',width:'100'},
+                {title:'指导价格(元)',align:'center',key:'price',width:'120'},
                 {title:'议价(元)',align:'center',key:'real_price',width:'100'},
-                {title:'产品名称',align:'center',key:'title',width:'100'},
+                {title:'产品名称',align:'center',key:'title',width:'150'},
                 {title:'长',align:'center',key:'long',width:'100'},
                 {title:'宽',align:'center',key:'wide',width:'100'},
                 {title:'高',align:'center',key:'high',width:'100'},
                 {title:'产品型号',align:'center',key:'model',width:'100'},
                 {title:'测量数据',align:'center',key:'',width:'100'},
-                {title:'位置',align:'center',key:'',width:'100'},
+                {title:'位置',align:'center',key:'position',width:'100'},
                 {title:'图号',align:'center',key:'url_number',width:'150',slot:'img_number',},
                 {title:'图纸',align:'center',key:'',width:'80',
 
@@ -383,6 +386,7 @@ export default {
         getDate(id){
             this.axios('/api/order_detail',{params:{id:id}}).then(res=>{
                 this.info = res.data;
+                this.tapProduct()
             })
         },
         selectProducts(n,row){
@@ -458,6 +462,8 @@ export default {
         saveParts(){
             this.proxyObj.product = this.modalArray;
             this.showProduct = false;
+            this.tapProduct()
+            
         },
         cancelModal(){
             this.showProduct = false;
@@ -473,6 +479,27 @@ export default {
                 }
             })
         },
+        tapProduct(){
+            let str = [];
+            this.info.house.map(v=>{
+                v.product.map(k=>{
+                    if(k.product_id){
+                        str.push(k.product_id)
+                    }
+                })
+            })
+            this.axios('/api/house_detail_material',{params:{product_id:str.join(',')}}).then(res=>{
+                if(res.code == 200){
+                    this.originalData = res.data.data;
+                    this.originalData.push({end:true,stock:res.data.num,title:'合计'})
+                }
+            })
+        },
+        handleSpan ({ row, column, rowIndex, columnIndex }) {
+            if(row.end){
+                return [1,6]
+            }
+        }
     }
 }
 </script>

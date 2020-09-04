@@ -90,10 +90,10 @@ export default {
                 {title:'订单编号',align:'center',key:'order_no',fixed:'left',width:'200'},
                 {title:'小区',align:'center',key:'residential_name',width:'200'},
                 {title:'紧急程度',align:'center',key:'warning_state',width:'100'},
-                {title:'发货日期',align:'center',key:'predict_time',width:'200'},
-                {title:'下单日期',align:'center',key:'crt_time',width:'200'},
-                {title:'下测量日期',align:'center',key:'measure_time',width:'200'},
-                {title:'实际测量时间',align:'center',key:'upd_time',width:'200'},
+                {title:'发货日期',align:'center',key:'show_predict_time',width:'200'},
+                {title:'下单日期',align:'center',key:'show_crt_time',width:'200'},
+                {title:'下测量日期',align:'center',key:'show_measure_time',width:'200'},
+                {title:'实际测量时间',align:'center',key:'show_upd_time',width:'200'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'150'},
             ],
             tableData:[],
@@ -129,6 +129,12 @@ export default {
         },
         getData(row){
             this.axios('/api/produce_list',{params:row}).then(res=>{
+                res.data.data.map(v=>{
+                    v.show_predict_time = v.predict_time;
+                    v.show_crt_time = v.crt_time;
+                    v.show_measure_time = v.measure_time
+                    v.show_upd_time = v.upd_time
+                })
                 this.tableData = res.data.data;
                 this.total = res.data.total;
             })

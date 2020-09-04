@@ -6,13 +6,10 @@
         </Toptitle>
 
         <Form inline>
-            <FormItem label="零部件ID">
-                <Input v-model='info.id' disabled placeholder="自动生成"></Input>
-            </FormItem>
 
             <FormItem label="物料名称">
-                <Select label-in-value @on-change="changeOriginal" v-model="info.title" style="width:186px">
-                    <Option v-for="item of partsData" :tag='item.high' :key="item.id" :value='item.id' :label="item.title"></Option>
+                <Select label-in-value @on-change="changeOriginal($event)" v-model="info.id" style="width:186px">
+                    <Option v-for="item of partsData" :tag='item.high' :data-title='item.title' :key="item.id" :value='item.id' :label="item.title"></Option>
                 </Select>
             </FormItem>
 
@@ -49,6 +46,7 @@ export default {
     data(){
         return {
             info:{
+                id:'',
                 title:'',
                 company:'',
                 number:'',
@@ -85,6 +83,8 @@ export default {
         },
         changeOriginal(e){
             this.info.thick = e.tag
+            let s = window.event;
+            this.info.title = s.target.dataset.title;
         }
     },
 }

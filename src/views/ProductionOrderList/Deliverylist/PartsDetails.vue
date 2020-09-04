@@ -2,8 +2,9 @@
     <div>
         <FullPage 
         title='部件详情' 
-        :showTopSearch='false'
-        @changePage='changePage'
+        :logList='logList'
+        :list='list'
+        :loading='loading'
         :tableColums='tableColums'
         :tableData='tableData'
         :pageIndex='pageIndex'
@@ -13,41 +14,6 @@
                 <Button @click="back" style="margin-right:10px;">返回</Button>
                 <Button type="primary" @click="postData">打印清单</Button>
             </div>
-
-            <div slot='text-list' >
-                <div>
-                    <Form inline :label-width="80" >
-                        <FormItem label="产品名称" label-position='left'>
-                            <Input></Input>
-                        </FormItem>
-                        <FormItem label="长">
-                            <Input style="width:36px"></Input>
-                        </FormItem>
-                        <FormItem label="宽">
-                            <Input style="width:36px"></Input>
-                        </FormItem>
-                        <FormItem label="高">
-                            <Input style="width:36px"></Input>
-                        </FormItem>
-                        <FormItem label="左/右式">
-                            <Input style="width:36px"></Input>
-                        </FormItem>
-                    </Form>
-                </div>
-                <div class="log-list">
-                    <div class="log-item" v-for="(item,index) of logList" :key="index">
-                        <span>{{item.title}}：</span>
-                        <span>{{item.value}}</span>
-                    </div>
-                </div>
-                
-            </div>
-
-            <template slot='set' slot-scope='row'>
-                <div>
-                   <a>查看部件</a>
-                </div>
-            </template>
         </FullPage>
     </div>
 </template>
@@ -57,24 +23,29 @@ export default {
     data(){
         return {
             type:1,
-            logList:[{title:'订单编号',value:'10998765'}],
-            tableColums:[
-                {title:'部件',align:'center',key:'type'},
-                {title:'材质',align:'center'},
-                {title:'颜色',align:'center'},
-                {title:'工艺',align:'center'},
-                {title:'工艺路线',align:'center'},
-                {title:'指导报价 (元)',align:'center'},
-                {title:'数据',align:'center'},
-                {title:'出库时间',align:'center'},
+            list:[],
+            logList:[],
+            tableColums:[],
+            list:[
+                {title:'产品名称',name:'Input',value:'',serverName:'title',placeholder:'请输入产品名称'},
+                {title:'长',name:'Input',value:'',serverName:'long',placeholder:'请输入长度'},
+                {title:'宽',name:'Input',value:'',serverName:'wide',placeholder:'请输入宽度'},
+                {title:'高',name:'Input',value:'',serverName:'high',placeholder:'请输入高度'},
+                {title:'左右式',name:'Select',value:'',serverName:'title',placeholder:'请选择',
+                    option:[
+                        {label:'左式',value:1},
+                        {label:'右式',value:2},
+                    ]
+                },
             ],
-            tableData:[{type:'123'}],
+            tableData:[],
             pageIndex:1,
             total:100,
+            loading:false,
         }
     },
     mounted(){
-        this.getData({id:this.$route.query.id})
+        this.getData(this.$route.query)
     },
     methods:{
         back(){
@@ -84,7 +55,12 @@ export default {
 
         },
         getData(row){
-            this.axios('/api/order_product_list',{params:row}).then(res=>{
+            this.loading = true;
+            this.axios('/api/order_parts_list',{params:row}).then(res=>{
+                this.loading = false
+                this.logList = res.data.detail;
+                this.tableData = res.data.part.parts;
+                this.tableColums = res.data.part.parts_top
             })
         },
         changePage(e){}

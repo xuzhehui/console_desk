@@ -2,7 +2,7 @@
     <div>
         <Toptitle title='审批详情'>
             <Button  @click="back"  style="margin-right:10px;">返回</Button>
-            <Button @click="showModal = true" type="error" style="margin-right:10px;" ghost>驳回审批</Button>
+            <Button :disabled='examMineData.state == 0' @click="showModal = true" type="error" style="margin-right:10px;" ghost>驳回审批</Button>
             <Button type="success" :disabled='examMineData.state == 0' @click="approved" ghost>通过审批</Button>
         </Toptitle>
 
@@ -30,7 +30,7 @@
                             <tr>工装</tr>
                             <tr>{{examMineData.predict_price}}</tr>
                             <tr>{{func.replaceDate(examMineData.crt_time*1)}}</tr>
-                            <tr>{{func.replaceDate(examMineData.upt_time)}}</tr>
+                            <tr>{{func.replaceDate(examMineData.upt_time*1)}}</tr>
                         </th>
                         <th style="width:10%;background:#F4F8FF">
                             <tr>客户</tr>
@@ -42,9 +42,9 @@
                         <th>
                             <tr>{{examMineData.client_name}}</tr>
                             <tr>{{examMineData.mobile}}</tr>
-                            <tr>{{examMineData.nickname}}</tr>
+                            <tr>{{examMineData.nickname||'--'}}</tr>
                             <tr>{{examMineData.pay_state == 1 ? '是' : '否'}}</tr>
-                            <tr>{{examMineData.predict_time}}天</tr>
+                            <tr>{{func.replaceDate(examMineData.predict_time*1)}}天</tr>
                         </th>
                     </table>
                 </div>
@@ -149,8 +149,10 @@ export default {
                 this.examMineData = res.data;
                 this.current = this.examMineData.orders_oa.length-2||0;
                 this.reverseArray = copyData.orders_oa.reverse();
+                
                 this.reverseArray.map(v=>{
-                    v.crt_time = this.func.replaceDate(v.crt_time*1)
+                    v.crt_time = v.crt_time*1
+                    v.crt_time = this.func.replaceDate(v.crt_time)
                 })
             })
         },

@@ -14,7 +14,7 @@
             <div v-if="logList" slot='text-list' class="log-list" >
                 <div class="log-item" v-for="(item,index) of logList" :key="index">
                     <span>{{item.key}}：</span>
-                    <span>{{item.value}}</span>
+                    <span :style="item.color ? 'color:'+item.color : ''">{{item.value}}</span>
                 </div>
             </div>
             <div>

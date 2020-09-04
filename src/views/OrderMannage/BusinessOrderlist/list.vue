@@ -115,7 +115,7 @@ export default {
                 {title:'计划开始时间',align:'center',key:'show_start_time',width:'180'},
                 {title:'计划结束时间',align:'center',key:'show_end_time',width:'180'},
                 {title:'完成进度',align:'center',key:'show_state',width:'180'},
-                {title:'交货日期',align:'center',key:'predict_time',width:'200'},
+                {title:'交货日期',align:'center',key:'show_predict_time',width:'200'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'220',fixed:'right'},
             ],
             tableData:[],
@@ -157,6 +157,7 @@ export default {
                     (v.sub_state == 2 ? '测量通过' : (v.sub_state == 3 ? '生产审核中' : (v.sub_state == 4 ? '生产通过' : '到生产计划'))))
                     v.show_start_time = this.func.replaceDate(v.start_time)
                     v.show_end_time = this.func.replaceDate(v.end_time)
+                    v.show_predict_time = this.func.replaceDate(v.predict_time)
                 })
                 this.tableData = res.data.data;
                 this.total = res.data.total;
@@ -220,7 +221,7 @@ export default {
             this.confirmDelete({
                 content:'确认删除么？',
                 then:()=>{
-                    this.axios.post('/api/basics_material_del',{id:row.id,state:0}).then(res=>{
+                    this.axios.post('/api/basics_order_del',{id:row.id,state:0}).then(res=>{
                         if(res.code == 200){
                             this.$Message.success(res.msg)
                             this.getData(this.proxyObj)

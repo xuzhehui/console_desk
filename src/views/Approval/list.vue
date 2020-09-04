@@ -57,7 +57,7 @@ export default {
                 {title:'审批开始时间',align:'center',key:'crt_time',width:'180'},
                 {title:'审批结束时间',align:'center',key:'upd_time',width:'180'},
                 {title:'备注',align:'center',key:'remark',width:'200'},
-                {title:'操作',align:'center',slot:'set',fixed:'right',width:'100'},
+                {title:'操作',align:'center',slot:'set',fixed:'right',width:'180'},
             ],
             tableData:[],
             pageIndex:1,

@@ -1,7 +1,7 @@
 <template>
     <div>
         <FullPage 
-        title='生产派工单'
+        title='派工单'
         :list='list' 
         @init='init' 
         @searchData='searchData' 

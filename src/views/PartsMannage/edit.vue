@@ -66,7 +66,6 @@ export default {
             },
             partList:[],
             tableColums:[
-                {title:'零部件ID',align:'center',key:'id'},
                 {title:'零部件名称',align:'center',key:'title'},
                 {title:'数量',align:'center',key:'number'},
                 {title:'单位',align:'center',key:'company'},

@@ -115,10 +115,10 @@ export default {
                 {title:'订单类型',align:'center',key:'type',width:'150'},
                 {title:'紧急程度',align:'center',key:'warning_state',width:'150'},
                 {title:'小区',align:'center',key:'residential_name',width:'200'},
-                {title:'计划开始时间',align:'center',key:'start_time',width:'200'},
-                {title:'计划结束时间',align:'center',key:'end_time',width:'200'},
+                {title:'计划开始时间',align:'center',key:'show_start_time',width:'200'},
+                {title:'计划结束时间',align:'center',key:'show_end_time',width:'200'},
                 {title:'完成进度',align:'center',key:'complete_rate',width:'200'},
-                {title:'交货日期',align:'center',key:'predict_time',width:'150'},
+                {title:'交货日期',align:'center',key:'show_predict_time',width:'200'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'150'},
             ],
             tableData:[],
@@ -164,6 +164,11 @@ export default {
         },
         getData(row){
             this.axios('/api/produce_list',{params:row}).then(res=>{
+                res.data.data.map(v=>{
+                    v.show_start_time = this.func.replaceDate(v.start_time)
+                    v.show_end_time = this.func.replaceDate(v.end_time)
+                    v.show_predict_time = this.func.replaceDate(v.predict_time)
+                })
                 this.tableData = res.data.data;
                 this.total = res.data.total;
             })

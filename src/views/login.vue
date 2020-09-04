@@ -67,7 +67,7 @@ export default {
                         localStorage.setItem('token',res.data.token)
                         let user = JSON.stringify(res.data.user_info);
                         localStorage.setItem('user_info',user)
-                        this.$router.push({name:'Home'})
+                        this.$router.push({path:'/cms/home',query:{title:'首页'}})
                     }
                 }
             })

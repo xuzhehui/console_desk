@@ -19,27 +19,19 @@
                 <div style="padding:10px 0;">
                     <Collapse>
                         <Panel v-for="(item,index) of jurisdiction" :key="item.id" :name="index+''">
-                            <Checkbox @on-change="changeCheck($event,item)" v-model="item.show_state" label="订单管理">{{item.title}}</Checkbox>
+                            <Checkbox @on-change.self="changeCheck($event,item)" v-model="item.show_state">{{item.title}}</Checkbox>
                             <div slot="content">
                                 <!-- 此处为菜单项的渲染方式  -->
                                 <Collapse v-if="item.sub">
                                     <Panel v-for="(_item,_index) of item.sub" :key="_item.id" :name="_index+''">
-                                        <Checkbox @on-change="changeCheck($event,_item)" v-model="_item.show_state" :value="item.state" label="订单管理">{{_item.title}}</Checkbox>
+                                        <Checkbox @on-change="changeCheck($event,_item)" v-model="_item.show_state" :value="item.state">{{_item.title}}</Checkbox>
                                         <div slot="content">
-                                            <CheckboxGroup>
-                                                <!-- <Checkbox label="香蕉"></Checkbox>
-                                                <Checkbox label="苹果"></Checkbox>
-                                                <Checkbox label="西瓜"></Checkbox> -->
-                                            </CheckboxGroup>
+                                             <Checkbox v-for="__item of _item.sub" :key="__item.id" @on-change="changeCheck($event,__item)" v-model="__item.show_state">{{__item.title}}</Checkbox>
                                         </div>
                                     </Panel>
                                 </Collapse>
                                 <!-- 此处为非菜单项渲染方式 -->
-                                <CheckboxGroup v-if=!item.sub>
-                                    <!-- <Checkbox label="香蕉"></Checkbox>
-                                    <Checkbox label="苹果"></Checkbox>
-                                    <Checkbox label="西瓜"></Checkbox> -->
-                                </CheckboxGroup>
+                               
                             </div>
                         </Panel>
                     </Collapse>
@@ -74,6 +66,45 @@ export default {
         }
         
         
+    },
+    watch:{
+        // jurisdiction:{
+        //     deep:true,
+        //     handler:function(news){
+        //         news.map(v=>{
+        //             if(v.show_state){
+        //                 v.sub.map(k=>{
+        //                     k.show_state = true
+        //                     this.menu_ids.push(k.id)
+        //                     if(k.show_state){
+        //                         if(k.sub){
+        //                             k.sub.map(z=>{
+        //                                 z.show_state=true
+        //                                 this.menu_ids.push(z.id)
+        //                             })
+        //                         }
+                                
+        //                     }
+        //                 })
+        //             }else{
+        //                 //取消全选操作
+        //                 if(!v.show_state){
+        //                     v.sub.map(k=>{
+        //                         k.show_state = false;
+        //                         let index = this.menu_ids.findIndex(q=>q == k.id);
+        //                         this.removeItems(index)
+        //                         k.sub.map(z=>{
+        //                             z.show_state = false;
+        //                             let index = this.menu_ids.findIndex(d=>d == z.id);
+        //                             this.removeItems(index)
+        //                         })
+        //                     })
+        //                 }
+        //             }
+        //         })
+        //         console.log(this.menu_ids)
+        //     }
+        // }
     },
     methods:{
         postData(){
@@ -128,16 +159,34 @@ export default {
             result.map(v=> this.func.isType(v.sub) == 'Object' ? v.sub = this.deepObjToArray(v.sub) : '' )
             return result
         },
+        removeItems(index){
+            this.menu_ids.splice(index,1);
+        },
         changeCheck(evt,row){
             if(evt){
                 row.state = 1;
                 row.show_state = true;
                 this.menu_ids.push(row.id)
+                if(row.sub){
+                    row.sub.map(v=>{
+                        v.state = 1;
+                        v.show_state = true;
+                        this.menu_ids.push(v.id)
+                    })
+                }
             }else{
                 row.state = 0;
                 row.show_state = false;
+                if(row.sub){
+                    row.sub.map(v=>{
+                        v.state = 0;
+                        v.show_state = false;
+                        let index = this.menu_ids.findIndex(v=>v == row.id);
+                        this.removeItems(index)
+                    })
+                }
                 let index = this.menu_ids.findIndex(v=>v == row.id);
-                this.menu_ids.splice(index,1)
+                this.removeItems(index)
             }
         },
     }

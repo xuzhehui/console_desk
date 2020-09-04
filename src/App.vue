@@ -46,4 +46,5 @@ table-edit-set{margin-right:10px;color:#3764FF;cursor:pointer}
   overflow: hidden;
 }
 .page-edit{overflow: hidden;overflow-y: auto;position:relative;top:20px;height:85%;padding-bottom: 20px;;}
+.ivu-form-item{margin-bottom:10px!important;}
 </style>

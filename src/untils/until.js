@@ -5,10 +5,12 @@ export default{
         return result;
     },
     replaceDate(str){
+        str = str.toString().length == 10 ? str*1000 : str
         let now = str ? new Date(str) : new Date(),
         y = now.getFullYear(),
         m = now.getMonth() + 1,
         d = now.getDate();
         return y + "-" + (m < 10 ? "0" + m : m) + "-" + (d < 10 ? "0" + d : d) + " " + now.toTimeString().substr(0, 8);
-    },
+    }, 
+    
 }
