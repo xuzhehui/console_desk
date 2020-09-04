@@ -8,7 +8,7 @@
 
             <div class="router-map">
                 <Crumbs :crumbs="crumbs" />
-                <transition :name="transitionName"><router-view class="router-style"/></transition>
+                <transition :name="transitionName"><router-view :class="['router-style',$route.query.title == '首页' ? 'router-style-home' : 'router-style-page']"/></transition>
             </div>
         </div>
     </div>
@@ -88,7 +88,9 @@ export default {
 .page{display: flex;height:100%;width:100%;padding-top:80px;
     .navigation{width:230px;height:100%;}
     .router-map{width:100%;height:100%;padding:10px 20px;background:#F0F1F4;
-        .router-style{height:93%;border-radius:5px;background:#fff;padding:0 36px;position:relative;}
+        .router-style{height:93%;border-radius:5px;background:#fff;position:relative;}
+        .router-style-page{padding:0 36px;}
+        .router-style-home{padding:0;}
     }
 }
 

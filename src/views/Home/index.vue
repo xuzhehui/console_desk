@@ -1,39 +1,36 @@
 <template>
     <div class="home">
-        <Alert style="position:relative;top:10px;">一段提示信息</Alert>
-        <div style="width:100%;height:100%;display:flex;padding:10px 0;">
-            <div class="table-left">
-                <div class="charts">
-                    <Toptitle style="margin:0;height:30px;font-size:16px;" title='产品趋势'>
-                    </Toptitle>
-                    <ve-histogram :legend-visible='false' :data="chartData"></ve-histogram>
+        <div class='charts-box'>
+            <div class="charts">
+                <div class="left-charts">
+                    <Toptitle style="height:10px;font-size:10px;margin:0;padding:15px 0;" title='产品趋势'/>
+                    <div class="chart-search">
+                        <RadioGroup type="button" size='small'>
+                            <Radio label="柱状图"></Radio>
+                            <Radio label="折线图"></Radio>
+                        </RadioGroup>
+                        <DatePicker size='small' type="daterange" split-panels placeholder="请选择时间段"></DatePicker>
+                    </div>
+                    
+                    <ve-histogram :legend-visible='false' :data="chartData" :settings='chartSettings'></ve-histogram>
                 </div>
-                <div class="charts">
-                    <Toptitle style="margin:0;height:30px;font-size:16px;" title='产品趋势'>
-                    </Toptitle>
-                    <ve-histogram :data="chartData"></ve-histogram>
-                </div>
-            </div>
-            <div class="table-right">
-                <div class="charts">
-                    <Toptitle style="margin:0;height:30px;font-size:16px;" title='销售额类别占比'>
-                    </Toptitle>
-                    <ve-ring :data="chartData"></ve-ring>
-                </div>
-                <div class="charts">
-                    <Toptitle style="margin:0;height:30px;font-size:16px;" title='销售额类别占比'>
-                    </Toptitle>
-                    <ve-ring :data="chartData"></ve-ring>
+                <div class="right-charts">
+                    <Toptitle style="height:10px;font-size:10px;margin:0;padding:15px 0;" title='销售额类别占比'/>
+                    <div class="chart-search">
+                        <DatePicker size='small' type="daterange" split-panels placeholder="请选择时间段"></DatePicker>
+                    </div>
                 </div>
             </div>
         </div>
-        
     </div>
 </template>
 
 <script>
 export default {
     data(){
+        this.chartSettings = {
+            yAxisName: ['万元']
+      }
         return {
             chartData: {
                 columns: ['日期', '产品趋势'],
@@ -58,13 +55,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.home{margin-top:20px;width:100%;height:100%;overflow: hidden;background:rgb(240,241,244)!important;
-    .table-left{width:60%;height:100%;padding-right:5px;background:#fff;border-radius:5px;
-        
+.home{margin-top:10px;width:100%;height:100%;overflow: hidden;background:rgb(240,241,244)!important;
+    .charts-box{width:100%;height:100%;
+        .charts{width:100%;display:flex;justify-content:space-between;
+            .chart-search{display:flex;justify-content:flex-end;}
+            .left-charts{width:55%;
+                
+            }
+            .right-charts{width:44%;}
+        }
     }
-    .table-right{width:40%;height:100%;padding-left:5px;
-
-    }
-    .charts{width:100%;height:50%;transform: scale(.8);}
 }
 </style>
