@@ -30,7 +30,7 @@ export default {
     data(){
         return {
             id:this.$route.query.id,
-            logList:[{title:'系统单号',value:'10998765'}],
+            logList:[],
             tableColums:[
                 {title:'产品类型',align:'center',key:'type',fixed:'left',width:'100'},
                 {title:'产品名称',align:'center',key:'product_name',},

@@ -33,7 +33,7 @@ export default {
         return {
             list:[
                 {title:'ID',name:'Input',value:'',serverName:'id',placeholder:'请输入ID'},
-                {title:'用户名',name:'Input',value:'',serverName:'account',placeholder:'请输入用户名'},
+                {title:'用户名',name:'Input',value:'',serverName:'nickname',placeholder:'请输入用户名'},
                 {title:'角色类型',name:'Select',serverName:'group_id',value:'',option:[
                     {label:'管理员',value:1},
                     {label:'游客',value:2}
@@ -41,10 +41,10 @@ export default {
             ],
             tableColums:[
                 {title:'ID',align:'center',key:'id'},
-                {title:'用户名',align:'center',key:'account'},
-                {title:'登录密码',align:'center',key:'password '},
+                {title:'用户名',align:'center',key:'nickname'},
+                {title:'登录账号',align:'center',key:'account'},
                 {title:'手机号',align:'center',key:'mobile'},
-                {title:'角色名',align:'center',key:'account'},
+                {title:'角色名',align:'center',key:'group_name'},
                 {title:'操作',align:'center',slot:'set'},
             ],
             roleList:[],
@@ -84,9 +84,11 @@ export default {
             this.confirmDelete({
                 content:'删除后，该关联用户将不能正常登录使用权限',
                 then:()=>{
-                    this.axios.post('/api/user',{id:row.id,state:0}).then(res=>{
-                        this.$Message.success(res.msg||'11')
-                        this.getData(this.proxyObj)
+                    this.axios.post('/api/user',{id:row.id,state:0,op:'edit'}).then(res=>{
+                        if(res.code == 200){
+                            this.$Message.success(res.msg)
+                            this.getData(this.proxyObj)
+                        } 
                     })
                 }
             })

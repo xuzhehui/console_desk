@@ -3,6 +3,8 @@
         <FullPage 
         title='工装订单详情1' 
         :showTopSearch='false'
+        :loading='loading'
+        :logList='logList'
         @changePage='changePage'
         :tableColums='tableColums'
         :tableData='tableData'
@@ -13,13 +15,6 @@
                 <Button @click="back" style="margin-right:10px;">返回</Button>
                 <Button type="primary" @click="postData">打印</Button>
             </div>
-
-            <div slot='text-list' class="log-list">
-                <div class="log-item" v-for="(item,index) of logList" :key="index">
-                    <span>{{item.title}}：</span>
-                    <span>{{item.value}}</span>
-                </div>
-            </div>
         </FullPage>
     </div>
 </template>
@@ -29,22 +24,24 @@ export default {
     data(){
         return {
             type:1,
-            logList:[{title:'订单编号',value:'10998765'}],
+            logList:[],
             tableColums:[
-                {title:'产品类型',align:'center',key:'type'},
-                {title:'材质',align:'center'},
-                {title:'工艺',align:'center'},
-                {title:'颜色',align:'center'},
-                {title:'产品名称',align:'center'},
-                {title:'产品型号',align:'center'},
+                {title:'产品类型',align:'center',key:'type',fixed:'left',width:'100'},
+                {title:'产品名称',align:'center',key:'product_name',},
+                {title:'产品型号',align:'center',key:'model',},
                 {title:'测量数据',align:'center'},
-                {title:'位置',align:'center'},
-                {title:'预估产品工期',align:'center'},
+                {title:'位置',align:'center',key:'address',key:'position'},
+                {title:'预估产品工期',align:'center',key:'time'},
             ],
-            tableData:[{type:'123'}],
+            tableData:[],
             pageIndex:1,
             total:100,
+            loading:false,
+            proxyObj:{},
         }
+    },
+    mounted(){
+        this.getData(this.$route.query.id)
     },
     methods:{
         back(){
@@ -52,6 +49,14 @@ export default {
         },
         postData(){
 
+        },
+        getData(id){
+            this.loading = true;
+            this.axios('/api/order_product_list',{params:{id:id}}).then(res=>{
+                this.loading = false;
+                this.tableData = res.data.product;
+                this.logList = res.data.detail;
+            })
         },
         goPage(row){
             this.$router.push({

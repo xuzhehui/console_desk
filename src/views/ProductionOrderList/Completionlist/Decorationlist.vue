@@ -3,7 +3,9 @@
         <FullPage 
         title='工装订单列表'
         :list='list' 
-        @init='init' 
+        @init='init'
+        :logList='logList' 
+        :loading='loading'
         @searchData='init' 
         @changePage='changePage'
         :tableColums='tableColums'
@@ -21,17 +23,10 @@
             <div slot='navButton'>
                 <Button @click="setTableColums" type="primary" ghost icon='ios-cog'>表头设置</Button>
             </div>
-
-            <div slot="text-list" class="log-list">
-                <div class="log-item" v-for="(item,index) of logList" :key="index">
-                    <span>{{item.title}}：</span>
-                    <span>{{item.value}}</span>
-                </div>
-            </div>
             
-            <template slot='set' slot-scope='row'>
+            <template slot='set' slot-scope='{row}'>
                 <div class="table-set">
-                    <a @click="goDetail(row.row)">详情</a>
+                    <a @click="goDetail(row)">详情</a>
                 </div>
             </template>
 
@@ -63,42 +58,47 @@ export default {
                 {title:'按房号',name:'Input',value:'',serverName:'id',placeholder:'请输入ID'},
             ],
             tableColums:[
-                {title:'小区',align:'center',key:'id'},
-                {title:'楼幢',align:'center',key:'title'},
-                {title:'单元',align:'center',},
-                {title:'楼层',align:'center',key:'title'},
-                {title:'房号',align:'center',key:'title'},
-                {title:'单价',align:'center',key:'title'},
-                {title:'预估户型工期',align:'center',key:'title'},
-                {title:'操作',align:'center',slot:'set',width:'180'},
+                {title:'小区',align:'center',key:'residential_name',fixed:'left'},
+                {title:'楼幢',align:'center',key:'house'},
+                {title:'单元',align:'center',key:'unit'},
+                {title:'楼层',align:'center',key:'layer'},
+                {title:'房间号',align:'center',key:'number'},
+                {title:'单价',align:'center',key:'price'},
+                {title:'预估房间工期',align:'center',key:'time',width:'200'},
+                {title:'操作',align:'center',slot:'set',fixed:'right',width:'180'},
             ],
             tableData:[],
-            logList:[{title:'订单编号',value:'10998765'}],
+            logList:[{key:'订单编号',value:'10998765'}],
             pageIndex:1,
             total:100,
             showModal:false,
             showType:1,
             classInfo:{},
-            searchObj:{},
+            proxyObj:{},
             showTableColums:false,
+            loading:false,
         }
     },
     methods:{
         init(row){
-            this.searchObj = row;
+            this.proxyObj = row;
+            row.id = 39;
             this.getData(row)
         },
-        setTableColums(){//设置表头
-            this.showTableColums = true;
-        },
         getData(row){
-            this.axios('/api/basics_parts_index').then(res=>{
-                this.tableData = res.data;
+            this.loading = true;
+            this.axios('/api/order_industry_list',{params:row}).then(res=>{
+                this.loading = false;
+                this.tableData = res.data.oil
+                this.logList = res.data.detail
             })
         },
         goDetail(row){
             this.$router.push({
                 path:'/cms/productionorderlist/completionlist/details',
+                query:{
+                    id:row.id
+                }
             })
         },
         changePage(e){

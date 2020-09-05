@@ -43,6 +43,7 @@
 </template>
 
 <script>
+import {mapState,mapMutations,mapActions} from 'vuex'
 export default {
     data(){
         return {
@@ -68,45 +69,9 @@ export default {
         
     },
     watch:{
-        // jurisdiction:{
-        //     deep:true,
-        //     handler:function(news){
-        //         news.map(v=>{
-        //             if(v.show_state){
-        //                 v.sub.map(k=>{
-        //                     k.show_state = true
-        //                     this.menu_ids.push(k.id)
-        //                     if(k.show_state){
-        //                         if(k.sub){
-        //                             k.sub.map(z=>{
-        //                                 z.show_state=true
-        //                                 this.menu_ids.push(z.id)
-        //                             })
-        //                         }
-                                
-        //                     }
-        //                 })
-        //             }else{
-        //                 //取消全选操作
-        //                 if(!v.show_state){
-        //                     v.sub.map(k=>{
-        //                         k.show_state = false;
-        //                         let index = this.menu_ids.findIndex(q=>q == k.id);
-        //                         this.removeItems(index)
-        //                         k.sub.map(z=>{
-        //                             z.show_state = false;
-        //                             let index = this.menu_ids.findIndex(d=>d == z.id);
-        //                             this.removeItems(index)
-        //                         })
-        //                     })
-        //                 }
-        //             }
-        //         })
-        //         console.log(this.menu_ids)
-        //     }
-        // }
     },
     methods:{
+        ...mapActions(['undata_navData']),
         postData(){
             let postInfo,op;
             if(this.type == 1){
@@ -130,9 +95,10 @@ export default {
         },
         postStystem(id){
             let menus = JSON.stringify(this.menu_ids)
-            this.axios.post('/api/user_permission',{id:id,menu:menus,op:this.type == 1 ? 'add' : 'edit'}).then(res=>{
+            this.axios.post('/api/user_permission',{id:id,menu:menus,op:'edit'}).then(res=>{
                 if(res.code == 200){
                     this.$Message.success(res.msg);
+                    this.undata_navData()
                     this.back();
                 }
             })
@@ -142,13 +108,22 @@ export default {
                 let result = this.deepObjToArray(res.data)
                 result.map(v=>{
                     v.show_state = v.state == 1 ? true : false;
+                    v.state == 1 ? this.menu_ids.push(v.id) : ''
                     if(Array.isArray(v.sub)){
                         v.sub.map(k=>{
                             k.show_state = k.state == 1 ? true : false
+                            k.state == 1 ? this.menu_ids.push(k.id) : ''
+                            if(k.sub){
+                                k.sub.map(m=>{
+                                    m.show_state = k.state == 1 ? true : false
+                                    m.state == 1 ? this.menu_ids.push(m.id) : ''
+                                })
+                            }
                         })
                     }
                 })
                 this.jurisdiction = result
+                
             })
         },
         back(){
@@ -163,6 +138,7 @@ export default {
             this.menu_ids.splice(index,1);
         },
         changeCheck(evt,row){
+            console.log(row)
             if(evt){
                 row.state = 1;
                 row.show_state = true;
@@ -172,6 +148,14 @@ export default {
                         v.state = 1;
                         v.show_state = true;
                         this.menu_ids.push(v.id)
+                        if(v.sub){
+                            v.sub.map(k=>{
+
+                                k.state = 1;
+                                k.show_state = true;
+                                this.menu_ids.push(k.id)
+                            })
+                        }
                     })
                 }
             }else{
@@ -181,13 +165,22 @@ export default {
                     row.sub.map(v=>{
                         v.state = 0;
                         v.show_state = false;
-                        let index = this.menu_ids.findIndex(v=>v == row.id);
+                        let index = this.menu_ids.findIndex(v=>v == v.id);
                         this.removeItems(index)
+                        if(v.sub){
+                            v.sub.map(k=>{
+                                k.state = 0;
+                                k.show_state = false;
+                                let d = this.menu_ids.findIndex(v=>v == k.id);
+                                this.removeItems(index)
+                            })
+                        }
                     })
                 }
                 let index = this.menu_ids.findIndex(v=>v == row.id);
                 this.removeItems(index)
             }
+
         },
     }
 }

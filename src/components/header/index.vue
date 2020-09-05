@@ -109,7 +109,8 @@ export default {
                 if(res.code == 200){
                     this.$Message.success(res.msg||'已退出登录');
                     localStorage.removeItem('token')
-                    setTimeout(()=>this.$router.push({name:'Login'}),500)
+                    localStorage.removeItem('autoLogin')
+                    setTimeout(()=>this.$router.push({name:'Login'}),500) 
                 }
             })
         },

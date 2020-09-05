@@ -32,7 +32,7 @@ export default {
     data(){
         return {
             list:[
-                {title:'ID',name:'Input',value:'',serverName:'id',placeholder:'请输入ID'},
+                {title:'ID',name:'Input',value:'',serverName:'ids',placeholder:'请输入ID'},
                 {title:'角色类型',name:'Select',serverName:'group_title',value:'',option:[
                     {label:'管理员',value:1},
                     {label:'游客',value:2}
@@ -82,7 +82,7 @@ export default {
             this.confirmDelete({
                 content:'删除后该角色下的所有信息将被删除，订单中已使用的角色信息将会保留不变',
                 then:()=>{
-                    this.axios.post('/api/group',{id:row.id,state:0}).then(res=>{
+                    this.axios.post('/api/group',{id:row.id,state:0,op:'edit'}).then(res=>{
                         this.getData(this.proxyObj)
                     })
                 }

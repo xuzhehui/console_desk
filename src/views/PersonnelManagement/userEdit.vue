@@ -98,7 +98,9 @@ export default {
             let postInfo = JSON.parse(JSON.stringify(this.info));
             postInfo.flow = JSON.stringify(postInfo.flow)
             this.axios.post('/api/user',postInfo).then(res=>{
-                this.$Message.success(res.msg||'新增成功')
+                if(res.code == 200){
+                    this.$Message.success(res.msg||'新增成功')
+                }
                 this.back()
             })
         },
