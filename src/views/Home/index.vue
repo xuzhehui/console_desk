@@ -19,7 +19,7 @@
                     <div class="chart-search">
                         <DatePicker  style="margin-right:10px;" size='small' type="daterange" split-panels placeholder="请选择时间段"></DatePicker>
                     </div>
-                    <ve-ring :data="salesVolume" :settings="chartSettings"></ve-ring>
+                    <ve-ring class="big" :data="salesVolume" :settings="chartSettings"></ve-ring>
                 </div>
             </div>
 
@@ -30,7 +30,7 @@
                         <DatePicker  style="margin-right:10px;" size='small' type="daterange" split-panels placeholder="请选择时间段"></DatePicker>
                     </div>
                     
-                    <ve-histogram  :data="metaData" :settings='metaDataSettings'></ve-histogram>
+                    <ve-histogram class="big"  :data="metaData" :settings='metaDataSettings'></ve-histogram>
                 </div>
                 <div class="right-charts">
                     <Toptitle style="height:10px;font-size:10px;margin:0;padding:15px 10px;border-radius:5px;" title='人员工资统计'/>
@@ -110,5 +110,5 @@ export default {
         }
     }
 }
-// .big{transform: scale(.8);position:relative;top:-5%;}
+.big{transform: scale(.8);position:relative;top:-5%;}
 </style>

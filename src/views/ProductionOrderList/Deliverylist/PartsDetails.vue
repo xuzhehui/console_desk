@@ -31,7 +31,7 @@ export default {
                 {title:'长',name:'Input',value:'',serverName:'long',placeholder:'请输入长度'},
                 {title:'宽',name:'Input',value:'',serverName:'wide',placeholder:'请输入宽度'},
                 {title:'高',name:'Input',value:'',serverName:'high',placeholder:'请输入高度'},
-                {title:'左右式',name:'Select',value:'',serverName:'title',placeholder:'请选择',
+                {title:'左/右式',name:'Select',value:'',serverName:'title',placeholder:'请选择',
                     option:[
                         {label:'左式',value:1},
                         {label:'右式',value:2},
@@ -59,8 +59,17 @@ export default {
             this.axios('/api/order_parts_list',{params:row}).then(res=>{
                 this.loading = false
                 this.logList = res.data.detail;
-                this.tableData = res.data.part.parts;
-                this.tableColums = res.data.part.parts_top
+                this.tableData = res.data.part;
+                this.tableColums = this.func.objtoArray(res.data.parts_top)
+                this.logList.map(v=>{
+                    this.list.map(k=>{
+                        if(v.key == k.title){
+                            k.value = v.value;
+                            k.disabled = true;
+                            v.value == '左' ? k.value = 1 : k.value = 2
+                        }
+                    })
+                })
             })
         },
         changePage(e){}
