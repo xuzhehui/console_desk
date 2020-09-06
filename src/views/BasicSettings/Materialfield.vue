@@ -31,7 +31,13 @@
                             <Input disabled placeholder="ID自动生成" v-model="classInfo.id"/>
                         </FormItem>
                         <FormItem label="分类名称：">
-                            <Input placeholder="请输入分类名称" v-model="classInfo.title"/>
+                            <div v-if="showType == 1">
+                                <div class="item-attr" v-for="(item,index) of attribute" :key="index">
+                                    <Input placeholder="请输入分类名称" v-model="item.title"/>
+                                    <Icon @click="addAttr(index)" style="'margin:0 10px" :color='index == attribute.length-1 ? "#32C800" : "#FF5E5C"' size='20' :type="index == attribute.length-1 ? 'ios-add-circle' : 'md-remove-circle'" />
+                                </div>
+                            </div>
+                            <Input v-if="showType == 2" placeholder="请输入分类名称" v-model="classInfo.title"/>
                         </FormItem>
                     </Form>
                 </Modal>
@@ -67,6 +73,7 @@ export default {
             },
             proxyObj:{},
             loading:false,
+            attribute:[{title:''}]
         }
     },
     
@@ -127,13 +134,29 @@ export default {
                     id:'',
                     title:''
                 }
+                this.attribute = [{title:''}]
             }
         },
+        addAttr(n){
+            n == this.attribute.length-1 ? this.attribute.push({title:''}) : this.attribute.splice(n,1)
+        },
         postInfo(){
-            let post_url = this.showType == 1 ? '/api/basics_material_add' : '/api/basics_material_edit';
-            this.axios.post(post_url,this.classInfo).then(res=>{
+            let postData = {},post_url='';
+            if(this.showType == 1){
+                post_url = '/api/basics_material_add';
+                let result = []
+                this.attribute.map(v=>result.push(v.title))
+                postData = {
+                    id:this.classInfo.id,
+                    title:result.join(',')
+                }
+            }else{
+                post_url = '/api/basics_material_edit'
+                postData = this.classInfo;
+            }
+            this.axios.post(post_url,postData).then(res=>{
                 this.$Message.success(res.msg)
-                this.getData(this.searchObj)
+                this.getData(this.proxyObj)
                 this.undata_navData()
             })
         }
@@ -142,5 +165,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// .nav{display: flex;justify-content: space-between;align-items: center;}
+.item-attr{display: flex;align-items: center;margin-bottom: 10px;}
 </style>

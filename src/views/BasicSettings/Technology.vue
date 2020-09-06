@@ -34,7 +34,7 @@
                             <div v-if="showType == 1">
                                 <div class="item-attr" v-for="(item,index) of attribute" :key="index">
                                     <Input placeholder="请输入属性名称" v-model="item.title"/>
-                                    <Icon @click="addAttr(index)" style="'margin:0 10px" :color='index == 0 ? "#32C800" : "#FF5E5C"' size='20' :type="index == 0 ? 'ios-add-circle' : 'md-remove-circle'" />
+                                    <Icon @click="addAttr(index)" style="'margin:0 10px" :color='index == attribute.length-1 ? "#32C800" : "#FF5E5C"' size='20' :type="index == attribute.length-1 ? 'ios-add-circle' : 'md-remove-circle'" />
                                 </div>
                             </div>
 
@@ -137,7 +137,7 @@ export default {
             })
         },
         addAttr(n){
-            n == 0 ? this.attribute.push({title:''}) : this.attribute.splice(n,1)
+            n == this.attribute.length-1 ? this.attribute.push({title:''}) : this.attribute.splice(n,1)
         },
         delItems(row){
             this.confirmDelete({

@@ -6,7 +6,7 @@
         </Toptitle>
 
         <div class="page-edit">
-            <Form style="width:50%">
+            <Form style="width:30%">
                 <FormItem label="部件分类名称">
                     <Select v-model="info.p_id">
                         <Option v-for="item of partList" :key="item.id" :value="item.id" :label="item.title"></Option>
@@ -20,15 +20,6 @@
                 </FormItem>
                 <FormItem label="部件名称">
                     <Input v-model="info.title"></Input>
-                </FormItem>
-                <FormItem label="关联产品">
-                    <div style="width:100%;display:flex;" >
-                        <Select v-model="info.bp_id" >
-                            <Option v-for="item of product_list" :key="item.id" :value="item.id" :label="item.title"></Option>
-                        </Select>
-                    </div>
-                    <span>该产品测量属性为：L W H</span>
-                    
                 </FormItem>
                 <FormItem label="单位">
                     <Input v-model="info.company" placeholder="请输入单位"></Input>

@@ -42,15 +42,18 @@
 
         <Modal class-name="vertical-center-modal" v-model="show_add" title="新增工艺路线">
             <div class="modal-tags">
-                <div>已选：</div>
+                <div style="width:55px">已选：</div>
                 <div class="select-tag">
-                    <!-- <Tooltip>
-                        <div slot='content'>
-                            <p>工序：{{12}}</p>
-                            <p>价值：{{12}}</p>
-                        </div> -->
-                        <Tag @on-close='closeTag(key,selectTags,item)' v-for="(item,key) of selectTags" :key="key" color="primary" type="border" closable>{{item.title}}</Tag>
-                    <!-- </Tooltip> -->
+                    <SlickList :distance="10" :lockToContainerEdges="true" axis="x,y,xy" lockAxis="xy" v-model="selectTags" class="SortableList" @input="getChangeLists">
+                        <SlickItem style="z-index:9999" v-for="(item,key) of selectTags" :key="key" class="SortableItem" :index="key">
+                            <div class="tag-modal">
+                                <div class="before">{{key}}</div>
+                                <Tag @on-close='closeTag(key,selectTags,item)'  color="primary" type="border" closable>{{item.title}}</Tag>
+                            </div>
+                            
+                        </SlickItem>
+                        <!-- <Tag @on-close='closeTag(key,selectTags,item)' v-for="(item,key) of selectTags" :key="key" color="primary" type="border" closable>{{item.title}}</Tag> -->
+                    </SlickList>
                 </div>
             </div>
             <div class="pro-select" v-for="(item,index) of info.bps" :key="index">
@@ -64,7 +67,6 @@
                         </div>
                         <Checkbox @on-change="changeCheck($event,_item,selectTags)" v-model="_item.show" style="padding:0px 5px;"   border>{{_item.title}}</Checkbox>
                     </Tooltip>
-                    <!-- <Checkbox @on-change="changeCheck($event,_item,selectTags)" v-model="_item.show" style="padding:0px 5px;" v-for="(_item,_index) of item.cld" :key='_index'  border>{{_item.title}}</Checkbox> -->
                 </div>
             </div>
         </Modal>
@@ -72,6 +74,8 @@
 </template>
 
 <script>
+
+import { SlickList, SlickItem } from 'vue-slicksort'
 export default {
     data(){
         return {
@@ -125,6 +129,9 @@ export default {
     methods:{
         back(){
             this.$router.go(-1)
+        },
+        getChangeLists(e){
+            console.log(e)
         },
         postData(){
             this.info.op = this.type == 1 ? 'add' : 'edit'
@@ -188,6 +195,7 @@ export default {
             })
         }
     },
+    components:{SlickList,SlickItem}
 }
 </script>
 
@@ -201,7 +209,12 @@ export default {
 .vertical-center-modal{display: flex;align-items: center;justify-content: center;.ivu-modal{top: 0;}}
 .modal-tags{display: flex;align-items: center;}
 .pro-select{display: flex;padding:10px 0;align-items:center;}
-
+.SortableList{display: flex;flex-wrap:wrap;overflow: hidden;}
+.tag-modal{display: flex;align-items:center;
+    .before{width:20px;background:#3764FF;height:24px;border-radius:5px 0 0 5px;display: flex;justify-content: center;
+        align-items:center;color:#fff;
+    }
+}
 </style>
 
 <style lang="scss">

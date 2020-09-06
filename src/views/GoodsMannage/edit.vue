@@ -36,7 +36,7 @@
 
             <div class="agent" v-if="info.has_agent == 1 ? true : false">
                 <div class='agent-item' v-for="(item,index) of info.agent" :key="index">
-                    <Icon @click="delItems(index,info.agent)" size='20' class="delete-img" type="ios-close-circle" />
+                    <Icon v-if="type == 3 ? false : true" @click="delItems(index,info.agent)" size='20' class="delete-img" type="ios-close-circle" />
                     <Form>
                         <FormItem label='姓名'>
                             <Select v-model="item.id" :disabled='type == 3 ? true : false'>
@@ -49,7 +49,7 @@
                     </Form>
                 </div>
 
-                <div class="agent-add">
+                <div class="agent-add" v-if="type == 3 ? false : true">
                     <Icon @click="addAgent" size='100' type="ios-add" />
                     <span>添加代理商</span>
                 </div>
