@@ -47,12 +47,11 @@
                     <SlickList :distance="10" :lockToContainerEdges="true" axis="x,y,xy" lockAxis="xy" v-model="selectTags" class="SortableList" @input="getChangeLists">
                         <SlickItem style="z-index:9999" v-for="(item,key) of selectTags" :key="key" class="SortableItem" :index="key">
                             <div class="tag-modal">
-                                <div class="before">{{key}}</div>
+                                <div class="before">{{key+1}}</div>
                                 <Tag @on-close='closeTag(key,selectTags,item)'  color="primary" type="border" closable>{{item.title}}</Tag>
                             </div>
                             
                         </SlickItem>
-                        <!-- <Tag @on-close='closeTag(key,selectTags,item)' v-for="(item,key) of selectTags" :key="key" color="primary" type="border" closable>{{item.title}}</Tag> -->
                     </SlickList>
                 </div>
             </div>
@@ -65,7 +64,7 @@
                             <p>工价：{{_item.wages}}</p>
                             <p>产能：{{_item.capacity}}</p>
                         </div>
-                        <Checkbox @on-change="changeCheck($event,_item,selectTags)" v-model="_item.show" style="padding:0px 5px;"   border>{{_item.title}}</Checkbox>
+                        <Checkbox @on-change="changeCheck($event,_item,selectTags)" v-model="_item.show" style="padding:0px 5px;">{{_item.title}}</Checkbox>
                     </Tooltip>
                 </div>
             </div>
