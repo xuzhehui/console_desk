@@ -73,7 +73,6 @@ export default {
             showModal:false,
             showType:1,
             classInfo:{
-
             },
             measureList:[],//测量字段列表
             proxyObj:{},
@@ -126,8 +125,6 @@ export default {
             if(obj.id){
                 this.showType=2
                 this.getDetails(obj.id)
-                // this.classInfo.id = obj.id;
-                // this.classInfo.title = obj.title;
             }else{
                 //新增
                 this.showType=1
@@ -137,12 +134,15 @@ export default {
             let post_url = this.showType == 1 ? '/api/basics_product_add' : '/api/basics_product_edit',post_data={
                 id:this.classInfo.id,
                 title:this.classInfo.title,
-                measure_id:this.classInfo.measure_id.join(',')
+                measure_id:this.classInfo.measure_id.join(','),
+                p_id:this.classInfo.p_id
             }
             this.axios.post(post_url,post_data).then(res=>{
-                this.$Message.success(res.msg)
-                this.getData(this.searchObj)
-                this.undata_navData()
+                if(res.code == 200){
+                    this.$Message.success(res.msg)
+                    this.getData(this.searchObj)
+                    this.undata_navData()
+                }
             })
         },
         vivibleModal(e){

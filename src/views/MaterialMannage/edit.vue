@@ -12,7 +12,7 @@
             <FormItem  label="物料名称">
                 <Input :disabled='type == 3 ? true : false' v-model="info.title"  placeholder="请输入物料名称"/>
             </FormItem>
-            <FormItem label="材质">
+            <FormItem label="物料分类">
                 <Select style="width:186px;" v-model="info.m_id" :disabled='type == 3 ? true : false' placeholder="请选择材质">
                     <Option v-for="item of materialList" :key="item.id" :label="item.title" :value="item.id"></Option>
                 </Select>
@@ -38,8 +38,8 @@
             <FormItem label="预警值">
                 <Input :disabled='type == 3 ? true : false' v-model="info.warning_number" placeholder="请输入预警值"/>
             </FormItem>
-            <FormItem label="公式">
-                <Input :disabled='type == 3 ? true : false' @on-focus="popKeyBoard" v-model="info.formula" placeholder="请输入公式"/>
+            <FormItem label="损耗">
+                <Input :disabled='type == 3 ? true : false' v-model="info.scale" placeholder="请输入百分比"/>
             </FormItem>
             <FormItem label="描述">
                 <Input :disabled='type == 3 ? true : false' v-model="info.remark" placeholder="请输入描述"/>

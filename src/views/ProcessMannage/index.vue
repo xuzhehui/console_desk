@@ -144,8 +144,10 @@ export default {
                 post_data = this.classInfo;
             }
             this.axios.post(post_url,post_data).then(res=>{
-                this.$Message.success(res.msg)
-                this.getData(this.proxyObj)
+                if(res.code == 200){
+                    this.$Message.success(res.msg)
+                    this.getData(this.proxyObj)
+                }  
             })
         },
         addAttr(n){
@@ -163,7 +165,7 @@ export default {
             this.confirmDelete({
                 content:'确认删除么？',
                 then:()=>{
-                    this.axios.post('/api/properties_edit',{id:row.id,state:0}).then(res=>{
+                    this.axios.post('/api/properties_del',{id:row.id,state:0}).then(res=>{
                         if(res.code == 200){
                             this.$Message.success(res.msg)
                             this.getData(this.proxyObj)

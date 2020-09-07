@@ -14,7 +14,13 @@ const mutations  = {
     },
     updataNavgation(state,payload){
         state.navgationData = payload
-    }
+    },
+    savePageEditData(state,payload){
+        state.pageEditData = payload
+    },
+    clearPageEditData(state){
+        state.pageEditData = []
+    },
 }
 
 export default mutations

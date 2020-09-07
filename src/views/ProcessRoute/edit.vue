@@ -38,27 +38,24 @@
                 <span>工艺路线：</span>
                 <Button @click="editRouter">新增工艺路线</Button>
             </div>
+
+            <Table border :columns="tableColumns" :data="tableData"></Table>
         </div>
 
-        <Modal class-name="vertical-center-modal" v-model="show_add" title="新增工艺路线">
-            <div class="modal-tags">
-                <div style="width:55px">已选：</div>
-                <div class="select-tag">
+        <Modal class-name="vertical-center-modal" v-model="show_add" title="新增工艺路线" @on-ok="saveTableData">
+            <Form>
+                <FormItem label='已选'>
                     <SlickList :distance="10" :lockToContainerEdges="true" axis="x,y,xy" lockAxis="xy" v-model="selectTags" class="SortableList" @input="getChangeLists">
                         <SlickItem style="z-index:9999" v-for="(item,key) of selectTags" :key="key" class="SortableItem" :index="key">
                             <div class="tag-modal">
                                 <div class="before">{{key+1}}</div>
                                 <Tag @on-close='closeTag(key,selectTags,item)'  color="primary" type="border" closable>{{item.title}}</Tag>
                             </div>
-                            
                         </SlickItem>
                     </SlickList>
-                </div>
-            </div>
-            <div class="pro-select" v-for="(item,index) of info.bps" :key="index">
-                <div>{{item.title}}：</div>
-                <div>
-                     <Tooltip v-for="(_item,_index) of item.cld" :key='_index'>
+                </FormItem>
+                <FormItem v-for="(item,index) of info.bps" :key="index" :label='item.title'>
+                    <Tooltip v-for="(_item,_index) of item.cld" :key='_index'>
                         <div slot='content'>
                             <p>工时：{{_item.time}}</p>
                             <p>工价：{{_item.wages}}</p>
@@ -66,8 +63,8 @@
                         </div>
                         <Checkbox @on-change="changeCheck($event,_item,selectTags)" v-model="_item.show" style="padding:0px 5px;">{{_item.title}}</Checkbox>
                     </Tooltip>
-                </div>
-            </div>
+                </FormItem>
+            </Form>
         </Modal>
     </div>
 </template>
@@ -93,6 +90,15 @@ export default {
                 list:[],
                 bps:[],
             },
+            tableColumns:[
+                {title:'ID',align:'center',key:'id'},
+                // {title:'工序分类',align:'center',},
+                {title:'工序名称',align:'center',key:'title'},
+                {title:'工时',align:'center',key:'time'},
+                {title:'工价',align:'center',key:'wages'},
+                {title:'产能',align:'center',key:'capacity'},
+            ],
+            tableData:[],
 
         }
     },
@@ -104,7 +110,6 @@ export default {
         }
         if(this.type == 1){
             this.axios('/api/bp_list').then(res=>{
-                // this.info.list = res.data;
                 this.info.bps = res.data;
             });
             this.axios('/api/bpp_list').then(res=>{
@@ -119,7 +124,6 @@ export default {
                         v.cld.map(v=>v.show = false)
                     }
                 })
-                // this.info.bps = res.data;
                 this.info.list = res.data;
             })
         }
@@ -136,7 +140,12 @@ export default {
             this.info.op = this.type == 1 ? 'add' : 'edit'
             let data = JSON.parse(JSON.stringify(this.info))
             let properties = [],procedure = [];
-            data.list.map(v=>v.select ? properties.push(v.select) : '')
+            try{
+                data.list.map(v=>v.select ? properties.push(v.select) : '')
+            }catch(e){
+                return this.$Message.error('must be Array got Object')
+            }
+            
             this.selectTags.map(v=>{procedure.push(v.id)})
             delete data.list
             delete data.bps
@@ -166,7 +175,7 @@ export default {
                         v.cld.map(v=>v.show = false)
                     }
                 })
-                console.log(this.info.list)
+                this.tableData = this.selectTags;
             })
         },
         getParts(){
@@ -192,6 +201,10 @@ export default {
                     p.id == row.id ? p.show = false : ''
                 })
             })
+        },
+        saveTableData(){
+            this.tableData = this.selectTags;
+            console.log(this.tableData)
         }
     },
     components:{SlickList,SlickItem}

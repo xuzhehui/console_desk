@@ -111,9 +111,11 @@ export default {
         postInfo(){
             let post_url = this.showType == 1 ? '/api/basics_measure_add' : '/api/basics_measure_edit';
             this.axios.post(post_url,this.classInfo).then(res=>{
-                this.$Message.success(res.msg)
-                this.getData(this.searchObj)
-                this.undata_navData()
+                if(res.code == 200){
+                    this.$Message.success(res.msg)
+                    this.getData(this.searchObj)
+                    this.undata_navData()
+                }
             })
         },
         vivibleModal(e){

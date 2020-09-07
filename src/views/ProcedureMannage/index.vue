@@ -43,7 +43,7 @@ export default {
             ],
             tableColums:[
                 {title:'ID',align:'center',key:'id'},
-                {title:'工序类型',align:'center',key:'title'},
+                {title:'工序类型',align:'center',key:'p_title'},
                 {title:'工序名称',align:'center',key:'title'},
                 {title:'工时',align:'center',key:'time'},
                 {title:'工价',align:'center',key:'wages'},

@@ -28,7 +28,7 @@
             <div class="edit-table-log">
                 <div>
                     <span>零部件添加：</span>
-                    <Button @click="addNewsPart" type="primary" ghost>新增零部件</Button>
+                    <Button size='small' @click="addNewsPart" type="primary" ghost>新增零部件</Button>
                 </div>
                 <span class="footer-log">备注:适用于 ＋(加)  -(减)   ×(乘)  ÷(除)不输入就是不设定公式，支持单项输入)</span>
             </div>
@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import Toptitle from '../../components/TopTitle/index'
+import {mapState,mapMutations} from 'vuex'
 export default {
     data(){
         return {
@@ -64,13 +64,38 @@ export default {
                 {title:'宽',align:'center',key:'wide'},
                 {title:'厚',align:'center',key:'thick'},
                 {title:'工艺要求',align:'center',key:'requirement'},
-                {title:'标签',align:'center',key:''},
-                {title:'操作',align:'center',slot:'set'},
+                {title:'标签',align:'center',key:'label'},
             ],
             tableData:[],
             product_list:[],
+            list:[
+                {
+                    info:[
+                        {
+                            title:'123',
+                            name:'Input',
+                            serverName:'title',
+                            placeholder:'请输入',
+                            value:'123'
+                        },
+                        {
+                            title:'标签',
+                            name:'Select',
+                            serverName:'label',
+                            option:[
+                                {
+                                    label:'test1',
+                                    value:1
+                                },
+                            ]
+                        }
+                    ]
+                },
+                
+            ],
         }
     },
+    
     mounted(){
         this.getParoducts()
         this.type = this.$route.query.type||this.$route.params.type;
@@ -85,8 +110,16 @@ export default {
         if(this.$route.params.tableData){
             this.tableData = this.$route.params.tableData
         }
+        if(this.pageEditData){
+            this.tableData = this.tableData.concat(this.pageEditData);
+            this.clearPageEditData()
+        }
+    },
+    computed:{
+        ...mapState(['pageEditData'])
     },
     methods:{
+        ...mapMutations(['clearPageEditData']),
         back(){
             this.$router.push({
                 name:'PartsManageHome'
@@ -118,14 +151,24 @@ export default {
                 this.$route.params.info ? this.tableData.push(this.$route.params.info) : ''
             })
         },
+        // addNewsPart(){
+        //     this.$router.push({
+        //         name:'PartsManageHomeAddParts',
+        //         params:{
+        //             id:this.id,
+        //             type:this.type,
+        //             info:this.info,
+        //             tableData:this.tableData
+        //         }
+        //     })
+        // },
         addNewsPart(){
             this.$router.push({
-                name:'PartsManageHomeAddParts',
+                name:'PageEdit',
                 params:{
-                    id:this.id,
                     type:this.type,
-                    info:this.info,
-                    tableData:this.tableData
+                    list:this.list,
+                    title:'122313'
                 }
             })
         },

@@ -34,7 +34,7 @@ export default {
             list:[
                 {title:'ID',name:'Input',value:'',serverName:'id',placeholder:'请输入ID'},
                 {title:'用户名',name:'Input',value:'',serverName:'nickname',placeholder:'请输入用户名'},
-                {title:'角色类型',name:'Select',serverName:'group_id',value:'',option:[
+                {title:'角色名',name:'Select',serverName:'group_id',value:'',option:[
                     {label:'管理员',value:1},
                     {label:'游客',value:2}
                 ]}

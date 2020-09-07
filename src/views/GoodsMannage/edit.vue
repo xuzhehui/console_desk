@@ -39,7 +39,7 @@
                     <Icon v-if="type == 3 ? false : true" @click="delItems(index,info.agent)" size='20' class="delete-img" type="ios-close-circle" />
                     <Form>
                         <FormItem label='姓名'>
-                            <Select v-model="item.id" :disabled='type == 3 ? true : false'>
+                            <Select v-model="item.agent_id" :disabled='type == 3 ? true : false'>
                                 <Option v-for="item of agentNames" :key="item.id" :value="item.id" :label="item.nickname"></Option>
                             </Select>
                         </FormItem>

@@ -33,7 +33,7 @@ export default {
         return {
             list:[
                 {title:'ID',name:'Input',value:'',serverName:'ids',placeholder:'请输入ID'},
-                {title:'角色类型',name:'Select',serverName:'group_title',value:'',option:[
+                {title:'角色名',name:'Select',serverName:'group_title',value:'',option:[
                     {label:'管理员',value:1},
                     {label:'游客',value:2}
                 ]}

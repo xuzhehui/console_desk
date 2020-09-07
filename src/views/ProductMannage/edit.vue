@@ -74,12 +74,27 @@
             <Modal class-name="vertical-center-modal" title='新增自定义属性' v-model="showCustom" :width='867' @on-ok="saveCustom">
                 <div class="modal-custom">
                     <div class="modal-custom-item" v-for="(item,index) of coustom" :key="index">
+                       
                         <div class="left">
                             {{'自定义属性:'+(index+1)}}
                         </div>
                         <div class="right">
-                            <Input v-model="item.title" style="width:200px;" placeholder="请输入属性名称"></Input>
-                            <Input v-model="item.content" style="width:400px;" placeholder="请输入属性内容"></Input>
+                            <div class="radio">
+                                <RadioGroup v-model="item.type">
+                                    <Radio :label="1">输入框</Radio>
+                                    <Radio :label="2">单选框</Radio>
+                                </RadioGroup>
+                            </div>
+
+                            <div class="attr">
+                                <Input v-model="item.title" style="width:200px;" placeholder="请输入属性名称"></Input>
+                                <Input v-if="item.type == 1" v-model="item.content" style="width:400px;" placeholder="请输入属性内容"></Input>
+                                <Select v-else style="width:400px;" v-model="item.content">
+                                    <Option :value='1'>是</Option>
+                                    <Option :value="0">否</Option>
+                                </Select>
+                            </div>
+                            
                         </div>
                         <Icon @click="delItems(index,coustom)" size='20' class="delete-img" type="ios-close-circle" />
                     </div>
@@ -124,7 +139,7 @@ export default {
                 remark:[],//自定义属性列表
                 id:'',
             },
-            coustom:[]
+            coustom:[],
         }
     },
     mounted(){
@@ -194,7 +209,7 @@ export default {
         },
         addCustom(){//添加自定义属性
             // this.info.remark.push({style:'',explain:''});
-            this.coustom.push({title:'',content:''})
+            this.coustom.push({title:'',content:'',type:1})
         },
         saveCustom(){
             this.info.remark = this.info.remark.concat(this.coustom);
@@ -251,20 +266,14 @@ export default {
     .custom-item{display: flex;align-items:center;padding:10px 0;}
 }
 .table-log{display: flex;justify-content: space-between;align-items: center;padding:10px 0;}
-.vertical-center-modal{
-    display: flex;
-     align-items: center;
-    justify-content: center;
-    .ivu-modal{
-        top: 0;
-    }
-}
 .modal-custom{width:100%;padding:20px;
-    .modal-custom-item{display: flex;height:80px;padding:10px 0;align-items:center;position:relative;
+    .modal-custom-item{display: flex;;padding:10px 0;align-items:center;position:relative;
         .left{width:110px;}
-        .right{width:100%;background:#DEDEDE;border-radius:5px;display: flex;justify-content: space-around;padding:20px 0;}
+        .right{width:100%;background:#F4F5F7;border-radius:5px;;padding:20px 10px;
+            .attr{display: flex;justify-content: space-between;margin:5px;}
+        }
     }
-    .modal-custom-add{display: flex;justify-content: center;align-items: center;flex-direction: column;height:109px;border:1px dotted #E7E7E7}
+    .modal-custom-add{display: flex;justify-content: center;align-items: center;flex-direction: column;height:109px;border:1px dotted #E7E7E7;margin-top:10px;}
 }
 .view-filed{padding:10px 0;
     .filed-item{padding:10px 0;display:flex;

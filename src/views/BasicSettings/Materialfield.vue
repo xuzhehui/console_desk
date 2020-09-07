@@ -155,9 +155,11 @@ export default {
                 postData = this.classInfo;
             }
             this.axios.post(post_url,postData).then(res=>{
-                this.$Message.success(res.msg)
-                this.getData(this.proxyObj)
-                this.undata_navData()
+                if(res.code == 200){
+                    this.$Message.success(res.msg)
+                    this.getData(this.proxyObj)
+                    this.undata_navData()
+                }
             })
         }
     }
