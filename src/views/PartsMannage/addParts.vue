@@ -62,31 +62,6 @@ export default {
             },
             id:null,
             partsData:[],
-            list:[
-                {
-                    info:[
-                        {
-                            title:'123',
-                            name:'Input',
-                            serverName:'title',
-                            placeholder:'请输入',
-                            value:'123'
-                        },
-                        {
-                            title:'标签',
-                            name:'Select',
-                            serverName:'label',
-                            option:[
-                                {
-                                    label:'test1',
-                                    value:1
-                                },
-                            ]
-                        }
-                    ]
-                },
-                
-            ],
         }
     },
     mounted(){
@@ -96,17 +71,16 @@ export default {
     },
     methods:{
         postData(flag){
-            console.log(this.list)
-            // flag == 1 ? this.$route.params.tableData.push(this.info) : ''
-            // this.$router.push({
-            //     name:'PartsManageHomeEdit',
-            //     params:{
-            //         info:this.$route.params.info,
-            //         id:this.id,
-            //         type:this.type,
-            //         tableData:this.$route.params.tableData
-            //     }
-            // })
+            flag == 1 ? this.$route.params.tableData.push(this.info) : ''
+            this.$router.push({
+                name:'PartsManageHomeEdit',
+                params:{
+                    info:this.$route.params.info,
+                    id:this.id,
+                    type:this.type,
+                    tableData:this.$route.params.tableData
+                }
+            })
         },
         getPartsData(){
             this.axios('/api/material').then(res=>this.partsData = res.data.data)

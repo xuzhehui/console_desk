@@ -38,8 +38,8 @@ export default {
             ],
             tableColums:[
                 {title:'ID',align:'center',key:'id',fixed:'left',width:'100'},
-                {title:'材料分类名称',align:'center',key:'type_name',width:'150'},
-                {title:'材质',align:'center',key:'title',width:'150'},
+                {title:'材料分类名称',align:'center',key:'m_title',width:'150'},
+                {title:'物料名称',align:'center',key:'title',width:'150'},
                 {title:'库存',align:'center',key:'stock',width:'150'},
                 {title:'单位',align:'center',key:'unit',width:'100'},
                 {title:'预警值',align:'center',key:'warning_number',width:'100'},

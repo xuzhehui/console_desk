@@ -72,23 +72,65 @@ export default {
                 {
                     info:[
                         {
-                            title:'123',
+                            title:'零部件名称',
                             name:'Input',
                             serverName:'title',
-                            placeholder:'请输入',
-                            value:'123'
+                            placeholder:'请输入零部件名称',
+                            value:''
+                        },
+                        {
+                            title:'数量',
+                            name:'Input',
+                            placeholder:'请输入数量',
+                            serverName:'number',
+                            value:'',
+                        },
+                        {
+                            title:'单位',
+                            name:'Input',
+                            placeholder:'请输入单位',
+                            serverName:'company',
+                            value:'',
+                        },
+                        {
+                            title:'长',
+                            name:'Input',
+                            placeholder:'请输入长度',
+                            serverName:'long',
+                            value:'',
+                        },
+                        {
+                            title:'宽',
+                            name:'Input',
+                            placeholder:'请输入宽度',
+                            serverName:'wide',
+                            value:'',
+                        },
+                        {
+                            title:'高',
+                            name:'Input',
+                            placeholder:'请输入高度',
+                            serverName:'thick',
+                            value:'',
+                        },
+                        {
+                            title:'工艺要求',
+                            name:'Input',
+                            placeholder:'请输入单位',
+                            serverName:'requirement',
+                            value:'',
                         },
                         {
                             title:'标签',
                             name:'Select',
                             serverName:'label',
+                            value:'',
                             option:[
-                                {
-                                    label:'test1',
-                                    value:1
-                                },
+                                {label:'是',value:0},
+                                {label:'否',value:1}
                             ]
-                        }
+                        },
+                        
                     ]
                 },
                 
