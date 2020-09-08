@@ -5,7 +5,7 @@
             <Button @click="postData(1)">保存</Button>
         </Toptitle>
         <div class="page-edit">
-            <Generaladd :list='list'></Generaladd>
+            <Generaladd @change="change" :list='list'></Generaladd>
         </div>
     </div>
 </template>
@@ -26,6 +26,25 @@ export default {
     },
     methods:{
         ...mapMutations(['savePageEditData']),
+        change(e,n){
+            if(this.$route.params.type == '零部件'){
+                let event = JSON.parse(window.event.target.dataset.info);
+                this.list[n].info.map(v=>{
+                    if(v.serverName == 'thick'){
+                        v.value = event.high
+                    }
+                    v._title = event.title;
+                })
+            }
+
+            if(this.$route.params.type == '部件'){
+                let event = JSON.parse(window.event.target.dataset.info);
+
+                this.list[n].info.map(v=>{
+                    v._title = event.title;
+                })
+            }
+        },
         postData(){
             this.savePageEditData(this.computedData());
             this.back()
@@ -39,9 +58,13 @@ export default {
                 let obj = {}
                 v.info.map(k=>{
                     obj[k.serverName] = k.value
+                    if(k._title){
+                        obj.title = k._title
+                    }
                 })
                 result.push(obj)
             })
+            console.log(result)
             return result;
         }
     }

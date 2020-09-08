@@ -376,6 +376,7 @@ export default {
                 })
             })
             let params = {op:op,detail:sendData}
+            console.log(params)
             this.axios.post('/api/order_save',params).then(res=>{
                 if(res.code == 200){
                     this.$Message.success(res.msg)
@@ -474,7 +475,6 @@ export default {
         handleSubmit(name) {
             this.$refs[name].validate((valid) => {
                 if(valid){
-                    console.log(this.postData)
                     this.postData()
                 }
             })
@@ -483,12 +483,14 @@ export default {
             let str = [];
             this.info.house.map(v=>{
                 v.product.map(k=>{
+                    console.log(k)
                     if(k.product_id){
                         str.push(k.product_id)
                     }
                 })
             })
-            this.axios('/api/house_detail_material',{params:{product_id:str.join(',')}}).then(res=>{
+            this.axios('/api/house_detail_material',{params:{product_id:str.length>=1 ? str.join(',') : ''}}).then(res=>{
+                console.log(res)
                 if(res.code == 200){
                     this.originalData = res.data.data;
                     this.originalData.push({end:true,stock:res.data.num,title:'合计'})

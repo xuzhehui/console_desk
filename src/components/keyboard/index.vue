@@ -42,6 +42,11 @@ export default {
     },
     computed:{
     },
+    created(){
+        this.axios('/api/basics_measure_index').then(res=>{
+            console.log(res)
+        })
+    },
     mounted(){
         this.key_list_right =  this.spliceGroup(this.key_list_right,4)
     },

@@ -15,14 +15,17 @@
                     </div>
 
                     <div class="add-items">
-                        <Icon size='100' type="ios-add" />
+                        <div class="item">
+                            <Icon size='100' type="ios-add" />
+                        </div>
+                        
                         <span>支持jpg/png格式</span>
                         <input @change="changeIpt" type="file" class="ipt"/>
                     </div>
                 </div>
             </div>
 
-            <Form inline style="width:700px;">
+            <Form inline >
                 <FormItem label="产品分类">
                     <Select style="width:300px" v-model="info.bp_id">
                         <Option v-for="item of productFiled" :key="item.id" :value="item.id" :label="item.title"></Option>
@@ -40,41 +43,14 @@
             </Form>
 
             <div class="custom">
-                <span class="custom-title">产品自定义属性</span>
-                <div class="custom-item" v-for='(item,index) of info.remark' :key="index">
-                    <span>属性:</span>
-                    <Input disabled v-model="item.title" style="width:150px;margin-left:10px"></Input>
-                    <span style="margin-left:20px;">属性内容:</span>
-                    <Input disabled v-model="item.content" style="width:300px;margin-left:10px"></Input>
-                </div>
-                <Button style="width:150px;margin:10px 0;" type="primary" @click="openCustom" ghost>新增自定义属性</Button>
-            </div>
 
-            <div class="view-filed">
-                <span>基础测量字段</span>
-                <div class="filed-item">
-                    <div v-for='item of measureList' :key="item.id">{{item.title}}({{item.e_title}})</div>
-                </div>
-            </div>
-
-            <div class="table-log">
-                <div>
-                    <span>部件添加：</span>
-                    <Button type="primary" ghost @click="goPage(1)">新增部件</Button>
-                </div>
-                <span>计算公式请使用英文字母参与公式运算，详细请参考例)</span>
-            </div>
-
-            <Table style="margin-bottom:40px;" stripe border :columns="tableColums" :data="info.part">
-                <template slot-scope="{ row,index }" slot="set">
-                    <a @click="delItems(index,info.part)" style="color:red;">删除</a>
-                </template>
-            </Table>
-
-            <Modal class-name="vertical-center-modal" title='新增自定义属性' v-model="showCustom" :width='867' @on-ok="saveCustom">
+                <span class="custom-title">产品自定义属性
+                    <Button style="margin:10px;margin-left:20px;" size='small' type="primary" @click="addCustom" ghost>
+                        新增自定义属性
+                    </Button>
+                </span>
                 <div class="modal-custom">
-                    <div class="modal-custom-item" v-for="(item,index) of coustom" :key="index">
-                       
+                    <div class="modal-custom-item" v-for="(item,index) of info.remark" :key="index">
                         <div class="left">
                             {{'自定义属性:'+(index+1)}}
                         </div>
@@ -87,28 +63,82 @@
                             </div>
 
                             <div class="attr">
-                                <Input v-model="item.title" style="width:200px;" placeholder="请输入属性名称"></Input>
-                                <Input v-if="item.type == 1" v-model="item.content" style="width:400px;" placeholder="请输入属性内容"></Input>
-                                <Select v-else style="width:400px;" v-model="item.content">
+                                <Input v-model="item.title" style="width:180px;" placeholder="请输入属性名称"></Input>
+                                <Input v-if="item.type == 1" v-model="item.content" style="width:360px;" placeholder="请输入属性内容"></Input>
+                                <Select v-else style="width:360px;" v-model="item.content">
                                     <Option :value='1'>是</Option>
                                     <Option :value="0">否</Option>
                                 </Select>
                             </div>
                             
                         </div>
-                        <Icon @click="delItems(index,coustom)" size='20' class="delete-img" type="ios-close-circle" />
-                    </div>
-                    <div class="modal-custom-add">
-                        <Icon @click="addCustom"  size='50' type="ios-add" />
-                        <span @click="addCustom">添加自定义属性</span>
+                        <Icon @click="delItems(index,info.remark)" size='20' class="delete-img" type="ios-close-circle" />
                     </div>
                 </div>
+            </div>
+
+            <div class="view-filed">
+                <span>基础测量字段</span>
+                <div class="filed-item">
+                    <div v-for='item of measureList' :key="item.id">{{item.title}}({{item.e_title}})</div>
+                </div>
+            </div>
+
+            <div class="table-log">
+                <div>
+                    <span>部件添加：</span>
+                    <Button type="primary" size='small' ghost @click="addPart">新增部件</Button>
+                </div>
+                <span>计算公式请使用英文字母参与公式运算，详细请参考例)</span>
+            </div>
+
+            <Table  class="overflow-table" style="margin-bottom:40px;" stripe border :columns="tableColums" :data="info.part">
+                <template slot='title' slot-scope='{index}'>
+                    <div>
+                        <Select clearable v-model="info.part[index].part_id">
+                            <Option v-for="(item,key) of parts" :key="key" :value='item.id' :label="item.title"></Option>
+                        </Select>
+                    </div>
+                </template>
+                <template slot='formula_l' slot-scope='{index}'>
+                    <div>
+                        <Input @on-focus="openKey(index,'formula_l')" clearable placeholder="请在输入公式" v-model="info.part[index].formula_l"></Input>
+                    </div>
+                </template>
+                <template slot='formula_w' slot-scope='{index}'>
+                    <div>
+                        <Input @on-focus="openKey(index,'formula_w')" clearable placeholder="请在输入公式" v-model="info.part[index].formula_w"></Input>
+                    </div>
+                </template>
+                <template slot='formula_h' slot-scope='{index}'>
+                    <div>
+                        <Input @on-focus="openKey(index,'formula_h')" clearable placeholder="请在输入公式" v-model="info.part[index].formula_h"></Input>
+                    </div>
+                </template>
+                <template slot='ratio' slot-scope='{index}'>
+                    <div>
+                        <Input clearable placeholder="请输入产值比例" v-model="info.part[index].ratio"></Input>
+                    </div>
+                </template>
+                <template slot='del' slot-scope='{index}'>
+                    <div>
+                        <a @click="delPart(info.part,index)">删除</a>
+                    </div>
+                </template>
+            </Table>
+            <Modal v-model="showKey" :width="1250" :mask-closable='false' :closable='false'>
+                <div>
+                    <KeyBoard @cancel='successKey' @success='successKey' class='key-co'/>
+                </div>
+                <div slot='footer'></div>
             </Modal>
         </div>
     </div>
 </template>
 
 <script>
+import KeyBoard from '../../components/keyboard/index'
+import {mapState,mapMutations} from 'vuex'
 export default {
     data(){
         return {
@@ -120,14 +150,13 @@ export default {
             productFiled:[],
             measureList:[],//基础测量展示字段(仅展示)
             tableColums:[
-                {title:'部件名称',align:'center',key:'title'},
-                {title:'长(L)',align:'center',key:'formula_l'},
-                {title:'宽(W)',align:'center',key:'formula_w'},
-                {title:'高(H)',align:'center',key:'formula_h'},
-                {title:'产值比例(%)',align:'center',key:'ratio'},
-                {title:'操作',align:'center',slot:'set'},
+                {title:'部件名称',align:'center',key:'title',slot:'title'},
+                {title:'长(L)',align:'center',key:'formula_l',slot:'formula_l'},
+                {title:'宽(W)',align:'center',key:'formula_w',slot:'formula_w'},
+                {title:'高(H)',align:'center',key:'formula_h',slot:'formula_h'},
+                {title:'产值比例(%)',align:'center',key:'ratio',slot:'ratio'},
+                {title:'操作',align:'center',slot:'del'}
             ],
-            tableData:[],
             showCustom:false,//
             info:{
                 mode:'',//类型
@@ -139,22 +168,33 @@ export default {
                 remark:[],//自定义属性列表
                 id:'',
             },
-            coustom:[],
+            addObj:{
+                title:'',
+                formula_l:'',
+                formula_w:'',
+                formula_h:'',
+                ratio:'',
+            },
+            // coustom:[],
+            parts:[],
+            showKey:false,
+            attrindex:null,
+            attrName:'',
         }
     },
     mounted(){
-        this.type = this.$route.query.type||this.$route.params.type||1;
+        this.getPartsData()
+        this.type = this.$route.query.type||1;
         this.id = this.$route.query.id||null;
         this.type == 1 ? this.info.bp_id = this.$route.query.back_id*1 : this.info.bp_id;
         if(this.id){
             this.getData(this.id)
         }
-        if(this.$route.params.info){
-            this.info = this.$route.params.info
-        }
         this.getProductFiledData();
         this.getMeasureList()
-        
+    },
+    components:{
+        KeyBoard,
     },
     methods:{
         postData(){
@@ -189,15 +229,12 @@ export default {
             })
         },
         goPage(n,row){
-            let id = row ? row.id : ''
             this.$router.push({
-                name:'ProductsEditParts',
+                name:'PageEdit',
                 params:{
-                    info:this.info,
-                    type:this.$route.query.type,
-                    id:this.$route.query.id||this.$route.params.id,
-                    title:this.$route.query.title||this.$route.params.title,
-                    back_id:this.$route.query.back_id
+                   title:this.info.part.length>=1 ? '编辑部件' : '新增部件',
+                   list:this.list,
+                   type:'部件'
                 }
             })
         },
@@ -208,11 +245,10 @@ export default {
             arr.splice(n,1)
         },
         addCustom(){//添加自定义属性
-            // this.info.remark.push({style:'',explain:''});
-            this.coustom.push({title:'',content:'',type:1})
-        },
-        saveCustom(){
-            this.info.remark = this.info.remark.concat(this.coustom);
+            if(!this.info.remark){
+                this.info.remark = [];
+            }
+            this.info.remark.push({title:'',content:'',type:1})
         },
         postImg(file){
             let formData = new FormData()
@@ -244,6 +280,27 @@ export default {
                 this.info = res.data;
             })
         },
+        getPartsData(){
+            this.axios('/api/parts_index').then(res=>{
+                this.parts = res.data.data;
+            })
+        },
+        addPart(){
+            let add = JSON.parse(JSON.stringify(this.addObj))
+            this.info.part.push(add)
+        },
+        delPart(row,n){
+            row.splice(n,1)
+        },
+        openKey(row,attr){
+            this.showKey = true;
+            this.attrindex = row;
+            this.attrName = attr;
+        },
+        successKey(str){
+            this.info.part[this.attrindex][this.attrName] = str;
+            this.showKey = false;
+        },
     }
 }
 </script>
@@ -253,8 +310,9 @@ export default {
 .product-img{padding-top:10px;}
 .product-add{padding:10px 0;display:flex;flex-wrap:wrap;
     .ipt{position:absolute;width:100%;height:100%;opacity:0;cursor: pointer;outline: none;top:0;left:0;}
-    .add-items{width:240px;height:240px;border:1px dotted #E7E7E7;border-radius:5px;display: flex;justify-content: center;align-items: center;overflow: hidden;position:relative;flex-direction: column;
-        
+    .add-items{width:240px;height:240px;border:1px dotted #E7E7E7;
+    border-radius:5px;display: flex;justify-content: center;align-items: center;overflow: hidden;position:relative;flex-direction: column;background:#F4F5F7;
+        .item{width:76px;height:76px;background:#3764FF;opacity: .6;display: flex;justify-content: center;align-items: center;border-radius:50%;color:#fff;}
     }
     .items{width:240px;height:240px;margin-bottom:10px;display:flex;justify-content:center;align-items:center;background:#E7E7E7;margin-right:10px;border-radius:5px;position:relative;
         img{max-width:208px;max-height:208px;;}
@@ -266,10 +324,13 @@ export default {
     .custom-item{display: flex;align-items:center;padding:10px 0;}
 }
 .table-log{display: flex;justify-content: space-between;align-items: center;padding:10px 0;}
-.modal-custom{width:100%;padding:20px;
-    .modal-custom-item{display: flex;;padding:10px 0;align-items:center;position:relative;
-        .left{width:110px;}
-        .right{width:100%;background:#F4F5F7;border-radius:5px;;padding:20px 10px;
+.modal-custom{width:100%;padding:10px 0;display:flex;flex-wrap: wrap;
+    .modal-custom-item{width:600px;align-items:center;position:relative;border-radius:5px;margin-right:20px;margin-bottom:20px;
+        box-shadow: 0 2px 7px rgba(0,0,0,.15);
+        border-color: transparent;
+        position: relative;
+        .left{width:100%;padding:10px;background:#F4F8FF;}
+        .right{width:100%;border-radius:5px;;padding:10px;
             .attr{display: flex;justify-content: space-between;margin:5px;}
         }
     }
@@ -285,4 +346,6 @@ export default {
         }
     }
 }
+/deep/ .ivu-table-wrapper{overflow:visible;color:red;}//穿透iview
+// .key-co{transform: scale(.9);}
 </style>

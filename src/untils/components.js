@@ -6,6 +6,7 @@ import Footer from '../components/footer/index'
 import FullPage from '../components/currencyPage/index'
 import Loading from '../components/loading/index' // 引入loading
 import Generaladd from '../components/Generaladd/index'
+import Tables from '../components/table-column/index'
 
 export default (Vue)=>{
   Vue.component("Topsearch", Topsearch)
@@ -13,5 +14,6 @@ export default (Vue)=>{
   Vue.component('Footer', Footer)
   Vue.component('FullPage', FullPage)
   Vue.component('Generaladd', Generaladd)
+  Vue.component('Tables', Tables)
   Vue.use(Loading)
 }

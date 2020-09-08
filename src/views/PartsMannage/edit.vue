@@ -28,13 +28,48 @@
             <div class="edit-table-log">
                 <div>
                     <span>零部件添加：</span>
-                    <Button size='small' @click="addNewsPart" type="primary" ghost>新增零部件</Button>
+                    <Button size='small' @click="addZeroPart" type="primary" ghost>新增零部件</Button>
                 </div>
                 <span class="footer-log">备注:适用于 ＋(加)  -(减)   ×(乘)  ÷(除)不输入就是不设定公式，支持单项输入)</span>
             </div>
             <Table stripe border :columns="tableColums" :data="tableData">
+                <template slot-scope="{index}" slot="title">
+                    <div>
+                        <Select label-in-value @on-change="changeSe($event,index)" v-model="tableData[index].id">
+                            <Option :tag='item.high' v-for="item of zeroParts" :key="item.id" :value='item.id' :label="item.title"></Option>
+                        </Select>
+                    </div>
+                </template>
+                <template slot-scope="{index}" slot="number">
+                    <Input placeholder="请输入数量" v-model="tableData[index].number"/>
+                </template>
+                <template slot-scope="{index}" slot="company">
+                    <Input placeholder="请输入单位" v-model="tableData[index].company"/>
+                </template>
+                <template slot-scope="{index}" slot="long">
+                    <Input placeholder="请输入长度" v-model="tableData[index].long"/>
+                </template>
+                <template slot-scope="{index}" slot="wide">
+                    <Input placeholder="请输入宽度" v-model="tableData[index].wide"/>
+                </template>
+                <template slot-scope="{index}" slot="thick">
+                    <Input disabled placeholder="自动生成" v-model="tableData[index].thick"/>
+                </template>
+                <template slot-scope="{index}" slot="requirement">
+                    <Input placeholder="请输入工艺要求" v-model="tableData[index].requirement"/>
+                </template>
+                <template slot-scope="{index}" slot="label">
+                    <Select v-model="tableData[index].label">
+                        <Option :value='1' label="是"></Option>
+                        <Option :value='2' label="否"></Option>
+                    </Select>
+                </template>
+
                 <template slot-scope="{index}" slot="set">
-                    <a style="color:red;" @click="delItems(tableData,index)">删除</a>
+                    <div>
+                        <a style="color:red;" @click="delItems(tableData,index)">删除</a>
+                    </div>
+                    
                 </template>
             </Table>
         </div>
@@ -52,119 +87,54 @@ export default {
                 company:'',
                 p_id:'',
                 label:null,
-                bp_id:null,
                 title:'',
             },
             partList:[],
+            partsData:[],
             tableColums:[
-                {title:'零部件名称',align:'center',key:'title'},
-                {title:'数量',align:'center',key:'number'},
-                {title:'单位',align:'center',key:'company'},
-                {title:'长',align:'center',key:'long'},
-                {title:'宽',align:'center',key:'wide'},
-                {title:'厚',align:'center',key:'thick'},
-                {title:'工艺要求',align:'center',key:'requirement'},
-                {title:'标签',align:'center',key:'label'},
+                {title:'零部件名称',align:'center',key:'title',slot:'title',},
+                {title:'数量',align:'center',key:'number',slot:'number'},
+                {title:'单位',align:'center',key:'company',slot:'company'},
+                {title:'长',align:'center',key:'long',slot:'long'},
+                {title:'宽',align:'center',key:'wide',slot:'wide'},
+                {title:'厚',align:'center',key:'thick',slot:'thick'},
+                {title:'工艺要求',align:'center',key:'requirement',slot:'requirement'},
+                {title:'标签',align:'center',key:'label',slot:'label'},
+                {title:'操作',align:'center',slot:'set'},
             ],
-            tableData:[],
+            tableData:[{title:1}],
             product_list:[],
-            list:[
-                {
-                    info:[
-                        {
-                            title:'零部件名称',
-                            name:'Input',
-                            serverName:'title',
-                            placeholder:'请输入零部件名称',
-                            value:''
-                        },
-                        {
-                            title:'数量',
-                            name:'Input',
-                            placeholder:'请输入数量',
-                            serverName:'number',
-                            value:'',
-                        },
-                        {
-                            title:'单位',
-                            name:'Input',
-                            placeholder:'请输入单位',
-                            serverName:'company',
-                            value:'',
-                        },
-                        {
-                            title:'长',
-                            name:'Input',
-                            placeholder:'请输入长度',
-                            serverName:'long',
-                            value:'',
-                        },
-                        {
-                            title:'宽',
-                            name:'Input',
-                            placeholder:'请输入宽度',
-                            serverName:'wide',
-                            value:'',
-                        },
-                        {
-                            title:'高',
-                            name:'Input',
-                            placeholder:'请输入高度',
-                            serverName:'thick',
-                            value:'',
-                        },
-                        {
-                            title:'工艺要求',
-                            name:'Input',
-                            placeholder:'请输入单位',
-                            serverName:'requirement',
-                            value:'',
-                        },
-                        {
-                            title:'标签',
-                            name:'Select',
-                            serverName:'label',
-                            value:'',
-                            option:[
-                                {label:'是',value:0},
-                                {label:'否',value:1}
-                            ]
-                        },
-                        
-                    ]
-                },
-                
-            ],
+            addObj:{
+                title:'',
+                number:'',
+                company:'',
+                long:'',
+                wide:'',
+                thick:'',
+                requirement:'',
+                label:'',
+            },
+            zeroParts:[],
         }
     },
     
     mounted(){
         this.getParoducts()
-        this.type = this.$route.query.type||this.$route.params.type;
-        this.id = this.$route.query.id||this.$route.params.id;
+        this.getPartsData()
+        this.type = this.$route.query.type;
+        this.id = this.$route.query.id;
         if(this.id){
             this.getDetails(this.id)
         }
         this.getParts()
-        if(this.$route.params.info){
-           this.info = this.$route.params.info
-        }
-        if(this.$route.params.tableData){
-            this.tableData = this.$route.params.tableData
-        }
-        if(this.pageEditData){
-            this.tableData = this.tableData.concat(this.pageEditData);
-            this.clearPageEditData()
-        }
-    },
-    computed:{
-        ...mapState(['pageEditData'])
     },
     methods:{
-        ...mapMutations(['clearPageEditData']),
         back(){
-            this.$router.push({
-                name:'PartsManageHome'
+            this.$router.push({name:'PartsManageHome'})
+        },
+        getPartsData(){
+            this.axios('/api/material').then(res=>{
+                this.zeroParts = res.data.data;
             })
         },
         getParts(){
@@ -193,24 +163,13 @@ export default {
                 this.$route.params.info ? this.tableData.push(this.$route.params.info) : ''
             })
         },
-        // addNewsPart(){
-        //     this.$router.push({
-        //         name:'PartsManageHomeAddParts',
-        //         params:{
-        //             id:this.id,
-        //             type:this.type,
-        //             info:this.info,
-        //             tableData:this.tableData
-        //         }
-        //     })
-        // },
         addNewsPart(){
             this.$router.push({
                 name:'PageEdit',
                 params:{
-                    type:this.type,
                     list:this.list,
-                    title:'122313'
+                    title:this.tableData.length>=1 ? '编辑零部件' : '新增零部件',
+                    type:'零部件'
                 }
             })
         },
@@ -221,6 +180,13 @@ export default {
             this.axios('/api/product_list').then(res=>{
                 this.product_list = res.data.data;
             })
+        },
+        addZeroPart(){
+            let add = JSON.parse(JSON.stringify(this.addObj))
+            this.tableData.push(add)
+        },
+        changeSe(e,n){
+            this.tableData[n].thick = e.tag;
         }
     }
 }
@@ -231,4 +197,5 @@ export default {
     .footer-log{color:#666666}
 }
 .page-edit{overflow: hidden;overflow-y: auto;position:relative;top:20px;height:80%;}
+/deep/ .ivu-table-wrapper{overflow:visible;color:red;}//穿透iview
 </style>

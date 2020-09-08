@@ -38,9 +38,6 @@
                 </Select>
             </FormItem>
         </Form> -->
-        <div class="page-edit">
-            <Generaladd :list='list'></Generaladd>
-        </div>
         
     </div>
 </template>

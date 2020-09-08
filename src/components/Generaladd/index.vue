@@ -9,9 +9,11 @@
                     :placeholder='_item.placeholder'
                     v-model="_item.value"
                     :clearable='_item.clearable==false ? false : true'
+                    @on-change='_item.change ? change($event,index) : ""'
+                    :disabled='_item.disabled'
                     :style="_item.width ? 'width:'+_item.width+'px' : 'width:200px;'"
                     >
-                        <Option v-for="(__item,__index) in _item.option" :key="__index" :label="__item.label" :value="__item.value"></Option>
+                        <Option :data-info='JSON.stringify(__item)' v-for="(__item,__index) in _item.option" :key="__index" :label="__item.label" :value="__item.value"></Option>
                     </div>
                 </FormItem>
             </Form>
@@ -34,31 +36,6 @@ export default {
     },
     data(){
         return {
-            // list:[
-            //     {
-            //         info:[
-            //             {
-            //                 title:'123',
-            //                 name:'Input',
-            //                 serverName:'title',
-            //                 placeholder:'请输入',
-            //                 value:'123'
-            //             },
-            //             {
-            //                 title:'标签',
-            //                 name:'Select',
-            //                 serverName:'label',
-            //                 option:[
-            //                     {
-            //                         label:'test1',
-            //                         value:1
-            //                     },
-            //                 ]
-            //             }
-            //         ]
-            //     },
-                
-            // ],
            
         }
     },
@@ -75,6 +52,9 @@ export default {
         },
         close(index,arr){
             arr.splice(index,1);
+        },
+        change(e,n){
+            this.$emit('change',e,n)
         }
     }
 }

@@ -14,13 +14,14 @@
         :total='total'
         >
             <div slot='navButton'>
-                <Button type="primary" ghost icon='md-add' @click="addItems">新增工序分类</Button>
+                <Button type="primary" ghost icon='md-add' @click="addItems(null,1,null)">新增工序分类</Button>
             </div>
             
-            <template slot='set' slot-scope='row'>
+            <template slot='set' slot-scope='{row}'>
                 <div>
-                    <Icon size='20' @click="addItems(row.row)" style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
-                    <Icon size='20' @click="delItems(row.row)" style="margin-left:10px;color:red;cursor:pointer" type="ios-trash-outline" />
+                    <Icon size='20' @click="addItems(row,1,null)" style="margin-right:20px;color:green;cursor:pointer" type="ios-add-circle" />
+                    <Icon size='20' @click="addItems(row,2,1)" style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
+                    <Icon size='20' @click="delItems(row)" style="margin-left:10px;color:red;cursor:pointer" type="ios-trash-outline" />
                 </div>
             </template>
 
@@ -41,6 +42,7 @@
 </template>
 
 <script>
+import Tables from '../../components/table-column/index'
 import {mapActions} from 'vuex'
 export default {
     data(){
@@ -50,6 +52,16 @@ export default {
                 {title:'工序分类名称',name:'Input',value:'',serverName:'title',placeholder:'请输入工序分类名称'},
             ],
             tableColums:[
+                {type:'expand',title:'展开',width:'70',slot:'open',
+                    render(h,params){
+                        console.log(params)
+                        return h(Tables,{
+                            props:{
+                                tableDatas:params.row.child
+                            }
+                        })
+                    }
+                },
                 {title:'ID',align:'center',key:'id'},
                 {title:'工序分类名称',align:'center',key:'title'},
                 {title:'操作',align:'center',slot:'set'},
@@ -77,7 +89,9 @@ export default {
             this.loading = true;
             this.axios('/api/basics_procedure_index',{params:row}).then(res=>{
                 this.loading = false;
-                this.tableData = res.data.data;
+                this.tableData = res.data;
+                
+                console.log(this.tableData)
                 this.total = res.data.total;
             })
         },
@@ -109,12 +123,12 @@ export default {
                 }
             }
         },
-        addItems(obj){
+        addItems(obj,type,edit){
             this.showModal = true;
+            this.showType = type;
             if(obj.id){
-                this.showType=2
                 this.classInfo.id = obj.id;
-                this.classInfo.title = obj.title;
+                this.classInfo.title = edit == 1 ? obj.title : '';
             }else{
                 //新增
                 this.showType=1

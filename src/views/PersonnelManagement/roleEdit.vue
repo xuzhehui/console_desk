@@ -10,7 +10,7 @@
                     <Input v-model="id" disabled placeholder="自动生成"></Input>
                 </FormItem>
                 <FormItem label="角色分类名称" :label-width="100">
-                    <Input v-model="group_title" placeholder="请输入角色分类名称"></Input>
+                    <Input  v-model="group_title" placeholder="请输入角色分类名称"></Input>
                 </FormItem>
             </Form>
 
@@ -54,6 +54,9 @@ export default {
             is:true,
             menu_ids:[],
             group_title:'',
+            rules:{
+                required: true, message: 'Mailbox cannot be empty', trigger: 'blur'
+            }
         }
     },
     mounted(){

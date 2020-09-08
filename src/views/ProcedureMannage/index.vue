@@ -115,7 +115,7 @@ export default {
             this.confirmDelete({
                 content:'确认删除么？',
                 then:()=>{
-                    this.axios.post('/api/procedure_index_del',{id:row.id,state:0}).then(res=>{
+                    this.axios.post('/api/procedure_del',{id:row.id,state:0}).then(res=>{
                         if(res.code == 200){
                             this.$Message.success(res.msg)
                             this.getData(this.proxyObj)
