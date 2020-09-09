@@ -2,15 +2,15 @@
     <div>
         <Toptitle :title='type == 1 ? "新增角色" : (type == 2 ? "编辑角色" : "查看角色") '>
             <Button @click="back" style="margin-right:10px;">返回</Button>
-            <Button v-if="type == 1 || type == 2" type="primary" @click="postData">保存</Button>
+            <Button v-if="type == 1 || type == 2" type="primary" @click="handleSubmit('Info')">保存</Button>
         </Toptitle>
         <div class="page-edit">
-            <Form inline style="margin:10px 0;">
+            <Form inline style="margin:10px 0;" ref='Info' :model="info" :rules='rules'>
                 <FormItem label="ID" :label-width="20">
-                    <Input v-model="id" disabled placeholder="自动生成"></Input>
+                    <Input v-model="info.id" disabled placeholder="自动生成"></Input>
                 </FormItem>
-                <FormItem label="角色分类名称" :label-width="100">
-                    <Input  v-model="group_title" placeholder="请输入角色分类名称"></Input>
+                <FormItem label="角色分类名称" :label-width="110" prop='group_title'>
+                    <Input  v-model="info.group_title" placeholder="请输入角色分类名称"></Input>
                 </FormItem>
             </Form>
 
@@ -48,6 +48,10 @@ export default {
     data(){
         return {
             type:1,
+            info:{
+                id:null,
+                group_title:null,
+            },
             id:null,
             group_id:null,
             jurisdiction:[],//权限列表
@@ -55,16 +59,16 @@ export default {
             menu_ids:[],
             group_title:'',
             rules:{
-                required: true, message: 'Mailbox cannot be empty', trigger: 'blur'
+                group_title:[{required: true, message: ' ', trigger: 'blur'}]
             }
         }
     },
     mounted(){
         this.type = this.$route.query.type;
-        this.id = this.$route.query.id||'';
-        this.group_title = this.$route.query.group_title||'';
-        if(this.id){
-            this.getData({group_id:this.id})
+        this.info.id = this.$route.query.id||'';
+        this.info.group_title = this.$route.query.group_title||'';
+        if(this.info.id){
+            this.getData({group_id:this.info.id})
         }else{
             this.getData()
         }
@@ -80,13 +84,13 @@ export default {
             if(this.type == 1){
                 postInfo = {
                     op:'add',
-                    group_title:this.group_title
+                    group_title:this.info.group_title
                 }
             }else{
                 postInfo = {
                     op:'edit',
-                    id:this.id,
-                    group_title:this.group_title
+                    id:this.info.id,
+                    group_title:this.info.group_title
                 }
             }
             this.axios.post('/api/group',postInfo).then(res=>{
@@ -184,6 +188,13 @@ export default {
                 this.removeItems(index)
             }
 
+        },
+        handleSubmit(name) {
+            this.$refs[name].validate((valid) => {
+                if(valid){
+                    this.postData()
+                }
+            })
         },
     }
 }

@@ -22,9 +22,14 @@
             </div>
             
             <template slot='set' slot-scope='{row}'>
-                <div>
-                    <Icon size='20' @click="goPage(2,row)" style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
-                    <Icon size='20' @click="delItems(row)" style="margin-left:10px;color:red;cursor:pointer" type="ios-trash-outline" />
+                <div class="table-set">
+                    <svg style="font-size:20px" color='#3764FF' @click="goPage(2,row)" class="icon icon-nav" aria-hidden="true">
+                        <use xlink:href="#iconbianji"></use>
+                    </svg>
+
+                    <svg @click="delItems(row)" class="icon icon-nav" style="font-size:20px" color='red' aria-hidden="true">
+                        <use xlink:href="#iconshanchu"></use>
+                    </svg>
                 </div>
             </template>
         </FullPage>
@@ -44,7 +49,7 @@ export default {
                 {title:'部件分类名称',align:'center',key:'p_title'},
                 {title:'部件名称',align:'center',key:'title'},
                 {title:'单位',align:'center',key:'company'},
-                {title:'操作',align:'center',slot:'set'},
+                {title:'操作',align:'center',slot:'set',width:'150'},
             ],
             tableData:[],
             pageIndex:1,

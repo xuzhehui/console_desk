@@ -2,26 +2,26 @@
     <div>
         <Toptitle :title='type == 1 ? "新增工艺" : "编辑工艺"'>
             <Button @click="back" style="margin-right:10px;">返回</Button>
-            <Button @click="postData">保存</Button>
+            <Button @click="handleSubmit('Info')">保存</Button>
         </Toptitle>
 
         <div class="page-edit">
-            <Form inline>
+            <Form inline ref='Info' :model="info" :rules='rules'>
                 <FormItem label="ID">
                     <Input v-model="info.id" disabled placeholder="自动生成"></Input>
                 </FormItem>
 
-                <FormItem label="部件名称">
+                <FormItem label="部件名称" prop='parts_id'>
                     <Select v-model="info.parts_id" style="width:186px;">
                         <Option v-for="item of partsList" :key="item.id" :value="item.id" :label="item.title"></Option>
                     </Select>
                 </FormItem>
 
-                <FormItem label="工艺组合名称">
+                <FormItem label="工艺组合名称" prop='title'>
                     <Input v-model="info.title" placeholder="请输入工艺组合名称"></Input>
                 </FormItem>
-                <FormItem label="价格">
-                    <Input v-model="info.price" placeholder="请输入价格"></Input>
+                <FormItem label="价格" prop='price'>
+                    <Input type="number" v-model="info.price" placeholder="请输入价格"></Input>
                 </FormItem>
             </Form>
 
@@ -36,7 +36,7 @@
 
             <div style="padding:10px 0;">
                 <span>工艺路线：</span>
-                <Button @click="editRouter">新增工艺路线</Button>
+                <Button @click="editRouter">{{type == 1 ? '新增工艺路线' : '编辑工艺路线'}}</Button>
             </div>
 
             <Table border :columns="tableColumns" :data="tableData"></Table>
@@ -90,9 +90,19 @@ export default {
                 list:[],
                 bps:[],
             },
+            rules:{
+                title:[
+                    {required: true,message:' ',trigger:'blur'}
+                ],
+                parts_id:[
+                    {required: true,message:' '}
+                ],
+                price:[
+                    {required: true,message:' ',trigger:'blur'}
+                ],
+            },
             tableColumns:[
                 {title:'ID',align:'center',key:'id'},
-                // {title:'工序分类',align:'center',},
                 {title:'工序名称',align:'center',key:'title'},
                 {title:'工时',align:'center',key:'time'},
                 {title:'工价',align:'center',key:'wages'},
@@ -205,7 +215,14 @@ export default {
         saveTableData(){
             this.tableData = this.selectTags;
             console.log(this.tableData)
-        }
+        },
+        handleSubmit(name) {
+            this.$refs[name].validate((valid) => {
+                if(valid){
+                    this.postData()
+                }
+            })
+        },
     },
     components:{SlickList,SlickItem}
 }

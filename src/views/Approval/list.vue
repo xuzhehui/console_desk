@@ -48,6 +48,7 @@ export default {
             ],
             tableColums:[
                 {title:'订单编号',align:'center',key:'order_no',fixed:'left',width:'180'},
+                {title:'订单流水号',align:'center',key:'oa_order_no',width:'200'},
                 {title:'订单类型',align:'center',key:'show_order_type',width:'100'},
                 {title:'客户',align:'center',key:'client_name',width:'120'},
                 {title:'手机号',align:'center',key:'mobile',width:'150'},

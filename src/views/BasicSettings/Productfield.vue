@@ -14,13 +14,22 @@
         :total='total'
         >
             <div slot='navButton'>
-                <Button type="primary" ghost icon='md-add' @click="addItems">新增产品分类</Button>
+                <Button type="primary" ghost icon='md-add' @click="addItems(null,1,null)">新增产品分类</Button>
             </div>
             
-            <template slot='set' slot-scope='row'>
-                <div>
-                    <Icon size='20' @click="addItems(row.row)" style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
-                    <Icon size='20' @click="delItems(row.row)" style="margin-left:10px;color:red;cursor:pointer" type="ios-trash-outline" />
+            <template slot='set' slot-scope='{row}'>
+                <div class="table-set">
+                    <svg  @click="addItems(row,1,0)" class="icon icon-nav" aria-hidden="true">
+                        <use xlink:href="#iconxinzengshuxing"></use>
+                    </svg>
+
+                    <svg style="font-size:20px" color='#3764FF' @click="addItems(row,2,1)" class="icon icon-nav" aria-hidden="true">
+                        <use xlink:href="#iconbianji"></use>
+                    </svg>
+
+                    <svg @click="delItems(row)" class="icon icon-nav" style="font-size:20px" color='red' aria-hidden="true">
+                        <use xlink:href="#iconshanchu"></use>
+                    </svg>
                 </div>
             </template>
 
@@ -33,11 +42,11 @@
                         <FormItem label="产品分类名称：">
                             <Input placeholder="请输入产品分类名称" v-model="classInfo.title"/>
                         </FormItem>
-                        <FormItem label="父级名称：">
+                        <!-- <FormItem label="父级名称：">
                             <Select v-model="classInfo.p_id">
                                 <Option v-for="item of parentIds" :value="item.id" :key="item.id" :label="item.title"></Option>
                             </Select>
-                        </FormItem>
+                        </FormItem> -->
                         <FormItem label="基础测量字段：">
                             <CheckboxGroup v-model="classInfo.measure_id">
                                 <Checkbox style="margin-right:10px;margin-bottom:10px;" v-for="item of measureList" :key="item.id" :label="item.id" border>
@@ -53,18 +62,32 @@
 </template>
 
 <script>
+import Tables from '../../components/table-column/productField'
 import {mapActions} from 'vuex'
 export default {
     data(){
+        let vm = this;
         return {
             list:[
-                {title:'ID',name:'Input',value:'',serverName:'id',placeholder:'请输入ID'},
                 {title:'产品分类名称',name:'Input',value:'',serverName:'title',placeholder:'请输入产品分类名称'},
             ],
             tableColums:[
+                {type:'expand',title:'展开',width:'70',slot:'open',
+                    render(h,params){
+                        const { row } = params
+                        return h(Tables,{
+                            props:{
+                                tableDatas:params.row.child||[]
+                            },
+                            on:{
+                                updataTables:(array)=>vm._data.tableData = array
+                            }
+                        })
+                    }
+                },
                 {title:'ID',align:'center',key:'id'},
                 {title:'产品分类名称',align:'center',key:'title'},
-                {title:'操作',align:'center',slot:'set'},
+                {title:'操作',align:'center',slot:'set',width:'150'},
             ],
             tableData:[],
             pageIndex:1,
@@ -120,22 +143,22 @@ export default {
             this.proxyObj.page_size = this.pageSize;
             this.getData(this.proxyObj);
         },
-        addItems(obj){
+        addItems(obj,type,edit){
+            console.log(type)
             this.showModal = true;
-            if(obj.id){
-                this.showType=2
+            this.showType = type
+            if(edit==1){
                 this.getDetails(obj.id)
-            }else{
-                //新增
-                this.showType=1
-            } 
+            }else if(edit == 0){
+                this.classInfo.id = obj.id;
+            }
         },
         postInfo(){
             let post_url = this.showType == 1 ? '/api/basics_product_add' : '/api/basics_product_edit',post_data={
                 id:this.classInfo.id,
                 title:this.classInfo.title,
-                measure_id:this.classInfo.measure_id.join(','),
-                p_id:this.classInfo.p_id
+                measure_id:this.classInfo.measure_id.join(',')||'',
+                // p_id:this.classInfo.p_id
             }
             this.axios.post(post_url,post_data).then(res=>{
                 if(res.code == 200){
@@ -176,4 +199,5 @@ export default {
 
 <style lang="scss" scoped>
 .nav{display: flex;justify-content: space-between;align-items: center;}
+/deep/ td.ivu-table-expanded-cell{padding:15px 10px;}
 </style>

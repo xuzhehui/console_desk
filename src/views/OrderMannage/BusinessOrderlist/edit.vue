@@ -283,15 +283,15 @@ export default {
             tableData:[],
             showProduct:false,
             infoRules:{
-                residential_name:[{required: true,message:'请输入小区名称',trigger:'blur'}],
-                client_name:[{required: true,message:'请输入客户名称',trigger:'blur'}],
-                warning_state:[{required: true,message:'请选择紧急程度'}],
-                pay_state:[{required: true,message:'是否收款'}],
-                address:[{required: true,message:'请输入详细地址',trigger:'blur'}],
-                mobile:[{required: true,message:'请输入手机号',trigger:'blur'}],
-                start_time:[{required: true,message:'请选择开始日期'}],
-                end_time:[{required: true,message:'请选择结束日期'}],  
-                renovation_type:[{required: true,message:'请选择结束日期'}]
+                residential_name:[{required: true,message:' ',trigger:'blur'}],
+                client_name:[{required: true,message:' ',trigger:'blur'}],
+                warning_state:[{required: true,message:' '}],
+                pay_state:[{required: true,message:' '}],
+                address:[{required: true,message:' ',trigger:'blur'}],
+                mobile:[{required: true,message:' ',trigger:'blur'}],
+                start_time:[{required: true,message:' '}],
+                end_time:[{required: true,message:' '}],  
+                renovation_type:[{required: true,message:' '}]
             },
             info:{
                 residential_name:'',//小区名称

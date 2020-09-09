@@ -2,26 +2,26 @@
     <div>
         <Toptitle :title='type == 1 ? "新增部件" : (type == 2 ? "编辑部件" : "查看部件") '>
             <Button @click="back" style="margin-right:10px;">返回</Button>
-            <Button v-if="type == 1 || type == 2" type="primary" @click="postData">保存</Button>
+            <Button v-if="type == 1 || type == 2" type="primary" @click="handleSubmit('Info')">保存</Button>
         </Toptitle>
 
         <div class="page-edit">
-            <Form style="width:30%">
-                <FormItem label="部件分类名称">
+            <Form style="width:30%" ref='Info' :model="info" :rules='rules'>
+                <FormItem label="部件分类名称" prop='p_id'>
                     <Select v-model="info.p_id">
                         <Option v-for="item of partList" :key="item.id" :value="item.id" :label="item.title"></Option>
                     </Select>
                 </FormItem>
-                <FormItem label="标签">
+                <FormItem label="标签" prop='label'>
                     <RadioGroup v-model="info.label" style="width:100%;">
                         <Radio :label="0">是</Radio>
                         <Radio :label="1">否</Radio>
                     </RadioGroup>
                 </FormItem>
-                <FormItem label="部件名称">
-                    <Input v-model="info.title"></Input>
+                <FormItem label="部件名称" prop='title'>
+                    <Input v-model="info.title" placeholder="请输入部件名称"></Input>
                 </FormItem>
-                <FormItem label="单位">
+                <FormItem label="单位" prop='company'>
                     <Input v-model="info.company" placeholder="请输入单位"></Input>
                 </FormItem>
             </Form>
@@ -36,7 +36,7 @@
                 <template slot-scope="{index}" slot="title">
                     <div>
                         <Select label-in-value @on-change="changeSe($event,index)" v-model="tableData[index].id">
-                            <Option :tag='item.high' v-for="item of zeroParts" :key="item.id" :value='item.id' :label="item.title"></Option>
+                            <Option :data-unit='item.unit' :tag='item.high' v-for="item of zeroParts" :key="item.id" :value='item.id' :label="item.title"></Option>
                         </Select>
                     </div>
                 </template>
@@ -102,7 +102,13 @@ export default {
                 {title:'标签',align:'center',key:'label',slot:'label'},
                 {title:'操作',align:'center',slot:'set'},
             ],
-            tableData:[{title:1}],
+            tableData:[],
+            rules:{
+                p_id:[{required: true, message: '请选择部件分类名称',}],
+                label:[{required: true, message: '请选择标签',}],
+                title:[{required: true, message: ' ', trigger: 'blur'}],
+                company:[{required: true, message: ' ', trigger: 'blur'}],
+            },
             product_list:[],
             addObj:{
                 title:'',
@@ -186,8 +192,18 @@ export default {
             this.tableData.push(add)
         },
         changeSe(e,n){
+            let event = window.event;
+            let unit = event.target.dataset.unit;
+            this.tableData[n].company = unit ? unit : ''
             this.tableData[n].thick = e.tag;
-        }
+        },
+        handleSubmit(name) {
+            this.$refs[name].validate((valid) => {
+                if(valid){
+                    this.postData()
+                }
+            })
+        },
     }
 }
 </script>

@@ -6,6 +6,132 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "16955680",
+      "name": "日历",
+      "font_class": "rili",
+      "unicode": "e630",
+      "unicode_decimal": 58928
+    },
+    {
+      "icon_id": "16955631",
+      "name": "删除2",
+      "font_class": "shanchu2",
+      "unicode": "e62f",
+      "unicode_decimal": 58927
+    },
+    {
+      "icon_id": "16955624",
+      "name": "删除属性",
+      "font_class": "shanchushuxing",
+      "unicode": "e62e",
+      "unicode_decimal": 58926
+    },
+    {
+      "icon_id": "16955598",
+      "name": "新增属性",
+      "font_class": "xinzengshuxing",
+      "unicode": "e62d",
+      "unicode_decimal": 58925
+    },
+    {
+      "icon_id": "16955584",
+      "name": "搜索",
+      "font_class": "sousuo",
+      "unicode": "e62c",
+      "unicode_decimal": 58924
+    },
+    {
+      "icon_id": "16955582",
+      "name": "下载模版",
+      "font_class": "xiazaimoban",
+      "unicode": "e62b",
+      "unicode_decimal": 58923
+    },
+    {
+      "icon_id": "16955578",
+      "name": "消息通知",
+      "font_class": "xiaoxitongzhi",
+      "unicode": "e62a",
+      "unicode_decimal": 58922
+    },
+    {
+      "icon_id": "16954981",
+      "name": "新增",
+      "font_class": "xinzeng",
+      "unicode": "e629",
+      "unicode_decimal": 58921
+    },
+    {
+      "icon_id": "16954971",
+      "name": "通过审批",
+      "font_class": "tongguoshenpi",
+      "unicode": "e628",
+      "unicode_decimal": 58920
+    },
+    {
+      "icon_id": "16954945",
+      "name": "设置",
+      "font_class": "shezhi",
+      "unicode": "e627",
+      "unicode_decimal": 58919
+    },
+    {
+      "icon_id": "16954941",
+      "name": "编辑",
+      "font_class": "bianji",
+      "unicode": "e626",
+      "unicode_decimal": 58918
+    },
+    {
+      "icon_id": "16954868",
+      "name": "详情",
+      "font_class": "xiangqing",
+      "unicode": "e624",
+      "unicode_decimal": 58916
+    },
+    {
+      "icon_id": "16954855",
+      "name": "删除",
+      "font_class": "shanchu",
+      "unicode": "e623",
+      "unicode_decimal": 58915
+    },
+    {
+      "icon_id": "16954822",
+      "name": "批量打印二维码",
+      "font_class": "piliangdayinerweima",
+      "unicode": "e622",
+      "unicode_decimal": 58914
+    },
+    {
+      "icon_id": "16954815",
+      "name": "面包屑首页",
+      "font_class": "mianbaoxieshouye",
+      "unicode": "e621",
+      "unicode_decimal": 58913
+    },
+    {
+      "icon_id": "16954812",
+      "name": "导出",
+      "font_class": "daochu",
+      "unicode": "e620",
+      "unicode_decimal": 58912
+    },
+    {
+      "icon_id": "16954768",
+      "name": "导入",
+      "font_class": "daoru",
+      "unicode": "e61f",
+      "unicode_decimal": 58911
+    },
+    {
+      "icon_id": "16954761",
+      "name": "驳回审批",
+      "font_class": "bohuishenpi",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    },
+    {
       "icon_id": "16925688",
       "name": "通知管理",
       "font_class": "tongzhiguanli",

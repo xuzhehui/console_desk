@@ -2,7 +2,7 @@
     <div >
         <Toptitle :title='type == 1 ? "新增产品" : (type == 2 ? "编辑产品" : "查看产品") '>
             <Button @click="back" style="margin-right:10px;">返回</Button>
-            <Button v-if="type == 1 || type == 2" type="primary" @click="postData">保存</Button>
+            <Button v-if="type == 1 || type == 2" type="primary" @click="handleSubmit('Info')">保存</Button>
         </Toptitle>
 
         <div class="page-edit">
@@ -25,19 +25,19 @@
                 </div>
             </div>
 
-            <Form inline >
-                <FormItem label="产品分类">
+            <Form inline ref='Info' :model="info" :rules='rules'>
+                <FormItem label="产品分类" prop='bp_id'>
                     <Select style="width:300px" v-model="info.bp_id">
                         <Option v-for="item of productFiled" :key="item.id" :value="item.id" :label="item.title"></Option>
                     </Select>
                 </FormItem>
-                <FormItem label="型号" >
+                <FormItem label="型号" prop='model'>
                     <Input v-model="info.model" style="width:300px" placeholder="请输入产品型号"></Input>
                 </FormItem>
-                <FormItem label="计量单位" >
+                <FormItem label="计量单位" prop='unit'>
                     <Input v-model="info.unit" style="width:300px" placeholder="请输入计量单位"></Input>
                 </FormItem>
-                <FormItem label="产品名称" >
+                <FormItem label="产品名称" prop='title'>
                     <Input v-model="info.title" style="width:300px" placeholder="请输入产品名称"></Input>
                 </FormItem>
             </Form>
@@ -159,7 +159,7 @@ export default {
             ],
             showCustom:false,//
             info:{
-                mode:'',//类型
+                model:'',//类型
                 bp_id:'',//产品类型
                 title:'',//名称
                 unit:'',//单位
@@ -167,6 +167,20 @@ export default {
                 part:[],//部件,
                 remark:[],//自定义属性列表
                 id:'',
+            },
+            rules:{
+                bp_id:[
+                    {required: true,message:' ',}
+                ],
+                model:[
+                    {required: true,message:' ',trigger:'blur'}
+                ],
+                title:[
+                    {required: true,message:' ',trigger:'blur'}
+                ],
+                unit:[
+                    {required: true,message:' ',trigger:'blur'}
+                ],
             },
             addObj:{
                 title:'',
@@ -186,7 +200,7 @@ export default {
         this.getPartsData()
         this.type = this.$route.query.type||1;
         this.id = this.$route.query.id||null;
-        this.type == 1 ? this.info.bp_id = this.$route.query.back_id*1 : this.info.bp_id;
+        this.info.bp_id = this.type == 1 ?  this.$route.query.back_id*1 : this.info.bp_id;
         if(this.id){
             this.getData(this.id)
         }
@@ -300,6 +314,13 @@ export default {
         successKey(str){
             this.info.part[this.attrindex][this.attrName] = str;
             this.showKey = false;
+        },
+        handleSubmit(name) {
+            this.$refs[name].validate((valid) => {
+                if(valid){
+                    this.postData()
+                }
+            })
         },
     }
 }

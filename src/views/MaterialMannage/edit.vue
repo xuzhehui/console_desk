@@ -2,44 +2,44 @@
     <div>
         <Toptitle :title='type == 1 ? "新增物料" : (type == 2 ? "编辑物料" : "查看物料")'>
             <Button @click="back" style="margin-right:10px;">返回</Button>
-            <Button v-if="type == 1 || type == 2" type="primary" @click="postData">保存</Button>
+            <Button v-if="type == 1 || type == 2" type="primary" @click="handleSubmit('Info')">保存</Button>
         </Toptitle>
 
-        <Form inline>
+        <Form ref='Info' inline :model='info' :rules='rules'>
             <FormItem label="ID">
                 <Input v-model="info.id" disabled :placeholder="type == 1||type == 2 ? '自定生成': '12'"/>
             </FormItem>
-            <FormItem  label="物料名称">
+            <FormItem  label="物料名称" prop='title'>
                 <Input :disabled='type == 3 ? true : false' v-model="info.title"  placeholder="请输入物料名称"/>
             </FormItem>
-            <FormItem label="物料分类">
+            <FormItem label="物料分类" prop='m_id'>
                 <Select style="width:186px;" v-model="info.m_id" :disabled='type == 3 ? true : false' placeholder="请选择材质">
                     <Option v-for="item of materialList" :key="item.id" :label="item.title" :value="item.id"></Option>
                 </Select>
             </FormItem>
-            <FormItem label="单价(元)">
-                <Input :disabled='type == 3 ? true : false' v-model="info.price" placeholder="请输入金额"/>
+            <FormItem label="单价(元)" prop='price'>
+                <Input type="number" :disabled='type == 3 ? true : false' v-model="info.price" placeholder="请输入金额"/>
             </FormItem>
-            <FormItem label="长">
+            <FormItem label="长" prop='long'>
                 <Input :disabled='type == 3 ? true : false' v-model="info.long" placeholder="请输入长度"/>
             </FormItem>
-            <FormItem label="宽">
+            <FormItem label="宽" prop='width'>
                 <Input :disabled='type == 3 ? true : false' v-model="info.width" placeholder="请输入宽度"/>
             </FormItem>
-            <FormItem label="厚">
+            <FormItem label="厚" prop='high'>
                 <Input :disabled='type == 3 ? true : false' v-model="info.high" placeholder="请输入厚度"/>
             </FormItem>
-            <FormItem label="单位">
+            <FormItem label="单位" prop='unit'>
                 <Input :disabled='type == 3 ? true : false' v-model="info.unit" placeholder="请输入单位"/>
             </FormItem>
-            <FormItem label="库存">
-                <Input :disabled='type == 3 ? true : false' v-model="info.stock" placeholder="请输入库存"/>
+            <FormItem label="库存" prop='stock'>
+                <Input type="number" :disabled='type == 3 ? true : false' v-model="info.stock" placeholder="请输入库存"/>
             </FormItem>
-            <FormItem label="预警值">
-                <Input :disabled='type == 3 ? true : false' v-model="info.warning_number" placeholder="请输入预警值"/>
+            <FormItem label="预警值" prop='warning_number'>
+                <Input type='number' :disabled='type == 3 ? true : false' v-model="info.warning_number" placeholder="请输入预警值"/>
             </FormItem>
-            <FormItem label="损耗">
-                <Input :disabled='type == 3 ? true : false' v-model="info.scale" placeholder="请输入百分比"/>
+            <FormItem label="损耗" prop='scale'>
+                <Input type="number" :disabled='type == 3 ? true : false' v-model="info.scale" placeholder="请输入百分比"/>
             </FormItem>
             <FormItem label="描述">
                 <Input :disabled='type == 3 ? true : false' v-model="info.remark" placeholder="请输入描述"/>
@@ -61,10 +61,44 @@ export default {
     data(){
         return {
             type:1,
-            info:{},
+            info:{
+                m_id:''
+            },
             id:null,
             materialList:[],
             showKey:false,
+            rules:{
+                title:[
+                    {required: true,message:' ',trigger:'blur'}
+                ],
+                m_id:[
+                    {required: true,message:' '}
+                ],
+                price:[
+                    {required: true,message:' '}
+                ],
+                long:[
+                    {required: true,message:' ',trigger:'blur'}
+                ],
+                width:[
+                    {required: true,message:' ',trigger:'blur'}
+                ],
+                high:[
+                    {required: true,message:' ',trigger:'blur'}
+                ],
+                unit:[
+                    {required: true,message:' ',trigger:'blur'}
+                ],
+                stock:[
+                    {required: true,message:' '}
+                ],
+                warning_number:[
+                    {required: true,message:' ',}
+                ],
+                scale:[
+                    {required: true,message:' ',}
+                ],
+            }
         }
     },
     components:{KeyBoard},
@@ -104,6 +138,13 @@ export default {
         },
         popKeyBoard(){
             this.showKey = true;
+        },
+        handleSubmit(name) {
+            this.$refs[name].validate((valid) => {
+                if(valid){
+                    this.postData()
+                }
+            })
         },
     }
 }

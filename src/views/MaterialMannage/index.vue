@@ -18,10 +18,18 @@
             </div>
             
             <template slot='set' slot-scope='{row}'>
-                <div>
-                    <Icon @click="goDetial(2,row)" size='20' style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
-                    <Icon @click="goDetial(3,row)" size='20' style="margin-right:10px;color:#32C800;cursor:pointer" type="ios-paper-outline" />
-                    <Icon @click="delItems(row)" size='20' style="color:red;cursor:pointer"  type="ios-trash-outline" />
+                <div class="table-set">
+                    <svg style="font-size:20px" color='#3764FF'  @click="goDetial(2,row)" class="icon icon-nav" aria-hidden="true">
+                        <use xlink:href="#iconbianji"></use>
+                    </svg>
+
+                    <svg style="font-size:20px" color='green' @click="goDetial(3,row)" class="icon icon-nav" aria-hidden="true">
+                        <use xlink:href="#iconxiangqing"></use>
+                    </svg>
+
+                    <svg @click="delItems(row)" class="icon icon-nav" style="font-size:20px" color='red' aria-hidden="true">
+                        <use xlink:href="#iconshanchu"></use>
+                    </svg>
                 </div>
             </template>
         </FullPage>
@@ -34,7 +42,7 @@ export default {
         return {
             list:[
                 {title:'ID',name:'Input',serverName:'id',placeholder:'请输入ID',value:''},
-                {title:'材质',name:'Input',serverName:'title',placeholder:'请输入材质',value:''}
+                {title:'物料',name:'Input',serverName:'title',placeholder:'请输入物料',value:''}
             ],
             tableColums:[
                 {title:'ID',align:'center',key:'id',fixed:'left',width:'100'},
@@ -47,7 +55,7 @@ export default {
                 {title:'长',align:'center',key:'long',width:'100'},
                 {title:'宽',align:'center',key:'width',width:'100'},
                 {title:'厚',align:'center',key:'high',width:'100'},
-                {title:'公式',align:'center',key:'formula',width:'200'},
+                {title:'损耗',align:'center',key:'scale',width:'200'},
                 {title:'描述',align:'center',key:'remark',width:'200'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'150'},
             ],

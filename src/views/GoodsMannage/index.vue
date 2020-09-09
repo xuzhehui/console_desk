@@ -17,12 +17,25 @@
                 <Button type="primary" ghost icon='md-add' @click="goPage(1)">新增商品</Button>
             </div>
             
-            <template slot='set' slot-scope='row'>
-                <div>
+            <template slot='set' slot-scope='{row}'>
+                <div class="table-set">
+                    <svg style="font-size:20px" color='#3764FF'  @click="goPage(2,row)" class="icon icon-nav" aria-hidden="true">
+                        <use xlink:href="#iconbianji"></use>
+                    </svg>
+
+                    <svg style="font-size:20px" color='green' @click="goPage(3,row)" class="icon icon-nav" aria-hidden="true">
+                        <use xlink:href="#iconxiangqing"></use>
+                    </svg>
+
+                    <svg @click="delItems(row)" class="icon icon-nav" style="font-size:20px" color='red' aria-hidden="true">
+                        <use xlink:href="#iconshanchu"></use>
+                    </svg>
+                </div>
+                <!-- <div>
                     <Icon @click="goPage(2,row.row)"  size='20' style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
                     <Icon @click="goPage(3,row.row)" size='20' style="margin-right:10px;color:#32C800;cursor:pointer" type="ios-paper-outline" />
                     <Icon @click="delItems(row.row)"  size='20' style="margin-left:10px;color:red;cursor:pointer" type="ios-trash-outline" />
-                </div>
+                </div> -->
             </template>
         
         </FullPage>
@@ -54,7 +67,7 @@ export default {
                 },
                 {title:'商品名称',align:'center',key:'title'},
                 {title:'通用商品价格',align:'center',key:'price'},
-                {title:'操作',align:'center',slot:'set'},
+                {title:'操作',align:'center',slot:'set',width:'150'},
             ],
             tableData:[],
             pageIndex:1,

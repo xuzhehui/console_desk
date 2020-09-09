@@ -22,9 +22,14 @@
             </div>
             
             <template slot='set' slot-scope='{row}'>
-                <div>
-                    <Icon @click="goPage(2,row)" size='20' style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
-                    <Icon @click="delItems(row)" size='20' style="margin-left:10px;color:red;cursor:pointer" type="ios-trash-outline" />
+                <div class="table-set">
+                    <svg style="font-size:20px" color='#3764FF' @click="goPage(2,row)" class="icon icon-nav" aria-hidden="true">
+                        <use xlink:href="#iconbianji"></use>
+                    </svg>
+
+                    <svg @click="delItems(row)" class="icon icon-nav" style="font-size:20px" color='red' aria-hidden="true">
+                        <use xlink:href="#iconshanchu"></use>
+                    </svg>
                 </div>
             </template>
         </FullPage>

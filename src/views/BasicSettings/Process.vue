@@ -18,10 +18,18 @@
             </div>
             
             <template slot='set' slot-scope='{row}'>
-                <div>
-                    <Icon size='20' @click="addItems(row,1,null)" style="margin-right:20px;color:green;cursor:pointer" type="ios-add-circle" />
-                    <Icon size='20' @click="addItems(row,2,1)" style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
-                    <Icon size='20' @click="delItems(row)" style="margin-left:10px;color:red;cursor:pointer" type="ios-trash-outline" />
+                <div class="table-set">
+                    <svg @click="addItems(row,1,null)" class="icon icon-nav" aria-hidden="true">
+                        <use xlink:href="#iconxinzengshuxing"></use>
+                    </svg>
+
+                    <svg style="font-size:20px" color='#3764FF' @click="addItems(row,2,1)" class="icon icon-nav" aria-hidden="true">
+                        <use xlink:href="#iconbianji"></use>
+                    </svg>
+
+                    <svg @click="delItems(row)" class="icon icon-nav" style="font-size:20px" color='red' aria-hidden="true">
+                        <use xlink:href="#iconshanchu"></use>
+                    </svg>
                 </div>
             </template>
 
@@ -46,6 +54,7 @@ import Tables from '../../components/table-column/index'
 import {mapActions} from 'vuex'
 export default {
     data(){
+        const vm = this
         return {
             list:[
                 {title:'ID',name:'Input',value:'',serverName:'id',placeholder:'请输入ID'},
@@ -54,17 +63,20 @@ export default {
             tableColums:[
                 {type:'expand',title:'展开',width:'70',slot:'open',
                     render(h,params){
-                        console.log(params)
+                        const { row } = params
                         return h(Tables,{
                             props:{
-                                tableDatas:params.row.child
+                                tableDatas:params.row.child||[]
+                            },
+                            on:{
+                                updataTables:(array)=>vm._data.tableData = array
                             }
                         })
                     }
                 },
                 {title:'ID',align:'center',key:'id'},
                 {title:'工序分类名称',align:'center',key:'title'},
-                {title:'操作',align:'center',slot:'set'},
+                {title:'操作',align:'center',slot:'set',width:'150'},
             ],
             tableData:[],
             pageIndex:1,
@@ -89,9 +101,7 @@ export default {
             this.loading = true;
             this.axios('/api/basics_procedure_index',{params:row}).then(res=>{
                 this.loading = false;
-                this.tableData = res.data;
-                
-                console.log(this.tableData)
+                this.tableData = res.data.data;
                 this.total = res.data.total;
             })
         },
@@ -148,10 +158,15 @@ export default {
                 }
             })
         },
+        saveTables(array){
+            this.tableData = Array
+        }
     }
 }
 </script>
 
 <style lang="scss" scoped>
 .nav{display: flex;justify-content: space-between;align-items: center;}
+.icon-nav{margin-right:5px;font-size:16px;}
+/deep/ td.ivu-table-expanded-cell{padding:15px 10px;}
 </style>

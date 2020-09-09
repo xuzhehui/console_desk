@@ -17,10 +17,15 @@
                 <Button type="primary" ghost icon='md-add' @click="goPage(1)">新增用户</Button>
             </div>
             
-            <template slot='set' slot-scope='row'>
-                <div>
-                    <Icon size='20' @click="goPage(2,row.row)" style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
-                    <Icon size='20' @click="delItems(row.row)" style="margin-left:10px;color:red;cursor:pointer" type="ios-trash-outline" />
+            <template slot='set' slot-scope='{row}'>
+                <div class="table-set">
+                    <svg style="font-size:20px" color='#3764FF' @click="goPage(2,row)" class="icon icon-nav" aria-hidden="true">
+                        <use xlink:href="#iconbianji"></use>
+                    </svg>
+
+                    <svg @click="delItems(row)" class="icon icon-nav" style="font-size:20px" color='red' aria-hidden="true">
+                        <use xlink:href="#iconshanchu"></use>
+                    </svg>
                 </div>
             </template>
         </FullPage>
@@ -32,12 +37,8 @@ export default {
     data(){
         return {
             list:[
-                {title:'ID',name:'Input',value:'',serverName:'id',placeholder:'请输入ID'},
                 {title:'用户名',name:'Input',value:'',serverName:'nickname',placeholder:'请输入用户名'},
-                {title:'角色名',name:'Select',serverName:'group_id',value:'',option:[
-                    {label:'管理员',value:1},
-                    {label:'游客',value:2}
-                ]}
+                {title:'角色名',name:'Input',serverName:'group_name',value:'',placeholder:'请输入角色名'}
             ],
             tableColums:[
                 {title:'ID',align:'center',key:'id'},
@@ -45,7 +46,7 @@ export default {
                 {title:'登录账号',align:'center',key:'account'},
                 {title:'手机号',align:'center',key:'mobile'},
                 {title:'角色名',align:'center',key:'group_name'},
-                {title:'操作',align:'center',slot:'set'},
+                {title:'操作',align:'center',slot:'set',width:'150'},
             ],
             roleList:[],
             tableData:[],
@@ -57,7 +58,7 @@ export default {
         }
     },
     mounted(){
-        this.getRoleList()
+        // this.getRoleList()
     },
     methods:{
         init(row){
@@ -65,14 +66,6 @@ export default {
             row.page_size = this.pageSize;
             this.proxyObj = row
             this.getData(row)
-        },
-        getRoleList(){
-            this.loading = true;
-            this.axios('/api/group').then(res=>{
-                this.loading = false
-                res.data.data.map(v=>{v.value = v.id;v.label=v.group_title})
-                this.list[2].option = res.data.data;
-            })
         },
         getData(row){
             this.axios('/api/user',{params:row}).then(res=>{

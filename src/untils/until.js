@@ -16,6 +16,7 @@ export default{
         let result = Object.values(obj);
         result.map(v=> Object.prototype.toString.call(v.sub) === '[object Object]' ? v.sub = this.deepObjToArray(v.sub) : '' )
         return result
-    }
+    },
+    
     
 }

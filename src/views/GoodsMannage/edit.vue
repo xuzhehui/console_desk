@@ -2,7 +2,7 @@
     <div>
         <Toptitle :title='type == 1 ? "新增商品" : (type == 2 ? "编辑商品" : "查看商品") '>
             <Button @click="back" style="margin-right:10px;">返回</Button>
-            <Button v-if="type == 1 || type == 2" type="primary" @click="postData">保存</Button>
+            <Button v-if="type == 1 || type == 2" type="primary" @click="handleSubmit('Info')">保存</Button>
         </Toptitle>
 
         <div class="page-edit">
@@ -15,13 +15,13 @@
                 </CheckboxGroup>
             </div>
 
-            <Form inline>
-                <FormItem label='商品名称'>
+            <Form inline ref='Info' :model="info" :rules='rules'>
+                <FormItem label='商品名称' prop='product_id'>
                     <Select :disabled='type == 3 ? true : false' @on-change="changeSelect" v-model="info.product_id" style="width:300px;" placeholder="请选择商品名称">
                         <Option v-for="item of productList" :key='item.id' :label="item.title" :value="item.id"></Option>
                     </Select>
                 </FormItem>
-                <FormItem label='通用销售价格'>
+                <FormItem label='通用销售价格' prop='price'>
                     <Input :disabled='type == 3 ? true : false' v-model="info.price" style="width:300px;"  placeholder="请选择商品名称"></Input>
                 </FormItem>
             </Form>
@@ -75,6 +75,14 @@ export default {
                 price:'',
                 agent:[],
                 has_agent:0,
+            },
+            rules:{
+                price:[
+                    {required: true,message:' ',trigger:'blur'}
+                ],
+                product_id:[
+                    {required: true,message:' '}
+                ],
             }
         }
     },
@@ -133,6 +141,13 @@ export default {
         },
         delItems(n,arr){
             arr.splice(n,1)
+        },
+        handleSubmit(name) {
+            this.$refs[name].validate((valid) => {
+                if(valid){
+                    this.postData()
+                }
+            })
         },
     }
 }

@@ -3,7 +3,6 @@
     <router-view/>
   </div>
 </template>
-
 <script>
 export default {
   name: 'App',
@@ -26,8 +25,10 @@ table-edit-set{margin-right:10px;color:#3764FF;cursor:pointer}
     &:last-child{color:#333;font-weight:bold;}
   }
 }
-.icon {width: 1em;height: 1em;vertical-align: -0.15em;fill: currentColor;overflow: hidden;}
+.icon{width: 1em;height: 1em;vertical-align: -0.15em;fill: currentColor;overflow: hidden;}
 .page-edit{overflow: hidden;overflow-y: auto;position:relative;top:20px;height:85%;padding-bottom: 20px;;}
 .ivu-form-item{margin-bottom:10px!important;}
 .map-margin{margin:0 5px;}
+.table-set{display:flex;justify-content:space-around;align-items:center;}
+.ivu-form-item-error-tip{font-size:12px!important;;}
 </style>

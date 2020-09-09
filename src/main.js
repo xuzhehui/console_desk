@@ -26,6 +26,9 @@ Vue.prototype.axios = axios
 Vue.prototype.func = untilFn
 
 Vue.config.productionTip = false
+Vue.prototype.$Message.config({//全局提示演示关闭时间
+  duration: 3
+});
 
 new Vue({
   router,

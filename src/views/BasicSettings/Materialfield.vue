@@ -17,10 +17,15 @@
                 <Button type="primary" ghost icon='md-add' @click="addItems">新增物料分类</Button>
             </div>
             
-            <template slot='set' slot-scope='row'>
-                <div>
-                    <Icon @click="addItems(row.row)" size='20' style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
-                    <Icon @click="delItems(row.row)"  size='20' style="margin-left:10px;color:red;cursor:pointer" type="ios-trash-outline" />
+            <template slot='set' slot-scope='{row}'>
+                <div class="table-set">
+                    <svg style="font-size:20px" color='#3764FF' @click="addItems(row)" class="icon icon-nav" aria-hidden="true">
+                        <use xlink:href="#iconbianji"></use>
+                    </svg>
+
+                    <svg @click="delItems(row)" class="icon icon-nav" style="font-size:20px" color='red' aria-hidden="true">
+                        <use xlink:href="#iconshanchu"></use>
+                    </svg>
                 </div>
             </template>
             
@@ -59,7 +64,7 @@ export default {
             tableColums:[
                 {title:'ID',align:'center',key:'id'},
                 {title:'物料分类',align:'center',key:'title'},
-                {title:'操作',align:'center',slot:'set'},
+                {title:'操作',align:'center',slot:'set',width:'150'},
             ],
             tableData:[],
             pageIndex:1,

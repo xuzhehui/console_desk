@@ -18,9 +18,14 @@
             </div>
             
             <template slot='set' slot-scope='{row}'>
-                <div>
-                    <Icon size='20' @click="addItems(row)" style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
-                    <Icon size='20' @click="delItems(row)" style="margin-left:10px;color:red;cursor:pointer" type="ios-trash-outline" />
+                <div class="table-set">
+                    <svg style="font-size:20px" color='#3764FF' @click="addItems(row)" class="icon icon-nav" aria-hidden="true">
+                        <use xlink:href="#iconbianji"></use>
+                    </svg>
+
+                    <svg @click="delItems(row)" class="icon icon-nav" style="font-size:20px" color='red' aria-hidden="true">
+                        <use xlink:href="#iconshanchu"></use>
+                    </svg>
                 </div>
             </template>
 
@@ -34,7 +39,7 @@
                             <div v-if="showType == 1">
                                 <div class="item-attr" v-for="(item,index) of attribute" :key="index">
                                     <Input :placeholder='"请输入"+title+"名称"' v-model="item.title"/>
-                                    <Icon @click="addAttr(index)" style="'margin:0 10px" :color='index == 0 ? "#32C800" : "#FF5E5C"' size='20' :type="index == 0 ? 'ios-add-circle' : 'md-remove-circle'" />
+                                    <Icon @click="addAttr(index)" style="'margin:0 10px" :color='index == attribute.length-1 ? "#32C800" : "#FF5E5C"' size='20' :type="index == attribute.length-1 ? 'ios-add-circle' : 'md-remove-circle'" />
                                 </div>
                             </div>
 
@@ -59,7 +64,7 @@ export default {
             tableColums:[
                 {title:'ID',align:'center',key:'id'},
                 {title:`颜色`,align:'center',key:'title'},
-                {title:'操作',align:'center',slot:'set'},
+                {title:'操作',align:'center',slot:'set',width:'150'},
             ],
             tableData:[],
             pageIndex:1,
@@ -151,7 +156,7 @@ export default {
             })
         },
         addAttr(n){
-            n == 0 ? this.attribute.push({title:''}) : this.attribute.splice(n,1)
+            n == this.attribute.length-1 ? this.attribute.push({title:''}) : this.attribute.splice(n,1)
         },
         getData(row){
             this.loading = true;

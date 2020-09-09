@@ -64,18 +64,24 @@ export default {
                 })
             }
             let split_array = name.split('-');
-            let [parant,child,last] = split_array;
-            let parantData = data[parant],childData = parantData.sub[child],lastChild;
+            let [parant,child,last,end] = split_array;
+            let parantData = data[parant],childData = parantData.sub[child],lastChild,endChild;
             if(last){
                 lastChild = childData.sub[last]
             }
-            this.$store.commit('updateCrumbs',{parantData,childData,lastChild })
-            sessionStorage.setItem('crumbs',JSON.stringify({parantData,childData,lastChild}))
+            if(end){
+                endChild = lastChild.sub[end]
+            }
+            this.$store.commit('updateCrumbs',{parantData,childData,lastChild,endChild})
+            sessionStorage.setItem('crumbs',JSON.stringify({parantData,childData,lastChild,endChild}))
+            let page = endChild ? endChild.page : (lastChild ? lastChild.page : childData.page)
+            let title = endChild ? endChild.title : (lastChild ? lastChild.title : childData.title)
+            let id = endChild ? endChild.id : (lastChild ? lastChild.id : childData.id||'')
             this.$router.push({
-                path:lastChild ? lastChild.page : childData.page,
+                path:page,
                 query:{
-                    title:lastChild ? lastChild.title : childData.title,
-                    id:lastChild ? lastChild.id : childData.id||'',
+                    title:title,
+                    id:id,
                 }
             })
         },

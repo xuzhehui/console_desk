@@ -84,12 +84,6 @@ const routerMap = [
         component: resolve => require(['@/views/PartsMannage/edit'], resolve)
     },
     {
-        path:'/cms/partsmannage/addparts',
-        name:'PartsManageHomeAddParts',//部件管理-->部件列表-->部件编辑-新增-查看-->新增零部件
-        meta:{index:4},
-        component: resolve => require(['@/views/PartsMannage/addParts'], resolve)
-    },
-    {
         path:'/cms/materialmannage/index',
         name:'MaterialMannage',//物料管理-->部件列表
         meta:{index:4},
@@ -136,12 +130,6 @@ const routerMap = [
         name:'ProductsEdit',//产品管理-->通用产品编辑 新增 查看
         meta:{index:4},
         component: resolve => require(['@/views/ProductMannage/edit'], resolve)
-    },
-    {
-        path:'/cms/product/edit/parts',
-        name:'ProductsEditParts',//产品管理-->通用产品编辑 新增 查看 -->新增 编辑部件
-        meta:{index:4},
-        component: resolve => require(['@/views/ProductMannage/editParts'], resolve)
     },
     {
         path:'/cms/processmannage/index',

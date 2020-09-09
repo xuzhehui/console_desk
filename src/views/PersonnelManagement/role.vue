@@ -17,10 +17,15 @@
                 <Button type="primary" ghost icon='md-add' @click="goPage(1)">新增角色</Button>
             </div>
             
-            <template slot='set' slot-scope='row'>
-                <div>
-                    <Icon @click="goPage(2,row.row)" size='20' style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
-                    <Icon @click="deleteItems(row.row)" size='20' style="margin-left:10px;color:red;cursor:pointer" type="ios-trash-outline" />
+            <template slot='set' slot-scope='{row}'>
+                <div class="table-set">
+                    <svg style="font-size:20px" color='#3764FF' @click="goPage(2,row)" class="icon icon-nav" aria-hidden="true">
+                        <use xlink:href="#iconbianji"></use>
+                    </svg>
+
+                    <svg @click="deleteItems(row)" class="icon icon-nav" style="font-size:20px" color='red' aria-hidden="true">
+                        <use xlink:href="#iconshanchu"></use>
+                    </svg>
                 </div>
             </template>
         </FullPage>
@@ -32,16 +37,12 @@ export default {
     data(){
         return {
             list:[
-                {title:'ID',name:'Input',value:'',serverName:'ids',placeholder:'请输入ID'},
-                {title:'角色名',name:'Select',serverName:'group_title',value:'',option:[
-                    {label:'管理员',value:1},
-                    {label:'游客',value:2}
-                ]}
+                {title:'角色名',name:'Input',serverName:'group_title',value:'',placeholder:'请输入角色名'}
             ],
             tableColums:[
                 {title:'ID',align:'center',key:'id'},
                 {title:'角色名',align:'center',key:'group_title'},
-                {title:'操作',align:'center',slot:'set'},
+                {title:'操作',align:'center',slot:'set',width:'150'},
             ],
             tableData:[],
             pageIndex:1,
@@ -63,7 +64,7 @@ export default {
             this.axios('/api/group',{params:row}).then(res=>{
                 this.loading = false
                 res.data.data.map(v=>{v.value = v.id;v.label=v.group_title})
-                this.list[1].option = res.data.data;
+                // this.list[1].option = res.data.data;
                 this.tableData = res.data.data;
                 this.total = res.data.total;
             })
