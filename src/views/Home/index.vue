@@ -5,21 +5,21 @@
                 <div class="left-charts">
                     <Toptitle style="height:10px;font-size:10px;margin:0;padding:15px 10px;border-radius:5px;" title='产品趋势'/>
                     <div class="chart-search">
-                        <RadioGroup type="button" size='small' style="margin-right:10px;">
-                            <Radio label="柱状图"></Radio>
-                            <Radio label="折线图"></Radio>
+                        <RadioGroup type="button" size='small' style="margin-right:10px;" v-model="radioType">
+                            <Radio :label="1">柱状图</Radio>
+                            <Radio :label="2">折线图</Radio>
                         </RadioGroup>
                         <DatePicker  style="margin-right:10px;" size='small' type="daterange" split-panels placeholder="请选择时间段"></DatePicker>
                     </div>
-                    
-                    <ve-histogram class="big" :legend-visible='false' :data="productTrends" :settings='chartSettings'></ve-histogram>
+                    <ve-line class="big" v-if="radioType == 2" :data="productTrends" :legend-visible='false' :settings='chartSettings'></ve-line>
+                    <ve-histogram v-else class="big" :legend-visible='false' :data="productTrends" :settings='chartSettings'></ve-histogram>
                 </div>
                 <div class="right-charts">
                     <Toptitle style="height:10px;font-size:10px;margin:0;padding:15px 10px;border-radius:5px;" title='销售额类别占比'/>
                     <div class="chart-search">
                         <DatePicker  style="margin-right:10px;" size='small' type="daterange" split-panels placeholder="请选择时间段"></DatePicker>
                     </div>
-                    <ve-ring class="big" :data="salesVolume" :settings="chartSettings"></ve-ring>
+                    <ve-ring class="big" :data="salesVolume"></ve-ring>
                 </div>
             </div>
 
@@ -36,7 +36,6 @@
                     <Toptitle style="height:10px;font-size:10px;margin:0;padding:15px 10px;border-radius:5px;" title='人员工资统计'/>
                     <div class="chart-search" >
                         <Select size="small" style="margin-right:10px;">
-                            <!-- <Option>油漆工</Option> -->
                         </Select>
                         <DatePicker  style="margin-right:10px;" size='small' type="daterange" split-panels placeholder="请选择时间段"></DatePicker>
                     </div>
@@ -51,6 +50,7 @@
 export default {
     data(){
         return {
+            radioType:1,//1柱状图 2折线图
             chartSettings:{yAxisName:['万元']},
             metaDataSettings:{yAxisName:['个']},
             productTrends: {
@@ -88,10 +88,15 @@ export default {
                 ]
             },
             salesVolume:{
-                columns:[''],
+                columns:['销售类别'],
                 rows:[
-                    {}
-                ],
+                    { '销售类别': '门扇', '访问用户': 1393 },
+                    { '销售类别': '框门', '访问用户': 3530 },
+                    { '销售类别': '1/3', '访问用户': 2923 },
+                    { '销售类别': '1/4', '访问用户': 1723 },
+                    { '销售类别': '1/5', '访问用户': 3792 },
+                    { '销售类别': '1/6', '访问用户': 4593 }
+                ]
             }
         }
     }

@@ -31,11 +31,6 @@
                         <use xlink:href="#iconshanchu"></use>
                     </svg>
                 </div>
-                <!-- <div>
-                    <Icon @click="goPage(2,row.row)"  size='20' style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
-                    <Icon @click="goPage(3,row.row)" size='20' style="margin-right:10px;color:#32C800;cursor:pointer" type="ios-paper-outline" />
-                    <Icon @click="delItems(row.row)"  size='20' style="margin-left:10px;color:red;cursor:pointer" type="ios-trash-outline" />
-                </div> -->
             </template>
         
         </FullPage>
@@ -47,7 +42,6 @@ export default {
     data(){
         return {
             list:[
-                {title:'ID',name:'Input',value:null,serverName:'id',placeholder:'请输入ID'},
                 {title:'商品名称',name:'Input',value:'',serverName:'title',placeholder:'请输入物料分类名称'},
             ],
             tableColums:[

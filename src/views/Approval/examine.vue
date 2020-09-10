@@ -123,17 +123,19 @@ export default {
         }
     },
     mounted(){
-        if(this.$route.query.id){
-            this.id = this.$route.query.id
-            this.getDetails(this.id)
+        if(this.$route.query.oa_order_no){
+            this.oa_order_no = this.$route.query.oa_order_no
+            this.getDetails(this.oa_order_no)
+        }else{
+            this.$Message.error('没有订单流水号')
         }
     },
     methods:{
         back(){
             this.$router.go(-1)
         },
-        getDetails(id){
-            this.axios('/api/order_oa_list',{params:{id:id}}).then(res=>{
+        getDetails(oa_order_no){
+            this.axios('/api/order_oa_list',{params:{oa_order_no:oa_order_no}}).then(res=>{
                 let copyData = JSON.parse(JSON.stringify(res.data))
                 res.data.orders_oa.map((v,i)=>{
                     if((i+1)%2){

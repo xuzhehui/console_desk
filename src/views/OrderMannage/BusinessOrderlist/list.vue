@@ -49,7 +49,7 @@
                     </Form>
                 </Modal>
 
-                <Modal class-name="vertical-center-modal" title='下测量' v-model="show_lower" @on-ok="lowerMeter(postInfo)">
+                <Modal @on-visible-change="visibleModal" class-name="vertical-center-modal" title='下测量' v-model="show_lower" @on-ok="lowerMeter(postInfo)">
                     <Form inline :label-width="100">
                         <FormItem label="测量人员">
                             <Select v-model="postInfo.user_id" style="width:186px;">
@@ -125,7 +125,7 @@ export default {
             showTableColums:false,
             show_lower:false,
             postInfo:{//下测量数据
-                id:'',
+                order_no:'',
                 start_time:'',
                 end_time:'',
                 user_id:null,
@@ -196,7 +196,7 @@ export default {
         },
         openLower(row){
             if(!row){return this.$Message.warning('请至少选择一项')}
-            this.postInfo.id = Array.isArray(row) ? row.join(',') : row.id
+            this.postInfo.order_no = Array.isArray(row) ? row.join(',') : row.order_no
             this.show_lower = true;
             this.axios('/api/user').then(res=>this.users = res.data.data)
         },
@@ -209,12 +209,23 @@ export default {
                 if(res.code == 200){
                     this.$Message.success(res.msg)
                     this.selectIds = null;//清空多选项
+                    this.postInfo = {}
                 }
             })
         },
+        visibleModal(e){
+            if(!e){
+                this.postInfo = {
+                    order_no:'',
+                    start_time:'',
+                    end_time:'',
+                    user_id:null,
+                }
+            }
+        },
         selectTable(e){
             let result = [];
-            e.map(v=>result.push(v.id))
+            e.map(v=>result.push(v.order_no))
             this.selectIds = result;
         },
         delItems(row){

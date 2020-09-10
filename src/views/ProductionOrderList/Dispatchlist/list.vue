@@ -38,14 +38,14 @@ export default {
                 {title:'下单日期范围',name:'Input',start_server:'start_time',end_server:'end_time',start_value:'',end_value:'',isDate:true,serverName:'id2',start_placeholder:'开始日期',end_placeholder:'结束日期'}
             ],
             tableColums:[
-                {title:'订单编号',align:'center',key:'id',fixed:'left',width:'200'},
+                {title:'订单编号',align:'center',key:'order_no',fixed:'left',width:'200'},
                 {title:'订单类型',align:'center',key:'type_name',width:'150'},
                 {title:'紧急程度',align:'center',key:'title',width:'150'},
-                {title:'小区名称',align:'center',key:'stock',width:'200'},
+                {title:'小区名称',align:'center',key:'residential_name',width:'200'},
                 {title:'派工开始时间',align:'center',key:'unit',width:'200'},
                 {title:'派工结束时间',align:'center',key:'unit',width:'200'},
                 {title:'派工人员',align:'center',key:'warning_number',width:'200'},
-                {title:'预估工期',align:'center',key:'price',width:'200'},
+                {title:'预估工期',align:'center',key:'predict_time',width:'200'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'240'},
             ],
             tableData:[

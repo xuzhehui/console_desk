@@ -24,11 +24,11 @@
                 </div>
             </div>
 
-            <template slot='set' slot-scope='row'>
+            <!-- <template slot='set' slot-scope='row'>
                 <div>
                    <a style="color:#32C800">完成</a>
                 </div>
-            </template>
+            </template> -->
         </FullPage>
     </div>
 </template>
@@ -52,25 +52,25 @@ export default {
                 },
             ],
             tableColums:[
-                {title:'楼幢',align:'center',key:'house'},
-                {title:'单元',align:'center',key:'unit'},
-                {title:'楼层',align:'center',key:'layer'},
-                {title:'房间号',align:'center',key:'number'},
-                {title:'产品',align:'center',key:'product_title'},
-                {title:'位置',align:'center',key:'house'},
-                {title:'部件',align:'center',key:'parts_title'},
-                {title:'左右式',align:'center',key:'product_type'},
-                {title:'包装码',align:'center'},
-                {title:'部件是否贴标签',align:'center'},
-                {title:'贴标签零部件',align:'center'},
-                {title:'工序分类',align:'center',key:'basics_procedure_title'},
-                {title:'工序',align:'procedure_title',key:'procedure_title'},
-                {title:'是否完成',align:'center',key:'is_complete'},
-                {title:'测量尺寸',align:'center'},
-                {title:'单位',align:'center',},
-                {title:'数量',align:'center'},
-                {title:'二维码',align:'center',},
-                {title:'芯片编号',align:'center',slot:'set'},
+                {title:'楼幢',align:'center',key:'house',fixed:'left',width:'120'},
+                {title:'单元',align:'center',key:'unit',width:'200'},
+                {title:'楼层',align:'center',key:'layer',width:'200'},
+                {title:'房间号',align:'center',key:'number',width:'200'},
+                {title:'产品',align:'center',key:'product_title',width:'200'},
+                {title:'位置',align:'center',key:'house',width:'200'},
+                {title:'部件',align:'center',key:'parts_title',width:'200'},
+                {title:'左右式',align:'center',key:'product_type',width:'200'},
+                {title:'包装码',align:'center',width:'200'},
+                {title:'部件是否贴标签',align:'center',width:'200'},
+                {title:'贴标签零部件',align:'center',width:'200'},
+                {title:'工序分类',align:'center',key:'basics_procedure_title',width:'200'},
+                {title:'工序',align:'procedure_title',key:'procedure_title',width:'200'},
+                {title:'是否完成',align:'center',key:'is_complete',width:'200'},
+                {title:'测量尺寸',align:'center',width:'200'},
+                {title:'单位',align:'center',width:'200'},
+                {title:'数量',align:'center',width:'200'},
+                {title:'二维码',align:'center',width:'200'},
+                {title:'芯片编号',align:'center',fixed:'right',width:'200'},
             ],
             tableData:[{type:'123'}],
             pageIndex:1,
@@ -94,7 +94,7 @@ export default {
             this.$router.go(-1)
         },
         getDetails(row){
-            this.axios('/api/orders_plan_detail',{params:row}).then(res=>{
+            this.axios('/api/orders_produce_plan_list',{params:row}).then(res=>{
                 this.tableData = res.data.list;
             })
         },

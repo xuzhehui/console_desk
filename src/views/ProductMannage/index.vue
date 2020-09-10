@@ -41,7 +41,6 @@ export default {
     data(){
         return {
             list:[
-                {title:'ID',name:'Input',value:'',serverName:'id',placeholder:'请输入ID'},
                 {title:'产品型号',name:'Input',value:'',serverName:'model',placeholder:'请输入产品型号'},
                 {title:'产品名称',name:'Input',value:'',serverName:'title',placeholder:'请输入产品名称'},
             ],

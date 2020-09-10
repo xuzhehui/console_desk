@@ -6,6 +6,7 @@
         </Toptitle>
 
         <div class="page-edit">
+            <!-- 表单项 -->
             <Form ref='infoOrder' inline :label-width="100" :model="info" style="padding:10px 0;" :rules="infoRules">
                 <FormItem label="订单类型:" prop='renovation_type'>
                     <RadioGroup v-model="info.renovation_type" class="auto-width">
@@ -77,6 +78,8 @@
                     <Input v-model="info.remark" class="auto-width" placeholder="请输入订单备注"></Input>
                 </FormItem>
             </Form>
+
+            <!-- 户型选择 -->
             <div class="items" v-for="(item,index) of info.house" :key="index">
                 <div class="items-header">
                     <div class="header-left">
@@ -109,29 +112,37 @@
 
                         <FormItem label="选择产品">
                             <Button @click="selectProducts(1,item)" type="primary" style="margin-right:10px;" ghost>选择产品</Button>
-                            <span>(已选2，点击按钮可再次编辑)</span>
+                            <span>(已选{{item.product.length||0}}，点击按钮可再次编辑)</span>
                         </FormItem>
                     </Form>
                 </div>
 
                 <div class="items-table">
                     <Table :style="'width:'+tableWidth+'px'" border :columns="tableColumns" :data="item.product">
-                        <template slot='img_number' slot-scope='{row,index}'>
+                        <template slot='url' slot-scope='{row}'>
                             <div>
-                                <Input placeholder="请输入图号" @on-change="changeS(row,item,index)" v-model="row.url_number"></Input>
+                               <img style="max-width:50px;max-height:50px;" v-if="row.url" :src="$store.state.ip+row.url" alt="">
                             </div>
-                            
                         </template>
-                        <template slot='set' slot-scope='row'>
-                            <div>
-                                <Icon @click="selectProducts(2,item)"  size='20' style="margin-right:10px;color:#3764FF;cursor:pointer" type="ios-create-outline" />
-                                <Icon @click="selectProducts(3,item)" size='20' style="margin-right:10px;color:#32C800;cursor:pointer" type="ios-paper-outline" />
-                                <Icon @click="delItems(row.row)"  size='20' style="margin-left:10px;color:red;cursor:pointer" type="ios-trash-outline" />
+                        <template slot='set' slot-scope='{index}'>
+                            <div class="table-set">
+                                <svg style="font-size:20px" color='#3764FF'  @click="selectProducts(2,item)" class="icon icon-nav" aria-hidden="true">
+                                    <use xlink:href="#iconbianji"></use>
+                                </svg>
+
+                                <svg style="font-size:20px" color='green' @click="selectProducts(3,item)" class="icon icon-nav" aria-hidden="true">
+                                    <use xlink:href="#iconxiangqing"></use>
+                                </svg>
+
+                                <svg v-if="index<1 ? false : true" @click="delItems(item.product,index)" class="icon icon-nav" style="font-size:20px" color='red' aria-hidden="true">
+                                    <use xlink:href="#iconshanchu"></use>
+                                </svg>
                             </div>
                         </template>
                     </Table>
                 </div>
             </div>
+            <!-- 原材料 -->
             <div class="original-part">
                 <Table border :span-method="handleSpan" :columns="originalTableColumns" :data="originalData">
 
@@ -140,62 +151,63 @@
         </div>
 
         
-
+        <!-- 选择产品弹层 -->
         <Modal :width="1200" class-name="vertical-center-modal" title="选择产品" v-model="showProduct" @on-ok="tapProduct">
-            <div class="modal-items" v-for="(item,idx) in modalArray" :key="idx">
-                <Form inline :label-width="80">
-                    <FormItem label="选择产品">
-                        <Select size='small' :disabled='productType == 3 ? true : false' v-model="item.product_id" @on-change='changeProduct($event,idx)' style="width:186px;">
-                            <Option v-for="item of productList" :tag='item.img_url' :key="item.id" :label="item.title" :value='item.id'></Option>
-                        </Select>
-                    </FormItem>
-
-                    <FormItem label="产品图">
-                        <img v-if="item.img" style="max-width:50px;max-height:50px;"  :src="$store.state.ip+item.img">
-                    </FormItem>
-
-                    <FormItem label="产品价格">
-                        <span>{{item.price}}</span>
-                    </FormItem>
-
-                    <FormItem label="议价">
-                        <Input size='small' :disabled='productType == 3 ? true : false' v-model="item.real_price" placeholder="请输入议价"></Input>
-                    </FormItem>
-                    <FormItem label="长">
-                        <Input size='small' :disabled='productType == 3 ? true : false' v-model="item.long" placeholder="请输入长"></Input>
-                    </FormItem>
-                    <FormItem label="宽">
-                        <Input size='small' :disabled='productType == 3 ? true : false' v-model="item.wide" placeholder="请输入宽"></Input>
-                    </FormItem>
-                    <FormItem label="高">
-                        <Input size='small' :disabled='productType == 3 ? true : false' v-model="item.high" placeholder="请输入高"></Input>
-                    </FormItem>
-                    <FormItem label="计量单位">
-                        <Input size='small' :disabled='productType == 3 ? true : false' v-model="item.unit" placeholder="请输入计量单位"></Input>
-                    </FormItem>
-                    <FormItem label="位置">
-                        <Input size='small' :disabled='productType == 3 ? true : false' v-model="item.position" placeholder="请输入位置"></Input>
-                    </FormItem>
-                    <FormItem label="左右式">
-                        <Select size='small' :disabled='productType == 3 ? true : false' style="width:186px;" v-model="item.type">
-                            <Option label='左式' :value='1'></Option>
-                            <Option label='右式' :value='2'></Option>
-                        </Select>
-                    </FormItem>
-                </Form>
-                <Table stripe border :columns="item.part_top" :data="item.product">
-                    <template slot='set' slot-scope='{row,index}'>
-                        <div>
-                            <Select :disabled='productType == 3 ? true : false' v-model="row.route_id" @on-change="changeSelect($event,item,row,index)">
-                                <Option v-for="_item of row.child" :key="_item.id" :value='_item.id' :label="_item.title"></Option>
+            <div class="modal-scroll">
+                <div class="modal-items" v-for="(item,idx) in modalArray" :key="idx">
+                    <Form inline >
+                        <FormItem label="选择产品">
+                            <Select label-in-value size='small' :disabled='productType == 3 ? true : false' v-model="item.product_id" @on-change='changeProduct($event,idx)' style="width:186px;">
+                                <Option v-for="item of productList" :tag='item.img_url' :key="item.id" :label="item.title" :value='item.id'></Option>
                             </Select>
-                        </div>
-                    </template>
-                </Table>
+                        </FormItem>
 
-                <div class="modal-footer-button">
-                    <Button v-if="idx<1" @click="addParts(item)" type="success" style="margin-right:10px;" ghost shape="circle">添加</Button>
-                    <Button v-if="idx>0" @click="delItems(modalArray,idx)" type="error" ghost shape="circle">删除</Button>
+                        <FormItem label="议价(元)">
+                            <Input type="number" size='small' :disabled='productType == 3 ? true : false' v-model="item.real_price" placeholder="请输入议价"></Input>
+                        </FormItem>
+                        <FormItem label="计量单位">
+                            <Input size='small' :disabled='productType == 3 ? true : false' v-model="item.unit" placeholder="请输入计量单位"></Input>
+                        </FormItem>
+                        <FormItem label="位置">
+                            <Input size='small' :disabled='productType == 3 ? true : false' v-model="item.position" placeholder="请输入位置"></Input>
+                        </FormItem>
+                        <FormItem label='图号'>
+                            <Input v-model="item.url_number" :disabled='productType == 3 ? true : false' size="small" placeholder="请输入图号"></Input>
+                        </FormItem>
+                        <FormItem label='上传图纸'>
+                            <Upload :disabled='productType == 3 ? true : false'  :headers="headers" :on-success='successUpload' :show-upload-list='false' :action="$store.state.ip+'/api/upload_pic'">
+                                
+                                <Button size='small' v-if="!item.url" @click="mapRow(idx)" icon="ios-cloud-upload-outline">上传</Button>
+                                <img @click="mapRow(idx)" style="max-width:50px;max-height:50px;position:relative;top:3px" v-if="item.url" :src="$store.state.ip+item.url" alt="">
+                            </Upload>
+                        </FormItem>
+
+                        <FormItem v-for="(obj,_key) in item.top" :key="_key" :label="obj.title">
+                            <div v-if="obj.key=='img'">
+                                <a target="_blank" :href="$store.state.ip+obj.value">
+                                    <img  style="max-width:50px;max-height:50px;top:5px;position:relative;cursor:pointer;"  :src="$store.state.ip+obj.value">
+                                </a>
+                                
+                                <Icon v-if="obj.key=='img'&&!obj.value" style="position:relative;top:-10px;" size='50' type="md-images" />
+                            </div>
+                            
+                            <Input :disabled='productType == 3 ? true : false' v-else :placeholder="'请输入'+obj.title" size='small' v-model="obj.value"/>
+                        </FormItem>
+                    </Form>
+                    <Table stripe border :columns="item.parts_top" :data="item.parts">
+                        <template slot='set' slot-scope='{row,index}'>
+                            <div>
+                                <Select :disabled='productType == 3 ? true : false' v-model="row.route_id" @on-change="changeSelect($event,item,row,index)">
+                                    <Option v-for="_item of row.child" :key="_item.id" :value='_item.id' :label="_item.title"></Option>
+                                </Select>
+                            </div>
+                        </template>
+                    </Table>
+
+                    <div class="modal-footer-button">
+                        <Button v-if="idx<1" @click="addParts(item)" type="success" style="margin-right:10px;" ghost shape="circle">添加</Button>
+                        <Button v-if="idx>0" @click="delItems(modalArray,idx)" type="error" ghost shape="circle">删除</Button>
+                    </div>
                 </div>
             </div>
 
@@ -203,6 +215,7 @@
                 <Button @click="cancelModal">取消</Button>
                 <Button @click="saveParts" type="primary">确定</Button>
             </div>
+            
         </Modal> 
     
   </div>
@@ -211,6 +224,13 @@
 <script>
 export default {
     data(){
+        const validateMobile = function(rule,value,fn){
+            if(!(/^1[3456789]\d{9}$/.test(value))){ 
+                fn(new Error(' '))
+                return false
+            }
+            fn()
+        };
         return {
             type:1,
             id:this.$route.query.id,
@@ -220,6 +240,8 @@ export default {
             currentIndex:null,
             proxyObj:{},
             productType:1,
+            partTableColumns:[],
+            headers:{'Authorization':localStorage.getItem('token')},
             originalTableColumns:[
                 {title:'原材料名称',align:'center',key:'title'},
                 {title:'原材料库存',align:'center',key:'stock'},
@@ -231,52 +253,18 @@ export default {
             ],
             originalData:[],
             tableColumns:[
-                {title:'产品类型',align:'center',key:'product_id',width:'100',fixed:'left'},
+                {title:'产品类型',align:'center',key:'product_name',width:'100',fixed:'left'},
                 {title:'指导价格(元)',align:'center',key:'price',width:'120'},
                 {title:'议价(元)',align:'center',key:'real_price',width:'100'},
                 {title:'产品名称',align:'center',key:'title',width:'150'},
                 {title:'长',align:'center',key:'long',width:'100'},
-                {title:'宽',align:'center',key:'wide',width:'100'},
+                {title:'宽',align:'center',key:'width',width:'100'},
                 {title:'高',align:'center',key:'high',width:'100'},
                 {title:'产品型号',align:'center',key:'model',width:'100'},
                 {title:'测量数据',align:'center',key:'',width:'100'},
                 {title:'位置',align:'center',key:'position',width:'100'},
-                {title:'图号',align:'center',key:'url_number',width:'150',slot:'img_number',},
-                {title:'图纸',align:'center',key:'',width:'80',
-
-                    render(h,params){
-                        return h('Upload',{
-                            props:{
-                                'show-upload-list':false,        
-                                headers:{'Authorization':localStorage.getItem('token')},
-                                'on-success':(e)=>{
-                                    let src = e.data.url;
-                                    params.row.url = src;
-                                    return h('img',{
-                                        attrs:{
-                                            src:'http://121.41.102.225:82'+params.row.url,
-                                            style:'max-width:50px;max-height:50px;position:relative;top:5px;'
-                                        },
-                                    })
-                                }
-                            },
-                            attrs:{
-                                action:`http://121.41.102.225:82/api/upload_pic`
-                            },
-                        },[
-                            params.row.url ? h('img',{
-                                attrs:{
-                                    src:'http://121.41.102.225:82'+params.row.url,
-                                    style:'max-width:50px;max-height:50px;position:relative;top:5px;'
-                                },
-                            }) : h('a',{
-                                attrs:{
-                                    style:'position:relative;'
-                                }
-                            },'上传')
-                        ])
-                    }
-                },
+                {title:'图号',align:'center',key:'url_number',width:'150',},
+                {title:'图纸',align:'center',width:'80',key:'url',slot:'url'},
                 {title:'预估工期',align:'center',key:'',width:'200'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'150'},
             ],
@@ -288,7 +276,7 @@ export default {
                 warning_state:[{required: true,message:' '}],
                 pay_state:[{required: true,message:' '}],
                 address:[{required: true,message:' ',trigger:'blur'}],
-                mobile:[{required: true,message:' ',trigger:'blur'}],
+                mobile:[{required: true,validator: validateMobile, trigger: 'blur'}],
                 start_time:[{required: true,message:' '}],
                 end_time:[{required: true,message:' '}],  
                 renovation_type:[{required: true,message:' '}]
@@ -308,7 +296,6 @@ export default {
                 salesman:null,//业务员
                 predict_price:null,//预估工价,
                 predict_working:null,//预估工期
-                
                 house:[
                     {
                         house:null,
@@ -318,10 +305,11 @@ export default {
                         product:[
                             {
                                 product_id:null,
+                                product_name:'',
                                 price:'',
                                 real_price:'',
                                 long:'',
-                                wide:'',
+                                width:'',
                                 high:'',
                                 type:null,
                                 unit:'',
@@ -330,6 +318,11 @@ export default {
                                 url_number:'',
                                 url:'',
                                 route_id:'',
+                                parts:[
+                                    {
+
+                                    }
+                                ]
                             }
                         ],
                     },
@@ -339,7 +332,6 @@ export default {
     },
     created(e){
         this.tableWidth = window.innerWidth-300;
-        
     },
     destroyed(){
     },
@@ -357,26 +349,27 @@ export default {
             this.$router.go(-1)
         },
         postData(){
+            console.log(this.info)
             let sendData = JSON.parse(JSON.stringify(this.info));
+            
             let op = this.type == 1 ? 'add' : 'edit';
             try{
                 sendData.start_time = new Date(sendData.start_time).toLocaleDateString().replace(/\//g,"-")
                 sendData.end_time = new Date(sendData.end_time).toLocaleDateString().replace(/\//g,"-")
             }catch(e){}
-            sendData.house.map(v=>{
-                v.product.map(k=>{
-                    if(k.part_top){
-                        delete k.part_top
-                    }
-                    k.product.map(t=>{
-                        for(let i in t){
-                            i == 'route_id' ? '' : delete t[i]
-                        }
-                    })
-                })
-            })
+            // sendData.house.map(v=>{
+            //     v.product.map(k=>{
+            //         if(k.part_top){
+            //             delete k.part_top
+            //         }
+            //         k.product.map(t=>{
+            //             for(let i in t){
+            //                 i == 'route_id' ? '' : delete t[i]
+            //             }
+            //         })
+            //     })
+            // })
             let params = {op:op,detail:sendData}
-            console.log(params)
             this.axios.post('/api/order_save',params).then(res=>{
                 if(res.code == 200){
                     this.$Message.success(res.msg)
@@ -394,7 +387,8 @@ export default {
             this.productType = n;
             this.showProduct = true;
             this.proxyObj = row;
-            this.modalArray = row.product;
+            this.modalArray = JSON.parse(JSON.stringify(row.product));
+            this.modalArray.map(v=>v.parts_top = this.partTableColumns)
         },
         delItems(row,n){
             row.splice(n,1)
@@ -416,18 +410,63 @@ export default {
             this.axios('/api/product').then(res=>this.productList = res.data.data)
         },
         changeProduct(row,n){
-            
-            this.axios('/api/order_product_detail',{params:{id:row}}).then(res=>{
-                console.log(res)
+            console.log(row)
+            this.axios('/api/order_product_detail',{params:{id:row.value}}).then(res=>{
+                let _this = this;
+                let modalData = this.modalArray[n]
                 if(res.code == 200){
-                    let data = res.data.product;
-                    for(let i in data){
-                        if(i!='product_id'){
-                            this.modalArray[n][i] = data[i]
-                        }
+                    modalData.product_name = row.label
+                    modalData.top = res.data.top;
+                    modalData.parts_top = res.data.intermediate.parts_top
+
+                    if(this.func.isType(res.data.intermediate.parts)!='Array'){
+                        return this.$Message.error('parts must be Array got Object')
                     }
-                    this.modalArray[n].part_top = res.data.part_top;
-                    this.modalArray[n].product = res.data.list;
+                    modalData.parts = res.data.intermediate.parts
+                    res.data.intermediate.parts_top.map(v=>{
+                        if(v.state){
+                            v.render = function(h,params){
+                                const rows = params.row;
+                                const columns = params.column;
+                                let key = columns.key;
+                                return h('Select',{
+                                    props:{
+                                        value:rows[key].id,
+                                    },
+                                    on:{
+                                        'on-change':(event) => {
+                                            let columnsData = modalData.parts[params.index]
+                                            columnsData[key].id = event;
+                                            let sendParams = {
+                                                part_id:columnsData.id,
+                                                ids:[],
+                                            };
+                                            for(let i in columnsData){
+                                                if(_this.func.isType(columnsData[i])==='Object'){
+                                                    columnsData[i].id ? sendParams.ids.push(columnsData[i].id) : ''
+                                                } 
+                                            }
+                                            _this.axios('/api/get_route',{params:columnsData}).then(res=>{
+                                                if(res.code == 200){
+                                                    Object.assign(columnsData,res.data)
+                                                }
+                                            })
+                                         }
+                                    },
+                                },
+                                rows[key].child.map((item) =>{
+                                      return h('Option', {
+                                          props: {
+                                              value: item.id,
+                                              label: item.title
+                                          }
+                                      })
+                                  })
+                                )
+                            }
+                        }
+                    })
+                    this.partTableColumns = modalData.parts_top;
                     this.$forceUpdate()
                 }
             })
@@ -438,11 +477,12 @@ export default {
                 price:'',
                 real_price:'',
                 long:'',
-                wide:'',
+                width:'',
                 high:'',
                 type:null,
                 unit:'',
                 img:'',
+                product_name:''
             })
         },
         changeSelect(e,item,row,n){
@@ -461,16 +501,27 @@ export default {
 
         },
         saveParts(){
+            this.modalArray.map(v=>{
+                let obj = {}
+                v.top.map(k=>{
+                    for(let i in k){
+                        obj[k['key']] = k['value']
+                    }
+                })
+                for(let i in obj){
+                    if(obj[i]){
+                        v[i] = obj[i]
+                    }
+                }
+            })
             this.proxyObj.product = this.modalArray;
+            this.modalArray = null;
             this.showProduct = false;
             this.tapProduct()
             
         },
         cancelModal(){
             this.showProduct = false;
-        },
-        changeS(row,sign,n){
-            sign.product[n] = row;
         },
         handleSubmit(name) {
             this.$refs[name].validate((valid) => {
@@ -483,14 +534,12 @@ export default {
             let str = [];
             this.info.house.map(v=>{
                 v.product.map(k=>{
-                    console.log(k)
                     if(k.product_id){
                         str.push(k.product_id)
                     }
                 })
             })
             this.axios('/api/house_detail_material',{params:{product_id:str.length>=1 ? str.join(',') : ''}}).then(res=>{
-                console.log(res)
                 if(res.code == 200){
                     this.originalData = res.data.data;
                     this.originalData.push({end:true,stock:res.data.num,title:'合计'})
@@ -501,7 +550,14 @@ export default {
             if(row.end){
                 return [1,6]
             }
-        }
+        },
+        mapRow(n){
+            this.currentIndex = n;
+        },
+        successUpload(responce){
+            let url = responce.data.url;
+            this.modalArray[this.currentIndex].url = url
+        },
     }
 }
 </script>
@@ -523,7 +579,8 @@ export default {
         top: 0;
     }
 }
-.modal-items{border-radius:5px;border:1px solid #DEDEDE;padding:20px;}
+.modal-scroll{height:600px;overflow: scroll;}
+.modal-items{border-radius:5px;border:1px solid #DEDEDE;padding:0px 10px;margin-bottom:10px;}
 .modal-footer-button{display: flex;justify-content:flex-end;padding:10px 0;}
 .items-table{width:100%;overflow-x: scroll;}
 /deep/ .ivu-table-wrapper{overflow:visible;color:red;}//穿透iview

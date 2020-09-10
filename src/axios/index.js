@@ -40,11 +40,11 @@ instance.interceptors.response.use(res => {
             return res.data
         }
       }else{
-          return Vue.prototype.$Message.error('请求超时')
+          return Vue.prototype.$Message.error(res.data.msg||'请求超时')
       }
     },
     // 对于错误响应的处理
-    err => {Vue.prototype.$Message.error("服务异常");Vue.prototype.$loading.hide();}
+    err => {Vue.prototype.$Notice.error({title:'请求失败',desc:err});Vue.prototype.$loading.hide();}
 );
 
 export default instance

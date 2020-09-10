@@ -95,7 +95,7 @@ export default {
         },
         getData(row){
             this.loading = true;
-            this.axios('/api/order_index',{params:row}).then(res=>{
+            this.axios('/api/order_measure_list',{params:row}).then(res=>{
                 this.loading = false;
                 if(!res.data.data){return this.$Message.error('列表数据返回格式不正确')}
                 res.data.data.map(v=>{
@@ -104,6 +104,7 @@ export default {
                     (v.sub_state == 2 ? '测量通过' : (v.sub_state == 3 ? '生产审核中' : (v.sub_state == 4 ? '生产通过' : '到生产计划'))))
                 })
                 this.tableData = res.data.data;
+                this.tableData.push({order_no:'222'})
                 this.total = res.data.total;
             })
         },

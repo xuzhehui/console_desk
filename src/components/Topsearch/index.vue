@@ -12,7 +12,8 @@
             :disabled="item.disabled"
             v-model="item.value"  
             :type="item.type"  
-            v-if="!item.isDate"   
+            v-if="!item.isDate"  
+            :style="item.width ? 'width:'+item.width+'px' : ''" 
             @on-change="item.change ? change($event,index) : ''"
             >
                 <Checkbox v-for="(_item,_index) in item.checklist" :key="_index" :label="_item.label"></Checkbox>

@@ -112,7 +112,7 @@ export default {
             this.$router.push({
                 path:'/cms/approval/examine',
                 query:{
-                    id:row.id
+                    oa_order_no:row.oa_order_no
                 }
             })
         },

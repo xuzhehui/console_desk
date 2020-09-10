@@ -4,8 +4,10 @@
         title='完工单'
         :list='list' 
         @init='init' 
+        :loading='loading'
         @searchData='init' 
         @changePage='changePage'
+        @changeSize='changeSize'
         :tableColums='tableColums'
         :tableData='tableData'
         :pageIndex='pageIndex'
@@ -46,18 +48,32 @@ export default {
             ],
             tableData:[],
             pageIndex:1,
-            total:100,
+            total:0,
+            proxyObj:{},
+            loading:false,
         }
     },
     methods:{
         init(row){
+            row.page_index = this.pageIndex;
+            row.page_size = this.pageSize;
+            this.proxyObj = row;
             this.getData(row)
         },
         changePage(e){
-
+            this.pageIndex = e;
+            this.proxyObj.page_index = this.pageIndex;
+            this.getData(this.proxyObj)
+        },
+        changeSize(e){
+            this.pageSize = e;
+            this.proxyObj.page_size = this.page_size;
+            this.getData(this.proxyObj)
         },
         getData(row){
-            this.axios('/api/produce_list',{params:row}).then(res=>{
+            this.loading = true;
+            this.axios('/api/orders_confirm_list',{params:row}).then(res=>{
+                this.loading = false;
                 if(res.code == 200){
                     res.data.data.map(v=>{
                         v.show_type = v.type == 1 ? '业务订单' : '代理商订单'
@@ -67,7 +83,9 @@ export default {
                         (v.sub_state == 2 ? '测量通过' : (v.sub_state == 3 ? '生产审核中' : (v.sub_state == 4 ? '生产通过' : '到生产计划'))))
                     })
                 }
+                
             })
+            this.tableData.push({order_no:'123'})
         },
         goDetial(row){
             this.$router.push({
@@ -82,12 +100,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.vertical-center-modal{
-    display: flex;
-     align-items: center;
-    justify-content: center;
-    .ivu-modal{
-        top: 0;
-    }
-}
 </style>

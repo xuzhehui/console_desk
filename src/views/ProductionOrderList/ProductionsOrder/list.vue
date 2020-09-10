@@ -94,7 +94,7 @@ export default {
                 {title:'下单日期',align:'center',key:'show_crt_time',width:'200'},
                 {title:'下测量日期',align:'center',key:'show_measure_time',width:'200'},
                 {title:'实际测量时间',align:'center',key:'show_upd_time',width:'200'},
-                {title:'操作',align:'center',slot:'set',fixed:'right',width:'150'},
+                {title:'操作',align:'center',slot:'set',fixed:'right',width:'300'},
             ],
             tableData:[],
             pageIndex:1,
@@ -128,7 +128,7 @@ export default {
             this.getData(this.proxyObj)
         },
         getData(row){
-            this.axios('/api/produce_list',{params:row}).then(res=>{
+            this.axios('/api/orders_produce_order_list',{params:row}).then(res=>{
                 res.data.data.map(v=>{
                     v.show_predict_time = v.predict_time;
                     v.show_crt_time = v.crt_time;
@@ -137,6 +137,7 @@ export default {
                 })
                 this.tableData = res.data.data;
                 this.total = res.data.total;
+                this.tableData.push({order_no:'123'})
             })
         },
         setTableColums(){//设置表头

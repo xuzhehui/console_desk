@@ -14,23 +14,23 @@
                 </div>
             </div>
             <div>
-                <Table class="overflow-table" border stripe :columns="tableColums" :data="tableData">
-                    <template slot-scope="{ row,index }" slot="long">
-                        <Input :disabled='type == 3 ? true : false' v-model="tableData[index].long" placeholder="请输入长度"></Input>
+                <Table :width="tableWidth" class="overflow-table" border stripe :columns="tableColums" :data="tableData">
+                    <template slot-scope="{index }" slot="long">
+                        <Input :disabled='type == 3 ? true : false' v-model="tableData[index].long" placeholder="请输入长度"/>
                     </template>
 
-                    <template slot-scope="{ row,index }" slot="wide">
-                        <Input :disabled='type == 3 ? true : false' v-model="tableData[index].wide" placeholder="请输入宽度"></Input>
+                    <template slot-scope="{index }" slot="wide">
+                        <Input :disabled='type == 3 ? true : false' v-model="tableData[index].wide" placeholder="请输入宽度"/>
                     </template>
 
-                    <template slot-scope="{ row,index }" slot="high">
-                        <Input :disabled='type == 3 ? true : false' v-model="tableData[index].high" placeholder="请输入高度"></Input>
+                    <template slot-scope="{index }" slot="high">
+                        <Input :disabled='type == 3 ? true : false' v-model="tableData[index].high" placeholder="请输入高度"/>
                     </template>
 
-                    <template slot-scope="{ row,index }" slot="img_number">
-                        <Input :disabled='type == 3 ? true : false' v-model="tableData[index].url_number" placeholder="请输入图号"></Input>
+                    <template slot-scope="{index }" slot="img_number">
+                        <Input :disabled='type == 3 ? true : false' v-model="tableData[index].url_number" placeholder="请输入图号"/>
                     </template>
-                    <template slot-scope="{ row,index }" slot="leftOrright">
+                    <template slot-scope="{index }" slot="leftOrright">
                         <Select :disabled='type == 3 ? true : false' v-model="tableData[index].type">
                             <Option label="左式" :value='1'></Option>
                             <Option label="右式" :value='2'></Option>
@@ -69,17 +69,17 @@ export default {
             type:1,
             logList:[{title:'系统单号',value:'10998765'}],
             tableColums:[
-                {title:'产品名称',align:'center',key:'product_title'},
-                {title:'产品型号',align:'center',key:'model'},
+                {title:'产品名称',align:'center',key:'product_title',fixed:'left',width:'200'},
+                {title:'产品型号',align:'center',key:'model',width:'150'},
                 {title:'长',align:'center',key:'long',slot:'long',width:'130'},
                 {title:'宽',align:'center',key:'wide',slot:'wide',width:'130'},
                 {title:'高',align:'center',key:'high',slot:'high',width:'130'},
-                {title:'单位',align:'center',key:'unit'},
+                {title:'单位',align:'center',key:'unit',width:'130'},
                 {title:'左右式',align:'center',width:'100',slot:'leftOrright',},
                 {title:'图号',align:'center',width:'130',slot:'img_number',},
-                {title:'图纸',align:'center',slot:'up-load',},
-                {title:'位置',align:'center'},
-                {title:'测量数据',align:'center'},
+                {title:'图纸',align:'center',slot:'up-load',width:'130'},
+                {title:'位置',align:'center',width:'200',key:'model'},
+                {title:'测量数据',align:'center',fixed:'right',width:'200',key:'model'},
             ],
             tableData:[],
             pageIndex:1,
@@ -93,12 +93,18 @@ export default {
                 start_time:'',
                 end_time:''
             },
+            tableWidth:null,
         }
     },
     created(){
+        this.tableWidth = window.innerWidth-300;
         this.type = this.$route.query.type;
         this.id = this.$route.query.id;
         this.getData(this.id)
+        
+    },
+    mounted(){
+        window.addEventListener('resize',(e)=>{this.tableWidth = e.target.innerWidth - 300;this.$forceUpdate();})
     },
     methods:{
         back(){
@@ -117,6 +123,7 @@ export default {
                 this.tableData = res.data.product;
                 this.logList = res.data.detail
             })
+            this.tableData.push({model:'222'})
         },
         goPage(row){
             this.$router.push({

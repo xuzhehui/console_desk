@@ -112,7 +112,7 @@ export default {
             ],
             tableColums:[
                 {title:'订单编号',align:'center',key:'order_no',fixed:'left',width:'200'},
-                {title:'订单类型',align:'center',key:'type',width:'150'},
+                {title:'订单类型',align:'center',key:'order_type',width:'150'},
                 {title:'紧急程度',align:'center',key:'warning_state',width:'150'},
                 {title:'小区',align:'center',key:'residential_name',width:'200'},
                 {title:'计划开始时间',align:'center',key:'show_start_time',width:'200'},
@@ -163,11 +163,11 @@ export default {
             this.getData(this.proxyObj)
         },
         getData(row){
-            this.axios('/api/produce_list',{params:row}).then(res=>{
+            this.axios('/api/orders_produce_plan_list',{params:row}).then(res=>{
                 res.data.data.map(v=>{
-                    v.show_start_time = this.func.replaceDate(v.start_time)
-                    v.show_end_time = this.func.replaceDate(v.end_time)
-                    v.show_predict_time = this.func.replaceDate(v.predict_time)
+                    // v.show_start_time = this.func.replaceDate(v.start_time)
+                    // v.show_end_time = this.func.replaceDate(v.end_time)
+                    // v.show_predict_time = this.func.replaceDate(v.predict_time)
                 })
                 this.tableData = res.data.data;
                 this.total = res.data.total;
