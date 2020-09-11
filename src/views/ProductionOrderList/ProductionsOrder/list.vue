@@ -92,8 +92,8 @@ export default {
                 {title:'紧急程度',align:'center',key:'warning_state',width:'100'},
                 {title:'发货日期',align:'center',key:'show_predict_time',width:'200'},
                 {title:'下单日期',align:'center',key:'show_crt_time',width:'200'},
-                {title:'下测量日期',align:'center',key:'show_measure_time',width:'200'},
-                {title:'实际测量时间',align:'center',key:'show_upd_time',width:'200'},
+                {title:'下测量日期',align:'center',key:'show_measure_start_time',width:'200'},
+                {title:'实际测量时间',align:'center',key:'show_measure_time',width:'200'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'300'},
             ],
             tableData:[],
@@ -103,7 +103,7 @@ export default {
             showTableColums:false,
             showPlan:false,
             planInfo:{
-                id:null,
+                order_no:null,
                 start_time:'',
                 end_time:'',
                 state:3,
@@ -133,12 +133,12 @@ export default {
                     v.show_predict_time = v.predict_time;
                     v.show_crt_time = v.crt_time;
                     v.show_measure_time = v.measure_time
-                    v.show_upd_time = v.upd_time
+                    v.show_measure_start_time = v.measure_start_time
                 })
                 this.tableData = res.data.data;
                 this.total = res.data.total;
-                this.tableData.push({order_no:'123'})
             })
+            this.tableData.push({order_no:'123'})
         },
         setTableColums(){//设置表头
             this.showTableColums = true;
@@ -147,12 +147,12 @@ export default {
             this.$router.push({
                 path:'/cms/productionorderlist/productionsorder/Decorationlist',
                 query:{
-                    id:row.id
+                    order_no:row.order_no
                 }
             })
         },
         openModal(row){
-            this.planInfo.id = row.id;
+            this.planInfo.order_no = row.order_no;
             this.showPlan = true;
         },
         sendPlanInfo(){

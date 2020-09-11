@@ -159,7 +159,7 @@ export default {
             })
         },
         postData(state){//state(1:通过|2:驳回)
-            let params = {id:this.examMineData.id,state:state}
+            let params = {oa_order_no:this.examMineData.oa_order_no,state:state}
             state == 2 ? params.remark = this.remark : '';
             this.axios.post('/api/order_oa_approve',params).then(res=>{
                 if(res.code == 200){

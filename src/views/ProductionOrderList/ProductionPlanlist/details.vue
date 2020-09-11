@@ -4,7 +4,8 @@
         title='订单详情' 
         :list='list' 
         @init='init' 
-        @searchData='searchData' 
+        :logList='logList'
+        @searchData='init' 
         @changePage='changePage'
         :tableColums='tableColums'
         :tableData='tableData'
@@ -16,19 +17,6 @@
                 <Button type="primary" style="margin-right:10px;" ghost>打印清单</Button>
                 <Button type="primary" ghost>批量派工单</Button>
             </div>
-
-            <div slot='text-list' class="log-list">
-                <div class="log-item" v-for="(item,index) of logList" :key="index">
-                    <span>{{item.title}}：</span>
-                    <span>{{item.value}}</span>
-                </div>
-            </div>
-
-            <!-- <template slot='set' slot-scope='row'>
-                <div>
-                   <a style="color:#32C800">完成</a>
-                </div>
-            </template> -->
         </FullPage>
     </div>
 </template>
@@ -40,16 +28,8 @@ export default {
             order_no:null,
             logList:[{title:'系统单号',value:'10998765'}],
             list:[
-                {title:'工序分类',name:'Select',serverName:'id1',placeholder:'请选择',value:'',
-                    option:[
-                        {label:'紧急',value:1}
-                    ]
-                },
-                {title:'产品',name:'Select',serverName:'id1',placeholder:'请选择',value:'',
-                    option:[
-                        {label:'紧急',value:1}
-                    ]
-                },
+                {title:'工序分类',name:'Input',serverName:'',placeholder:'请输入工序分类',value:'',},
+                {title:'产品',name:'Input',serverName:'',placeholder:'请输入产品',value:'',},
             ],
             tableColums:[
                 {title:'楼幢',align:'center',key:'house',fixed:'left',width:'120'},
@@ -72,7 +52,7 @@ export default {
                 {title:'二维码',align:'center',width:'200'},
                 {title:'芯片编号',align:'center',fixed:'right',width:'200'},
             ],
-            tableData:[{type:'123'}],
+            tableData:[],
             pageIndex:1,
             total:100,
         }
@@ -94,7 +74,8 @@ export default {
             this.$router.go(-1)
         },
         getDetails(row){
-            this.axios('/api/orders_produce_plan_list',{params:row}).then(res=>{
+            this.axios('/api/orders_house_list',{params:row}).then(res=>{
+                this.logList = res.data.detail;
                 this.tableData = res.data.list;
             })
         },

@@ -70,8 +70,8 @@ export default {
             this.$router.push({
                 path:'/cms/productionorderlist/deliverylist/partsdetails',
                 query:{
-                    house_id:row.h_id,
-                    orders_product_id:row.id,
+                    // house_id:row.h_id,
+                    order_product_id:row.id,
                 }
             })
         },

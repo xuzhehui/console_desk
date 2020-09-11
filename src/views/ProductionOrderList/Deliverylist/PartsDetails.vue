@@ -25,18 +25,18 @@ export default {
             type:1,
             list:[],
             logList:[],
-            tableColums:[],
+            tableColums:[
+                {title:'部件',align:'center',key:'part_title',fixed:'left',width:'200'},
+                {title:'工艺路线',align:'center',key:'',width:'200'},
+                {title:'指导报价(元)',align:'center',key:'price',width:'200'},
+                {title:'数据',align:'center',key:'',width:'200'},
+                {title:'预估工期',align:'center',key:'predict_time',fixed:'right',width:'150'},
+            ],
             list:[
                 {title:'产品名称',name:'Input',value:'',serverName:'title',placeholder:'请输入产品名称'},
                 {title:'长',name:'Input',value:'',serverName:'long',placeholder:'请输入长度'},
                 {title:'宽',name:'Input',value:'',serverName:'wide',placeholder:'请输入宽度'},
                 {title:'高',name:'Input',value:'',serverName:'high',placeholder:'请输入高度'},
-                {title:'左/右式',name:'Select',value:'',serverName:'title',placeholder:'请选择',
-                    option:[
-                        {label:'左式',value:1},
-                        {label:'右式',value:2},
-                    ]
-                },
             ],
             tableData:[],
             pageIndex:1,
@@ -51,25 +51,13 @@ export default {
         back(){
             this.$router.go(-1)
         },
-        postData(){
-
-        },
         getData(row){
             this.loading = true;
-            this.axios('/api/order_parts_list',{params:row}).then(res=>{
+            this.axios('/api/orders_product_parts_list',{params:row}).then(res=>{
                 this.loading = false
                 this.logList = res.data.detail;
-                this.tableData = res.data.part;
-                this.tableColums = this.func.objtoArray(res.data.parts_top)
-                this.logList.map(v=>{
-                    this.list.map(k=>{
-                        if(v.key == k.title){
-                            k.value = v.value;
-                            k.disabled = true;
-                            v.value == '左' ? k.value = 1 : k.value = 2
-                        }
-                    })
-                })
+                this.tableData = res.data.list;
+                res.data.top.map(v=>{v.width='200';this.tableColums.splice(1,0,v)})
             })
         },
         changePage(e){}

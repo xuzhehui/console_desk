@@ -54,7 +54,6 @@ export default {
     data(){
         return {
             list:[
-                {title:'ID',name:'Input',value:'',serverName:'id',placeholder:'请输入ID'},
                 {title:'单位名称',name:'Input',value:'',serverName:'title',placeholder:'请输入单位名称'},
                 {title:'英文名称',name:'Input',value:'',serverName:'e_title',placeholder:'请输入英文名称'},
             ],

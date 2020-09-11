@@ -18,10 +18,10 @@
                 </Select>
             </FormItem>
             <FormItem label="登录账号" prop='account'>
-                <Input v-model="info.account" placeholder="请输入登录账号"/>
+                <Input :disabled='type==2 ? true : false' v-model="info.account" placeholder="请输入登录账号"/>
             </FormItem>
             <FormItem label="登录密码" prop='password'>
-                <Input type="password" v-model="info.password"  placeholder="请输入登录密码"/>
+                <Input  type="password" v-model="info.password"  placeholder="请输入登录密码"/>
             </FormItem>
             <FormItem label="手机号" prop='mobile'>
                 <Input type="number" v-model="info.mobile"  placeholder="请输入手机号"/>
@@ -132,6 +132,7 @@ export default {
     mounted(){
         this.type = this.$route.query.type;
         this.id = this.$route.query.id;
+        
         if(this.id){
             this.getData(this.id)
         }
@@ -149,6 +150,7 @@ export default {
                     res.data.produce_users = []
                 }
                 this.info = res.data;
+                this.type == 1 ? '' : this.info.password = '******'
                 
             })
         },

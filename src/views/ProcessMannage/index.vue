@@ -82,8 +82,12 @@ export default {
     },
     mounted(){
         this.title = this.$route.query.title
+        console.log(this.$route)
         if(this.$route.query.id){
             this.proxyObj.id = this.$route.query.id;
+             this.list[1].title = `${this.title}名称`;
+            this.list[1].placeholder = `请输入${this.title}名称`
+            this.tableColums[1].title = this.title
             this.getData(this.proxyObj)
         }
 

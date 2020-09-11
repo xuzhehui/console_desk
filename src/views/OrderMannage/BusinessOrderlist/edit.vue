@@ -126,11 +126,11 @@
                         </template>
                         <template slot='set' slot-scope='{index}'>
                             <div class="table-set">
-                                <svg style="font-size:20px" color='#3764FF'  @click="selectProducts(2,item)" class="icon icon-nav" aria-hidden="true">
+                                <svg style="font-size:20px" color='#3764FF'  @click="selectProducts(2,item,index)" class="icon icon-nav" aria-hidden="true">
                                     <use xlink:href="#iconbianji"></use>
                                 </svg>
 
-                                <svg style="font-size:20px" color='green' @click="selectProducts(3,item)" class="icon icon-nav" aria-hidden="true">
+                                <svg style="font-size:20px" color='green' @click="selectProducts(3,item,index)" class="icon icon-nav" aria-hidden="true">
                                     <use xlink:href="#iconxiangqing"></use>
                                 </svg>
 
@@ -191,7 +191,7 @@
                                 <Icon v-if="obj.key=='img'&&!obj.value" style="position:relative;top:-10px;" size='50' type="md-images" />
                             </div>
                             
-                            <Input :disabled='productType == 3 ? true : false' v-else :placeholder="'请输入'+obj.title" size='small' v-model="obj.value"/>
+                            <Input :disabled='productType == 3||obj.type==2 ? true : false' v-else :placeholder="'请输入'+obj.title" size='small' v-model="obj.value"/>
                         </FormItem>
                     </Form>
                     <Table stripe border :columns="item.parts_top" :data="item.parts">
@@ -349,26 +349,12 @@ export default {
             this.$router.go(-1)
         },
         postData(){
-            console.log(this.info)
             let sendData = JSON.parse(JSON.stringify(this.info));
-            
             let op = this.type == 1 ? 'add' : 'edit';
             try{
                 sendData.start_time = new Date(sendData.start_time).toLocaleDateString().replace(/\//g,"-")
                 sendData.end_time = new Date(sendData.end_time).toLocaleDateString().replace(/\//g,"-")
             }catch(e){}
-            // sendData.house.map(v=>{
-            //     v.product.map(k=>{
-            //         if(k.part_top){
-            //             delete k.part_top
-            //         }
-            //         k.product.map(t=>{
-            //             for(let i in t){
-            //                 i == 'route_id' ? '' : delete t[i]
-            //             }
-            //         })
-            //     })
-            // })
             let params = {op:op,detail:sendData}
             this.axios.post('/api/order_save',params).then(res=>{
                 if(res.code == 200){
@@ -380,15 +366,28 @@ export default {
         getDate(id){
             this.axios('/api/order_detail',{params:{id:id}}).then(res=>{
                 this.info = res.data;
+                this.$forceUpdate()
                 this.tapProduct()
             })
         },
-        selectProducts(n,row){
+        selectProducts(n,row,q){
             this.productType = n;
             this.showProduct = true;
             this.proxyObj = row;
             this.modalArray = JSON.parse(JSON.stringify(row.product));
-            this.modalArray.map(v=>v.parts_top = this.partTableColumns)
+            this.modalArray.map((v,i)=>{
+                v.value = v.product_id;
+                v.parts = []
+                this.changeProduct(v,0,1)
+                setTimeout(()=>v.parts = row.product[i].parts)
+                
+            })
+
+            
+            if(this.partTableColumns){
+                this.modalArray.map(v=>v.parts_top = this.partTableColumns)
+            }
+            
         },
         delItems(row,n){
             row.splice(n,1)
@@ -409,23 +408,29 @@ export default {
         getProducts(){
             this.axios('/api/product').then(res=>this.productList = res.data.data)
         },
-        changeProduct(row,n){
-            console.log(row)
+        async changeProduct(row,n,ext){
             this.axios('/api/order_product_detail',{params:{id:row.value}}).then(res=>{
                 let _this = this;
                 let modalData = this.modalArray[n]
                 if(res.code == 200){
                     modalData.product_name = row.label
-                    modalData.top = res.data.top;
+                    if(!ext){
+                        modalData.top = res.data.top;
+                    }
+                    
                     modalData.parts_top = res.data.intermediate.parts_top
 
                     if(this.func.isType(res.data.intermediate.parts)!='Array'){
                         return this.$Message.error('parts must be Array got Object')
                     }
-                    modalData.parts = res.data.intermediate.parts
+                    if(!ext){
+                        modalData.parts = res.data.intermediate.parts
+                    }
+                    
                     res.data.intermediate.parts_top.map(v=>{
+                        
                         if(v.state){
-                            v.render = function(h,params){
+                            let render = function(h,params){
                                 const rows = params.row;
                                 const columns = params.column;
                                 let key = columns.key;
@@ -464,6 +469,7 @@ export default {
                                   })
                                 )
                             }
+                            v.render = render
                         }
                     })
                     this.partTableColumns = modalData.parts_top;
@@ -515,7 +521,7 @@ export default {
                 }
             })
             this.proxyObj.product = this.modalArray;
-            this.modalArray = null;
+            // this.modalArray = [];
             this.showProduct = false;
             this.tapProduct()
             
@@ -558,6 +564,7 @@ export default {
             let url = responce.data.url;
             this.modalArray[this.currentIndex].url = url
         },
+                                    
     }
 }
 </script>
@@ -570,14 +577,6 @@ export default {
         .header-left{span{margin-left:10px;}}
     }
     .form-item{padding:20px;}
-}
-.vertical-center-modal{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    .ivu-modal{
-        top: 0;
-    }
 }
 .modal-scroll{height:600px;overflow: scroll;}
 .modal-items{border-radius:5px;border:1px solid #DEDEDE;padding:0px 10px;margin-bottom:10px;}

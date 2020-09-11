@@ -112,7 +112,6 @@ export default {
                 this.loading = false;
                 this.tableData = res.data.data;
                 this.total = res.data.total;
-                
             })
         },
         goDetial(row){

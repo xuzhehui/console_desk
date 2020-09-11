@@ -23,13 +23,6 @@
                 <FormItem label="价格" prop='price'>
                     <Input type="number" v-model="info.price" placeholder="请输入价格"></Input>
                 </FormItem>
-                <FormItem label="工艺类型" prop='type'>
-                    <Select v-model="info.type" style="width:186px;">
-                        <Option :value="1">生产</Option>
-                        <Option :value="2">运输</Option>
-                        <Option :value="3">安装</Option>
-                    </Select>
-                </FormItem>
             </Form>
 
             <div class="hierarchy" v-for="item of info.list" :key="item.id">
@@ -92,7 +85,6 @@ export default {
                 price:'',
                 parts_id:'',
                 id:null,
-                type:null,
                 properties:[],//工序号
                 procedure:[],//工艺属性id
                 list:[],
@@ -107,9 +99,6 @@ export default {
                 ],
                 price:[
                     {required: true,message:' ',trigger:'blur'}
-                ],
-                type:[
-                    {required: true,message:' '}
                 ],
             },
             tableColumns:[

@@ -11,6 +11,7 @@
                 </div>
                 <div class="right-key" @click="clickItem">
                     <div class="right-key-row" v-for="(item,index) of key_list_right" :key='index'>
+                        
                         <div class="right-item" v-for="(_item,_index) of item" :key="_index">{{_item}}</div>
                     </div>
                 </div>
@@ -28,16 +29,32 @@
 
 <script>
 export default {
+    props:{
+        rightData:Array,
+        default:null
+    },
     data(){
         return {
             key_list_left:[
                 'C','7','8','9','(',')','4','5','6','+','*','1','2','3','-','/','0','.'
             ],
             key_list_right:[
-                'L','L1','L2','L3','W','W1','W2','W3','H','H1','H2','H3'
+                'L','L1','L2',
             ],
             result:[],
             revoke_str:'',
+        }
+    },
+    watch:{
+        rightData(e){
+            let result = []
+            e.map(v=>{
+                let str = `${v.title}(${v.e_title})`
+                result.push(str)
+            })
+            this.key_list_right = result;
+            this.key_list_right =  this.spliceGroup(this.key_list_right,4)
+            this.$forceUpdate()
         }
     },
     computed:{
@@ -60,15 +77,17 @@ export default {
             return new_arr
         },
         clickItem(e){
-            let key_code = e.target.innerText
-            if(key_code.length>5){//此处用到了事件委托，当点击到中间的缝隙时直接跳出函数
-                return false
-            }
+            let key_code = e.target.innerText//此处用到了事件委托，当点击到中间的缝隙时直接跳出函数
+            // if(key_code.length>5){
+            //     return false
+            // }
+            // debugger
             if(key_code == 'C'){
                 this.result.pop()
             }else{
                 this.result.push(key_code)
             }
+            
             this.$emit('click',this.result)
         },
         success(){

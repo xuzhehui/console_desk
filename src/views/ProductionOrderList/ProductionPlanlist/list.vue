@@ -5,6 +5,7 @@
         :list='list' 
         @init='init' 
         @searchData='init' 
+        @selectTable='selectTable'
         @changePage='changePage'
         @changeSize='changeSize'
         :tableColums='tableColums'
@@ -13,17 +14,17 @@
         :total='total'
         >
             <div slot='titleButton'>
-                <Button  type="primary" ghost>批量派工单</Button>
+                <Button  type="primary" @click="dispatchList(selects)" ghost>批量派工单</Button>
             </div>
 
             <div slot='navButton'>
                 <Button @click="setTableColums" type="primary" ghost icon='ios-cog'>表头设置</Button>
             </div>
             
-            <template slot='set' slot-scope='row'>
+            <template slot='set' slot-scope='{row}'>
                 <div>
-                    <a style="margin:0 5px" @click="goDetial(row.row)">详情</a>
-                    <a style="margin:0 5px" @click="dispatchList(row.row)">派工单</a>
+                    <a style="margin:0 5px" @click="goDetial(row)">详情</a>
+                    <a style="margin:0 5px" @click="dispatchList(row)">派工单</a>
                 </div>
             </template>
 
@@ -111,14 +112,15 @@ export default {
                 },
             ],
             tableColums:[
-                {title:'订单编号',align:'center',key:'order_no',fixed:'left',width:'200'},
+                {type:'selection',fixed:'left',width:60,},
+                {title:'订单编号',align:'center',key:'order_no',width:'200'},
                 {title:'订单类型',align:'center',key:'order_type',width:'150'},
                 {title:'紧急程度',align:'center',key:'warning_state',width:'150'},
                 {title:'小区',align:'center',key:'residential_name',width:'200'},
-                {title:'计划开始时间',align:'center',key:'show_start_time',width:'200'},
-                {title:'计划结束时间',align:'center',key:'show_end_time',width:'200'},
+                {title:'计划开始时间',align:'center',key:'plan_start_time',width:'200'},
+                {title:'计划结束时间',align:'center',key:'plan_end_time',width:'200'},
                 {title:'完成进度',align:'center',key:'complete_rate',width:'200'},
-                {title:'交货日期',align:'center',key:'show_predict_time',width:'200'},
+                {title:'交货日期',align:'center',key:'predict_time',width:'200'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'150'},
             ],
             tableData:[],
@@ -141,6 +143,7 @@ export default {
             },
             info:{},
             users:[],
+            selects:[],
         }
     },
     methods:{
@@ -165,9 +168,6 @@ export default {
         getData(row){
             this.axios('/api/orders_produce_plan_list',{params:row}).then(res=>{
                 res.data.data.map(v=>{
-                    // v.show_start_time = this.func.replaceDate(v.start_time)
-                    // v.show_end_time = this.func.replaceDate(v.end_time)
-                    // v.show_predict_time = this.func.replaceDate(v.predict_time)
                 })
                 this.tableData = res.data.data;
                 this.total = res.data.total;
@@ -185,8 +185,14 @@ export default {
             })
         },
         dispatchList(row){
-            this.dispatchInfo.id = row.id;
-            this.axios('/api/orders_plan_get_list',{params:{id:12||row.id}}).then(res=>{
+            if(Array.isArray(row)){
+                if(row.length<1){return this.$Message.error('请至少选择一项')}
+                let result = []
+                row.map(v=>result.push(v.order_no));
+                this.dispatchInfo.order_no = result.join(',')
+            }
+            this.dispatchInfo.order_no = row.order_no;
+            this.axios('/api/orders_plan_get_list',{params:{order_no:this.dispatchInfo.order_no}}).then(res=>{
                 this.info = res.data;
             })
             this.showOrderMenu = true;
@@ -202,8 +208,12 @@ export default {
             this.axios.post('/api/orders_plan_dispatch',this.dispatchInfo).then(res=>{
                 if(res.code == 200){
                     this.$Message.success(res.msg)
+                    this.getData(this.proxyObj)
                 }
             })
+        },
+        selectTable(e){
+            this.selects = e;
         }
     }
 }

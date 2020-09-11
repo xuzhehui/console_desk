@@ -16,12 +16,12 @@
             <div slot="titleButton">
                 <Button type="primary" ghost>批量确认</Button>
             </div>
-            <template slot='set' slot-scope='row'>
+            <template slot='set' slot-scope='{row}'>
                 <div>
-                    <a @click="approvalDetails(row.row)" style="margin:0 5px">审批流程</a>
-                    <a style="margin:0 5px" @click="goPage(2,row.row)">编辑</a>
-                    <a style="margin:0 5px" @click="goPage(3,row.row)">查看</a>
-                    <a style="margin:0 5px" @click="openModal(row.row)">下生产</a>
+                    <a @click="approvalDetails(row)" style="margin:0 5px">审批流程</a>
+                    <a style="margin:0 5px" @click="goPage(2,row)">编辑</a>
+                    <a style="margin:0 5px" @click="goPage(3,row)">查看</a>
+                    <a style="margin:0 5px" @click="openModal(row)">下生产</a>
                 </div>
             </template>
 
@@ -63,10 +63,10 @@ export default {
                 {title:'小区',align:'center',key:'residential_name',width:'200'},
                 {title:'地址',align:'center',key:'address',width:'200'},
                 {title:'订单类型',align:'center',key:'show_type',width:'100'},
-                {title:'发货日期',align:'center',key:'title',width:'200'},
-                {title:'测量开始时间',align:'center',key:'crt_time',width:'200'},
-                {title:'测量结束时间',align:'center',key:'upd_time',width:'200'},
-                {title:'实际完成时间',align:'center',key:'upd_time',width:'200'},
+                {title:'发货日期',align:'center',key:'plan_end_time',width:'200'},
+                {title:'测量开始时间',align:'center',key:'measure_start_time',width:'200'},
+                {title:'测量结束时间',align:'center',key:'measure_end_time',width:'200'},
+                {title:'实际完成时间',align:'center',key:'plan_start_time',width:'200'},
                 {title:'订单状态',align:'center',key:'show_sub_state',width:'100'},
                 {title:'备注',align:'center',key:'remark',width:'200'},
                 {title:'操作',align:'center',slot:'set',width:'250',fixed:'right'},
@@ -78,7 +78,7 @@ export default {
             pageSize:10,
             showPlan:false,
             planInfo:{
-                id:null,
+                order_no:null,
                 start_time:'',
                 end_time:''
             },
@@ -104,7 +104,6 @@ export default {
                     (v.sub_state == 2 ? '测量通过' : (v.sub_state == 3 ? '生产审核中' : (v.sub_state == 4 ? '生产通过' : '到生产计划'))))
                 })
                 this.tableData = res.data.data;
-                this.tableData.push({order_no:'222'})
                 this.total = res.data.total;
             })
         },
@@ -119,12 +118,12 @@ export default {
             this.getData(this.proxyObj)
         },
         goPage(n,row){
-            let id = row ? row.id : '';
+            let oa_order_no = row ? row.oa_order_no : '';
             this.$router.push({
-                path:'/cms/measurementordermannage/edit',
+                path:'/cms/measurementordermannage/Decorationlist',
                 query:{
                     type:n,
-                    id:row.id
+                    oa_order_no:oa_order_no
                 }
             })
         },
@@ -132,12 +131,12 @@ export default {
             this.$router.push({
                 path:'/cms/approval/examine',
                 query:{
-                    id:row.id
+                    oa_order_no:row.oa_order_no||'123123'
                 }
             })
         },
         openModal(row){
-            this.planInfo.id = row.id;
+            this.planInfo.order_no = row.order_no;
             this.showPlan = true;
         },
         sendPlanInfo(){
@@ -146,7 +145,7 @@ export default {
                 this.planInfo.end_time = new Date(this.planInfo.end_time).toLocaleDateString().replace(/\//g,"-")
             }catch(e){
             }
-            this.axios.post('/api/orders_plan',this.planInfo).then(res=>{
+            this.axios.post('/api/order_oa_people',this.planInfo).then(res=>{
                 if(res.code == 200){
                     this.$Message.success(res.msg)
                 }

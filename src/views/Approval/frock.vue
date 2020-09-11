@@ -4,6 +4,7 @@
         title='工装审批列表'
         :list='list' 
         @init='init' 
+        :logList='logList'
         @searchData='init' 
         @changePage='changePage'
         :tableColums='tableColums'
@@ -14,16 +15,16 @@
         >
             <div slot='titleButton'>
                 <Button  @click="back"  style="margin-right:10px;">返回</Button>
-                <Button type="error" style="margin-right:10px;" ghost>批量驳回审批</Button>
-                <Button type="success" ghost>批量通过审批</Button>
+                <!-- <Button type="error" style="margin-right:10px;" ghost>批量驳回审批</Button>
+                <Button type="success" ghost>批量通过审批</Button> -->
             </div>
 
-            <div slot='text-list' class="log-list">
+            <!-- <div slot='text-list' class="log-list">
                 <div class="log-item" v-for="(item,index) of logList" :key="index">
                     <span>{{item.key}}：</span>
                     <span style="color:#333;font-weight:bold;">{{item.value}}</span>
                 </div>
-            </div>
+            </div> -->
 
             <div slot='navButton'>
                 <Button @click="setTableColums" type="primary" ghost icon='ios-cog'>表头设置</Button>
@@ -48,12 +49,12 @@ export default {
             tableColums:[
                 {type:'selection',width:'60'},
                 {title:'小区',align:'center',key:'residential_name'},
-                {title:'楼幢',align:'center',key:'title'},
+                {title:'楼幢',align:'center',key:'house'},
                 {title:'单元',align:'center',key:'unit'},
-                {title:'楼层',align:'center',key:'title'},
-                {title:'房号',align:'center',key:'title'},
+                {title:'楼层',align:'center',key:'layer'},
+                {title:'房号',align:'center',key:'number'},
                 {title:'单价',align:'center',key:'price'},
-                {title:'预估房间工期',align:'center',key:'time'},
+                {title:'预估房间工期',align:'center',key:'predict_time'},
                 {title:'操作',align:'center',slot:'set',width:'180'},
             ],
             tableData:[],
@@ -71,11 +72,11 @@ export default {
     methods:{
         init(row){
             this.proxyObj = row;
-            this.getData({id:this.$route.query.id})
+            this.getData({oa_order_no:this.$route.query.oa_order_no,type:'oa'})
         },
         getData(row){
-            this.axios('/api/order_industry_list',{params:row}).then(res=>{
-                this.tableData = res.data.oil;
+            this.axios('/api/orders_house_list',{params:row}).then(res=>{
+                this.tableData = res.data.list;
                 this.logList = res.data.detail;
                 this.total = res.data.total;
             })
@@ -83,6 +84,10 @@ export default {
         goDetail(row){
             this.$router.push({
                 path:'/cms/approval/details',
+                query:{
+                    oa_order_no:row.oa_order_no,
+                    house_id:row.house_id
+                }
             })
         },
         changePage(e){

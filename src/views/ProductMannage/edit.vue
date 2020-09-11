@@ -27,7 +27,7 @@
 
             <Form inline ref='Info' :model="info" :rules='rules'>
                 <FormItem label="产品分类" prop='bp_id'>
-                    <Select style="width:300px" v-model="info.bp_id">
+                    <Select style="width:300px" v-model="info.bp_id" @on-change="changeProduct">
                         <Option v-for="item of productFiled" :key="item.id" :value="item.id" :label="item.title"></Option>
                     </Select>
                 </FormItem>
@@ -128,7 +128,7 @@
             </Table>
             <Modal v-model="showKey" :width="1250" :mask-closable='false' :closable='false'>
                 <div>
-                    <KeyBoard @cancel='successKey' @success='successKey' class='key-co'/>
+                    <KeyBoard :rightData='measureList' @cancel='successKey' @success='successKey' class='key-co'/>
                 </div>
                 <div slot='footer'></div>
             </Modal>
@@ -322,6 +322,13 @@ export default {
                 }
             })
         },
+        changeProduct(e){
+            this.axios('/api/basics_product_list',{params:{id:e}}).then(res=>{
+                if(res.code==200){
+                    this.measureList = res.data[0].measure
+                }
+            })
+        }
     }
 }
 </script>

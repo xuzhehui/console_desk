@@ -15,26 +15,13 @@
             </div>
             <div>
                 <Table :width="tableWidth" class="overflow-table" border stripe :columns="tableColums" :data="tableData">
-                    <template slot-scope="{index }" slot="long">
-                        <Input :disabled='type == 3 ? true : false' v-model="tableData[index].long" placeholder="请输入长度"/>
-                    </template>
 
-                    <template slot-scope="{index }" slot="wide">
-                        <Input :disabled='type == 3 ? true : false' v-model="tableData[index].wide" placeholder="请输入宽度"/>
-                    </template>
-
-                    <template slot-scope="{index }" slot="high">
-                        <Input :disabled='type == 3 ? true : false' v-model="tableData[index].high" placeholder="请输入高度"/>
-                    </template>
+                    <div slot-scope="{index }" v-for="(item,_key) in tableTop" :key="_key" :slot="item.slot">
+                        <Input v-model="tableData[index][item.key]" :placeholder="'请输入'+item.title"></Input> 
+                    </div>
 
                     <template slot-scope="{index }" slot="img_number">
                         <Input :disabled='type == 3 ? true : false' v-model="tableData[index].url_number" placeholder="请输入图号"/>
-                    </template>
-                    <template slot-scope="{index }" slot="leftOrright">
-                        <Select :disabled='type == 3 ? true : false' v-model="tableData[index].type">
-                            <Option label="左式" :value='1'></Option>
-                            <Option label="右式" :value='2'></Option>
-                        </Select>
                     </template>
                     <template slot-scope="{row,index}" slot="up-load">
                         <div>
@@ -67,18 +54,16 @@ export default {
     data(){
         return {
             type:1,
+            oa_order_no:null,
+            house_id:null,
             logList:[{title:'系统单号',value:'10998765'}],
             tableColums:[
                 {title:'产品名称',align:'center',key:'product_title',fixed:'left',width:'200'},
                 {title:'产品型号',align:'center',key:'model',width:'150'},
-                {title:'长',align:'center',key:'long',slot:'long',width:'130'},
-                {title:'宽',align:'center',key:'wide',slot:'wide',width:'130'},
-                {title:'高',align:'center',key:'high',slot:'high',width:'130'},
                 {title:'单位',align:'center',key:'unit',width:'130'},
-                {title:'左右式',align:'center',width:'100',slot:'leftOrright',},
                 {title:'图号',align:'center',width:'130',slot:'img_number',},
                 {title:'图纸',align:'center',slot:'up-load',width:'130'},
-                {title:'位置',align:'center',width:'200',key:'model'},
+                {title:'位置',align:'center',width:'200',key:'position'},
                 {title:'测量数据',align:'center',fixed:'right',width:'200',key:'model'},
             ],
             tableData:[],
@@ -94,13 +79,15 @@ export default {
                 end_time:''
             },
             tableWidth:null,
+            tableTop:[],
         }
     },
     created(){
         this.tableWidth = window.innerWidth-300;
         this.type = this.$route.query.type;
-        this.id = this.$route.query.id;
-        this.getData(this.id)
+        this.oa_order_no = this.$route.query.oa_order_no;
+        this.house_id = this.$route.query.house_id;
+        this.getData(this.oa_order_no,this.house_id)
         
     },
     mounted(){
@@ -111,19 +98,63 @@ export default {
             this.$router.go(-1)
         },
         postData(){
-            let postInfo = JSON.stringify(this.tableData)
+            let result= [];
+            this.tableData.map((v,i)=>{
+                let obj = {};
+                obj.order_product_id = v.order_product_id;
+                obj.url = v.url||'';
+                obj.url_number = v.url_number||'';
+                obj.detail = [];
+                this.tableTop.map(k=>{
+                    let o = {}
+                    let key = k.key;
+                    for(let m in this.tableData[i]){
+                        if(m==key){
+                            o.key = key
+                            o.value = this.tableData[i][key]
+                            o.title = k.title
+                            obj.detail.push(o)
+                        }
+                        
+                    }
+                })
+                result.push(obj)
+            })
+            console.log(result)
+            let postInfo = JSON.stringify(result)
             this.axios.post('/api/orders_save_measure',{data:postInfo}).then(res=>{
                 if(res.code == 200){
                     this.$Message.success(res.msg);
                 }
             })
         },
-        getData(id){
-            this.axios('/api/orders_measure_product_list',{params:{id:id}}).then(res=>{
-                this.tableData = res.data.product;
+        getData(oa_order_no,house_id){
+
+            this.axios('/api/orders_product_list',{params:{oa_order_no:oa_order_no,house_id:house_id,type:'oa'}}).then(res=>{
+                this.tableData = res.data.list;
                 this.logList = res.data.detail
+
+                // res.data.top.map(v=>v.slot=v.key)
+                this.tableTop = res.data.top;
+                console.log(this.tableTop)
+                res.data.top.map(v=>{
+                    // let _this = this
+                    // v.render = function(h,params){
+                    //     let key = params.column.key
+                    //     let value = params.row[key]
+                    //     return h('Input',{
+                    //         props:{
+                    //             value:value,
+                    //             placeholder:'请输入'+v.title
+                    //         }   
+                    //     })
+                    // }
+                    v.width=200;
+                    v.slot=v.key;
+                    this.tableColums.splice(2,0,v)
+                })
             })
-            this.tableData.push({model:'222'})
+            
         },
         goPage(row){
             this.$router.push({
@@ -145,7 +176,7 @@ export default {
             }catch(e){
 
             }
-            this.axios.post('/api/orders_plan',this.planInfo).then(res=>{
+            this.axios.post('/api/order_oa_people',this.planInfo).then(res=>{
                 if(res.code == 200){
                     this.$Message.success(res.msg)
                 }

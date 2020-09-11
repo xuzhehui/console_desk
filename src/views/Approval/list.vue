@@ -99,7 +99,7 @@ export default {
             row.order_type == 1 ? this.$router.push({
                 path:'/cms/approval/frock',
                 query:{
-                    id:row.id
+                    oa_order_no:row.oa_order_no
                 }
             }) : this.$router.push({
                 path:'/cms/approval/details',
