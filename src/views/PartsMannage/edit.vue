@@ -47,10 +47,10 @@
                     <Input placeholder="请输入单位" v-model="tableData[index].company"/>
                 </template>
                 <template slot-scope="{index}" slot="long">
-                    <Input placeholder="请输入长度" v-model="tableData[index].long"/>
+                    <Input @on-focus="openKey(index,'long')"  placeholder="请输入长度" v-model="tableData[index].long"/>
                 </template>
                 <template slot-scope="{index}" slot="wide">
-                    <Input placeholder="请输入宽度" v-model="tableData[index].wide"/>
+                    <Input @on-focus="openKey(index,'wide')" placeholder="请输入宽度" v-model="tableData[index].wide"/>
                 </template>
                 <template slot-scope="{index}" slot="thick">
                     <Input disabled placeholder="自动生成" v-model="tableData[index].thick"/>
@@ -73,10 +73,18 @@
                 </template>
             </Table>
         </div>
+
+        <Modal v-model="showKey" :width="1250" :mask-closable='false' :closable='false'>
+            <div>
+                <KeyBoard :rightData='measureList' @cancel='successKey' @success='successKey' class='key-co'/>
+            </div>
+            <div slot='footer'></div>
+        </Modal>
     </div>
 </template>
 
 <script>
+import KeyBoard from '../../components/keyboard/index'
 import {mapState,mapMutations} from 'vuex'
 export default {
     data(){
@@ -121,6 +129,10 @@ export default {
                 label:'',
             },
             zeroParts:[],
+            showKey:false,
+            attrindex:null,
+            attrName:'',
+            measureList:[],
         }
     },
     
@@ -133,6 +145,9 @@ export default {
             this.getDetails(this.id)
         }
         this.getParts()
+    },
+    components:{
+        KeyBoard,
     },
     methods:{
         back(){
@@ -203,6 +218,15 @@ export default {
                     this.postData()
                 }
             })
+        },
+        successKey(str){
+            this.tableData[this.attrindex][this.attrName] = str;
+            this.showKey = false;
+        },
+         openKey(row,attr){
+            this.showKey = true;
+            this.attrindex = row;
+            this.attrName = attr;
         },
     }
 }

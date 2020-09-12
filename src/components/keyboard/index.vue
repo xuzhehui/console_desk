@@ -12,7 +12,7 @@
                 <div class="right-key" @click="clickItem">
                     <div class="right-key-row" v-for="(item,index) of key_list_right" :key='index'>
                         
-                        <div class="right-item" v-for="(_item,_index) of item" :key="_index">{{_item}}</div>
+                        <div class="right-item" v-for="(_item,_index) of item" :key="_index">{{_item.e_title}}</div>
                     </div>
                 </div>
             </div>
@@ -39,7 +39,7 @@ export default {
                 'C','7','8','9','(',')','4','5','6','+','*','1','2','3','-','/','0','.'
             ],
             key_list_right:[
-                'L','L1','L2',
+                // 'L','L1','L2',
             ],
             result:[],
             revoke_str:'',
@@ -49,11 +49,12 @@ export default {
         rightData(e){
             let result = []
             e.map(v=>{
-                let str = `${v.title}(${v.e_title})`
-                result.push(str)
+                // let str = `${v.title}(${v.e_title})`
+                result.push(v)
             })
             this.key_list_right = result;
             this.key_list_right =  this.spliceGroup(this.key_list_right,4)
+            console.log(this.key_list_right)
             this.$forceUpdate()
         }
     },
@@ -78,10 +79,9 @@ export default {
         },
         clickItem(e){
             let key_code = e.target.innerText//此处用到了事件委托，当点击到中间的缝隙时直接跳出函数
-            // if(key_code.length>5){
-            //     return false
-            // }
-            // debugger
+            if(key_code.length>10){
+                return false
+            }
             if(key_code == 'C'){
                 this.result.pop()
             }else{
@@ -106,7 +106,7 @@ export default {
 .keyboard{
     .key-title{font-size: 22px;color:#333333;span{font-size:16px;color:#666666;}padding:20px 0;}
     .key-setup{padding:32px 76px;background:#D3D5DD;}
-    .key-box{display: flex;justify-content: space-between;
+    .key-box{display: flex;
         .left-key{display: flex;width:670px;flex-wrap:wrap;
              .left-key-items{width:124px;height:80px;display: flex;justify-content: center;align-items: center;background:#fff;margin-right:10px;margin-top:10px;
                 font-size:26px;color:#333;border-radius:5px;cursor: pointer;

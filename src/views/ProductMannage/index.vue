@@ -73,6 +73,8 @@ export default {
         }
     },
     mounted(){
+        this.proxyObj.type_id = this.$route.query.id;
+        this.getData(this.proxyObj)
     },
     watch:{
         $route(to){

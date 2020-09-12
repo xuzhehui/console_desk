@@ -205,7 +205,8 @@ export default {
             this.getData(this.id)
         }
         this.getProductFiledData();
-        this.getMeasureList()
+        this.changeProduct(this.$route.query.back_id)
+        // this.getMeasureList()
     },
     components:{
         KeyBoard,
@@ -279,14 +280,12 @@ export default {
             this.postImg(file)
             e.target.value = null
         },
-        getProductFiledData(){
+        getProductFiledData(id){
+            // this.changeProduct(id){
+
+            // }
             this.axios('/api/basics_product_index').then(res=>{
                 this.productFiled = res.data.data;
-            })
-        },
-        getMeasureList(){
-            this.axios('/api/basics_measure_index').then(res=>{
-                this.measureList = res.data.data;
             })
         },
         getData(row){
@@ -325,6 +324,7 @@ export default {
         changeProduct(e){
             this.axios('/api/basics_product_list',{params:{id:e}}).then(res=>{
                 if(res.code==200){
+                    this.productFiled = res.data;
                     this.measureList = res.data[0].measure
                 }
             })
