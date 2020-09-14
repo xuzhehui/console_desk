@@ -91,9 +91,9 @@ export default {
     },
     watch:{
         $route(to,from){
-            console.log(to)
             this.type = to.query.type ? to.query.type : '';
-            this.title = this.type == 1 ? '运输订单列表' : '安装订单列表' 
+            this.title = this.type == 1 ? '运输订单列表' : '安装订单列表' ;
+            this.getData(this.proxyObj)
         }
     },
     methods:{
@@ -116,12 +116,12 @@ export default {
         },
         getData(row){
             this.loading = true;
-            this.axios('',{params:row}).then(res=>{
+            let url = this.type == 1 ? '/api/orders_transport_list' : '/api/orders_install_list'
+            this.axios(url,{params:row}).then(res=>{
                 this.loading = false;
                 this.tableData = res.data.data;
                 this.total = res.data.total;
             })
-            this.tableData.push({order_no:'222'})
         },
         goDetial(row){
             this.$router.push({

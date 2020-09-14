@@ -30,14 +30,15 @@
             </template>
             
             <div>
-                <Modal class-name="vertical-center-modal" @on-ok="postInfo" :title="showType == 1 ? '新增物料': '编辑物料'" v-model="showModal" :width="480" @on-visible-change='vivibleModal'>
+                <Modal class-name="vertical-center-modal" :title="showType == 1 ? '新增物料': '编辑物料'" v-model="showModal" :width="480" @on-visible-change='vivibleModal'>
                     <Form :label-width="90">
                         <FormItem label="ID：">
                             <Input disabled placeholder="ID自动生成" v-model="classInfo.id"/>
                         </FormItem>
-                        <FormItem label="分类名称：">
+                        <span v-if="repeatFlag" style="color:red;margin-left:8px;">以下分类名称重复</span>
+                        <FormItem label="分类名称："  v-for="(item,index) of attribute" :key="index">
                             <div v-if="showType == 1">
-                                <div class="item-attr" v-for="(item,index) of attribute" :key="index">
+                                <div class="item-attr" >
                                     <Input placeholder="请输入分类名称" v-model="item.title"/>
                                     <Icon @click="addAttr(index)" style="'margin:0 10px" :color='index == attribute.length-1 ? "#32C800" : "#FF5E5C"' size='20' :type="index == attribute.length-1 ? 'ios-add-circle' : 'md-remove-circle'" />
                                 </div>
@@ -45,6 +46,11 @@
                             <Input v-if="showType == 2" placeholder="请输入分类名称" v-model="classInfo.title"/>
                         </FormItem>
                     </Form>
+
+                    <div class="modal-footer" slot='footer'>
+                        <Button @click='showModal = false'>取消</Button>
+                        <Button type="primary" @click="postInfo">确定</Button>
+                    </div>
                 </Modal>
             </div>
         
@@ -61,7 +67,7 @@ export default {
                 {title:'物料分类名称',name:'Input',value:'',serverName:'title',placeholder:'请输入物料分类名称'},
             ],
             tableColums:[
-                {title:'ID',align:'center',key:'id'},
+                {title:'ID',align:'center',key:'id',width:'100'},
                 {title:'物料分类',align:'center',key:'title'},
                 {title:'操作',align:'center',slot:'set',width:'150'},
             ],
@@ -77,7 +83,8 @@ export default {
             },
             proxyObj:{},
             loading:false,
-            attribute:[{title:''}]
+            attribute:[{title:''}],
+            repeatFlag:false,
         }
     },
     
@@ -139,6 +146,7 @@ export default {
                     title:''
                 }
                 this.attribute = [{title:''}]
+                repeatFlag = false;
             }
         },
         addAttr(n){
@@ -163,6 +171,17 @@ export default {
                     this.$Message.success(res.msg)
                     this.getData(this.proxyObj)
                     this.undata_navData()
+                }else{
+                    if(Array.isArray(res.data)){
+                        this.repeatFlag = true
+                        let result = []
+                        res.data.map(v=>{
+                            let obj = {};
+                            v ? obj.title = v : ''
+                            obj.title ? result.push(obj) : ''
+                        })
+                        this.attribute = result;
+                    }
                 }
             })
         }

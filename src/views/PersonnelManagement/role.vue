@@ -40,7 +40,7 @@ export default {
                 {title:'角色名',name:'Input',serverName:'group_title',value:'',placeholder:'请输入角色名'}
             ],
             tableColums:[
-                {title:'ID',align:'center',key:'id'},
+                {title:'ID',align:'center',key:'id',width:'100'},
                 {title:'角色名',align:'center',key:'group_title'},
                 {title:'操作',align:'center',slot:'set',width:'150'},
             ],

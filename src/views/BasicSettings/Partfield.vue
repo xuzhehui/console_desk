@@ -34,11 +34,12 @@
             </template>
 
             <div>
-                <Modal class-name="vertical-center-modal" @on-ok="postInfo" :title="showType == 1 ? '新增部件': '编辑部件'" v-model="showModal" :width="480" @on-visible-change='vivibleModal'>
+                <Modal class-name="vertical-center-modal" :title="showType == 1 ? '新增部件': '编辑部件'" v-model="showModal" :width="480" @on-visible-change='vivibleModal'>
                     <Form :label-width="90">
                         <FormItem label="ID：">
                             <Input disabled placeholder="ID自动生成" v-model="classInfo.id"/>
                         </FormItem>
+                        <span v-if="repeatFlag" style="color:red;margin-left:8px;">以下属性重复</span>
                         <FormItem label="部件名称：">
                             <div v-if="showType == 1">
                                 <div class="item-attr" v-for="(item,index) of attribute" :key="index">
@@ -49,6 +50,10 @@
                             <Input v-if="showType == 2" placeholder="请输入部件名称" v-model="classInfo.title"/>
                         </FormItem>
                     </Form>
+                    <div slot="footer" class="modal-footer">
+                        <Button @click="showModal = false">取消</Button>
+                        <Button type="primary" @click="postInfo">确定</Button>
+                    </div>
                 </Modal>
             </div>
         </FullPage>
@@ -66,7 +71,7 @@ export default {
                 {title:'部件名称',name:'Input',value:'',serverName:'title',placeholder:'请输入部件名称'},
             ],
             tableColums:[
-                {title:'ID',align:'center',key:'id'},
+                {title:'ID',align:'center',key:'id',width:'100'},
                 {title:'部件名称',align:'center',key:'title'},
                 {title:'操作',align:'center',slot:'set',width:'150'},
             ],
@@ -79,7 +84,8 @@ export default {
             classInfo:{},
             proxyObj:{},
             loading:false,
-            attribute:[{title:''}]
+            attribute:[{title:''}],
+            repeatFlag:false,
         }
     },
     methods:{
@@ -138,7 +144,18 @@ export default {
                     this.$Message.success(res.msg)
                     this.getData(this.proxyObj)
                     this.undata_navData()
-                } 
+                }else{
+                    if(Array.isArray(res.data)){
+                        this.repeatFlag = true;
+                        let result = [];
+                        res.data.map(v=>{
+                            let obj = {};
+                            v ? obj.title = v : ''
+                            obj.title ? result.push(obj) : ''
+                        })
+                        this.attribute = result;
+                    }
+                }
             })
         },
         vivibleModal(e){

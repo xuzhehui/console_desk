@@ -104,7 +104,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.home{margin-top:10px;width:100%;height:100%;overflow: hidden;background:rgb(240,241,244)!important;
+.home{width:100%;height:100%;overflow: hidden;background:rgb(240,241,244)!important;
     .charts-box{width:100%;height:100%;
         .charts{width:100%;display:flex;justify-content:space-between;height:48%;margin-top:10px;
             .chart-search{display:flex;justify-content:flex-end;position:absolute;right:0;top:40px;z-index:99}

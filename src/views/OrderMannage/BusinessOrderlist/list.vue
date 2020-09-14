@@ -107,11 +107,11 @@ export default {
                 },
             ],
             tableColums:[
-                {type:'selection',fixed:'left',width:'60',fixed:'left'},
+                {type:'selection',align:'center',width:'100',fixed:'left'},
                 {title:'订单编号',align:'center',key:'order_no',width:'200'},
                 {title:'订单类型',align:'center',key:'show_type',width:'100'},
                 {title:'紧急程度',align:'center',key:'show_warning_state',width:'100'},
-                {title:'小区',align:'center',key:'address',width:'200'},
+                {title:'小区',align:'center',key:'residential_name',width:'200'},
                 {title:'计划开始时间',align:'center',key:'show_start_time',width:'180'},
                 {title:'计划结束时间',align:'center',key:'show_end_time',width:'180'},
                 {title:'完成进度',align:'center',key:'show_state',width:'180'},
@@ -150,7 +150,7 @@ export default {
                 this.loading = false;
                 if(!res.data.data){return this.$Message.error('列表数据返回格式不正确')}
                 res.data.data.map(v=>{
-                    v.show_type = v.type == 1 ? '业务订单' : '代理商订单'
+                    v.show_type = v.type == 1 ? '工装' : '家装'
                     v.show_state = v.state == 0 ? '未审核' : (v.state == 1 ? '审核中' : (v.state == 2 ? '审核通过' : (v.state == 3 ? '订单生产中' : '完成')))
                     v.show_warning_state = v.warning_state == 0 ? '不急' : (v.warning_state == 1 ? '比较急' : (v.warning_state == 2 ? '紧急' : '非常急'))
                     v.show_sub_state = v.sub_state == 0 ? '测量未审核' : (v.sub_state == 1 ? '测量审核' : 
@@ -232,7 +232,7 @@ export default {
             this.confirmDelete({
                 content:'确认删除么？',
                 then:()=>{
-                    this.axios.post('/api/basics_order_del',{id:row.id,state:0}).then(res=>{
+                    this.axios.post('/api/order_del',{id:row.id,state:0}).then(res=>{
                         if(res.code == 200){
                             this.$Message.success(res.msg)
                             this.getData(this.proxyObj)

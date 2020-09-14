@@ -70,7 +70,7 @@ export default {
                 {title:'产品',name:'Input',value:'',serverName:'title',placeholder:'请输入部件名称'},
             ],
             tableColums:[
-                {type:'selection',fixed:'left',width:'60'},
+                {type:'selection',fixed:'left',width:'100',align:'center'},
                 {title:'订单号',align:'center',key:'order_no',width:'200',},
                 {title:'小区名称',align:'center',key:'residential_name',width:'200'},
                 {title:'楼幢',align:'center',key:'house',width:'200'},
@@ -118,9 +118,11 @@ export default {
         },
         goDetail(row){
             this.$router.push({
-                path:'/cms/productionorderlist/productionsorder/details',
+                // path:'/cms/productionorderlist/productionsorder/details',
+                path:'/cms/ordermannage/businessorderlist/details',
                 query:{
-                    order_no:row.order_no
+                    house_id:row.house_id,
+                    type:'produce'
                 }
             })
         },

@@ -8,6 +8,7 @@ import Loading from '../components/loading/index' // 引入loading
 import Generaladd from '../components/Generaladd/index'
 import Tables from '../components/table-column/index'
 import ProductTables from '../components/table-column/productField'
+import ColumnDropTree from '../components/drowDown/index'
 
 export default (Vue)=>{
   Vue.component("Topsearch", Topsearch)
@@ -17,5 +18,6 @@ export default (Vue)=>{
   Vue.component('Generaladd', Generaladd)
   Vue.component('Tables', Tables)
   Vue.component('ProductTables', ProductTables)
+  Vue.component('ColumnDropTree',ColumnDropTree)
   Vue.use(Loading)
 }

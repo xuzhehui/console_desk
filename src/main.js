@@ -11,6 +11,7 @@ import IconFont from './assets/iconfont/iconfont.js'
 import VCharts from 'v-charts'
 
 import ConfirmDelete from './components/confirm-delete/index.js'
+import SelectProcessRouter from './components/selectProcessRoute/index.js'
 
 Vue.use(ViewUI)
 
@@ -20,6 +21,7 @@ Vue.use(VCharts)
 Vue.use(components)
 
 Vue.use(ConfirmDelete)
+Vue.use(SelectProcessRouter)
 
 Vue.prototype.axios = axios
 

@@ -73,7 +73,7 @@ export default {
                         })
                     }
                 },
-                {title:'ID',align:'center',key:'id'},
+                {title:'ID',align:'center',key:'id',width:'100'},
                 {title:'工序分类名称',align:'center',key:'title'},
                 {title:'操作',align:'center',slot:'set',width:'150'},
             ],

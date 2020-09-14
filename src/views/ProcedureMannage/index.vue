@@ -47,7 +47,7 @@ export default {
                 {title:'工序名称',name:'Input',value:'',serverName:'title',placeholder:'请输入工序名称'},
             ],
             tableColums:[
-                {title:'ID',align:'center',key:'id'},
+                {title:'ID',align:'center',key:'id',width:'100'},
                 {title:'工序类型',align:'center',key:'p_title'},
                 {title:'工序名称',align:'center',key:'title'},
                 {title:'工时',align:'center',key:'time'},

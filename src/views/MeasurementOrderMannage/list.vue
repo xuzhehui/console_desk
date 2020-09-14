@@ -102,6 +102,7 @@ export default {
                     v.show_type = v.type == 1 ? '业务订单' : '代理商订单';
                     v.show_sub_state = v.sub_state == 0 ? '测量未审核' : (v.sub_state == 1 ? '测量审核' : 
                     (v.sub_state == 2 ? '测量通过' : (v.sub_state == 3 ? '生产审核中' : (v.sub_state == 4 ? '生产通过' : '到生产计划'))))
+                    v.state == 2 ? v.show_sub_state = '审批驳回' : v.show_sub_state
                 })
                 this.tableData = res.data.data;
                 this.total = res.data.total;

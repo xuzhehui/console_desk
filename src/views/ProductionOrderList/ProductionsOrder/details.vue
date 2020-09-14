@@ -49,18 +49,20 @@ export default {
                 {name:'Input',title:'长',value:'',width:50},
                 {name:'Input',title:'宽',value:'',width:50},
                 {name:'Input',title:'高',value:'',width:50},
-                {name:'Select',title:'左/右式',value:'',
-                    option:[
-                        {label:'左式',value:1},
-                        {label:'右式',value:1},
-                    ]
-                }
             ],
             logList:[],
             order_no:null,
             tableColums:[
                 {title:'部件',align:'center',key:'part_title',fixed:'left',width:'150'},
-                {title:'工艺路线',align:'center',width:'200'},
+                {title:'工艺路线',align:'center',width:'200',
+                    render(h,params){
+                        return h('a',{
+                            props:{
+
+                            }
+                        },'编辑工艺路线')
+                    }
+                },
                 {title:'指导报价 (元)',align:'center',width:'200',key:'price'},
                 {title:'测量数据',align:'center',width:'200',key:'measure_data'},
                 {title:'图号',align:'center',width:'200',key:'url_number'},
@@ -80,8 +82,7 @@ export default {
         }
     },
     mounted(){
-        // this.getData({order_no:this.$route.query.order_no})
-        this.getData({order_product_id:1})
+        this.getData({house_id:this.$route.query.house_id})
     },
     methods:{
         back(){

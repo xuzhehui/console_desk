@@ -63,6 +63,21 @@ export default {
             this.loading = true;
             this.axios('/api/process_route_index',{params:row}).then(res=>{
                 this.loading = false;
+                res.data.top.map(((v,i)=>{
+                    if(i==0){
+                        v.fixed='left'
+                        v.width='100'
+                    }else{
+                        if(i == res.data.top.length-1){
+                            v.fixed = 'right'
+                            v.width = '150'
+                        }else{
+                            v.width='200'
+                        }
+                    }
+
+
+                }))
                 this.tableColums = res.data.top;
                 this.tableData = res.data.detail;
                 this.total = res.data.total;

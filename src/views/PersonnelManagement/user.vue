@@ -41,7 +41,7 @@ export default {
                 {title:'角色名',name:'Input',serverName:'group_name',value:'',placeholder:'请输入角色名'}
             ],
             tableColums:[
-                {title:'ID',align:'center',key:'id'},
+                {title:'ID',align:'center',key:'id',width:'100'},
                 {title:'用户名',align:'center',key:'nickname'},
                 {title:'登录账号',align:'center',key:'account'},
                 {title:'手机号',align:'center',key:'mobile'},

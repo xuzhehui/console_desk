@@ -10,6 +10,8 @@
             :placeholder="item.placeholder"
             :clearable ="!item.clearable ? true : false"
             :disabled="item.disabled"
+            :filterable='item.filterable'
+            :multiple='item.multiple'
             v-model="item.value"  
             :type="item.type"  
             v-if="!item.isDate"  

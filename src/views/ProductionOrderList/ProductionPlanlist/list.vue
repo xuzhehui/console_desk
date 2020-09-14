@@ -112,7 +112,7 @@ export default {
                 },
             ],
             tableColums:[
-                {type:'selection',fixed:'left',width:60,},
+                {type:'selection',fixed:'left',width:'90',align:'center'},
                 {title:'订单编号',align:'center',key:'order_no',width:'200'},
                 {title:'订单类型',align:'center',key:'order_type',width:'150'},
                 {title:'紧急程度',align:'center',key:'warning_state',width:'150'},
@@ -138,7 +138,7 @@ export default {
                 end_time:'',//结束时间
                 user_salary:'',//日薪
                 part_id:'',
-                produce_id:'',
+                procedure_id:'',
                 product_id:'',
             },
             info:{},

@@ -24,6 +24,19 @@
                 <FormItem label="单位" prop='company'>
                     <Input v-model="info.company" placeholder="请输入单位"></Input>
                 </FormItem>
+                <FormItem label="关联产品分类" prop='p_id'>
+                    <div style="display:flex;align-items:center;width:100%;">
+                        <Dropdown>
+                            <Button>选择产品</Button>
+                            <DropdownMenu slot="list">
+                                <Downtree @childByValue='handleClick' :parent='productTypes'></Downtree>
+                            </DropdownMenu>
+                        </Dropdown>
+
+                        <Button style="margin-left:20px;" v-if="nowSelectObj.title">{{nowSelectObj.title||''}}</Button>
+                    </div>
+                   
+                </FormItem>
             </Form>
             <div class="edit-table-log">
                 <div>
@@ -85,6 +98,7 @@
 
 <script>
 import KeyBoard from '../../components/keyboard/index'
+import Downtree from '../../components/drowDown/index'
 import {mapState,mapMutations} from 'vuex'
 export default {
     data(){
@@ -94,6 +108,7 @@ export default {
             info:{
                 company:'',
                 p_id:'',
+                bp_id:null,
                 label:null,
                 title:'',
             },
@@ -116,8 +131,8 @@ export default {
                 label:[{required: true, message: '请选择标签',}],
                 title:[{required: true, message: ' ', trigger: 'blur'}],
                 company:[{required: true, message: ' ', trigger: 'blur'}],
+                p_id:[{required:true}]
             },
-            product_list:[],
             addObj:{
                 title:'',
                 number:'',
@@ -127,17 +142,20 @@ export default {
                 thick:'',
                 requirement:'',
                 label:'',
+                p_id:null,
             },
             zeroParts:[],
             showKey:false,
             attrindex:null,
             attrName:'',
             measureList:[],
+            productTypes:[],
+            nowSelectObj:{},
         }
     },
     
     mounted(){
-        this.getParoducts()
+        this.getProductTypes()
         this.getPartsData()
         this.type = this.$route.query.type;
         this.id = this.$route.query.id;
@@ -147,7 +165,7 @@ export default {
         this.getParts()
     },
     components:{
-        KeyBoard,
+        KeyBoard,Downtree
     },
     methods:{
         back(){
@@ -197,11 +215,6 @@ export default {
         delItems(row,n){
             row.splice(n,1)
         },
-        getParoducts(){
-            this.axios('/api/product_list').then(res=>{
-                this.product_list = res.data.data;
-            })
-        },
         addZeroPart(){
             let add = JSON.parse(JSON.stringify(this.addObj))
             this.tableData.push(add)
@@ -228,12 +241,27 @@ export default {
             this.attrindex = row;
             this.attrName = attr;
         },
+        getProductTypes(e){
+            this.axios('/api/parts_product_list',{params:{id:e}}).then(res=>{
+                if(res.code == 200){
+                    this.productTypes = res.data;
+                }
+            })
+        },
+        handleClick(e){
+           let data = JSON.parse(e)
+           this.nowSelectObj = data
+           this.info.bp_id = this.nowSelectObj.id;
+           this.axios('/api/basics_product_list',{params:{id:this.info.bp_id}}).then(res=>{
+               this.measureList = res.data[0].measure
+           })
+        },
     }
 }
 </script>
 
 <style lang="scss" scoped>
-.edit-table-log{display: flex;justify-content: space-between;align-items: center;padding-bottom:10px;
+.edit-table-log{display: flex;justify-content: space-between;align-items: center;padding-bottom:10px;padding-top:20px;
     .footer-log{color:#666666}
 }
 .page-edit{overflow: hidden;overflow-y: auto;position:relative;top:20px;height:80%;}

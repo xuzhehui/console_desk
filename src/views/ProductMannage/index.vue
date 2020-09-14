@@ -45,7 +45,7 @@ export default {
                 {title:'产品名称',name:'Input',value:'',serverName:'title',placeholder:'请输入产品名称'},
             ],
             tableColums:[
-                {title:'ID',align:'center',key:'id'},
+                {title:'ID',align:'center',key:'id',width:'100'},
                 {title:'分类名称',align:'center',key:'type_name'},
                 {title:'产品名称',align:'center',key:'title'},
                 {title:'计量单位',align:'center',key:'unit'},

@@ -36,36 +36,6 @@
                 </FormItem>
             </Form>
         </div>
-
-        <!-- <Form style="width:40%" >
-            <FormItem label="ID">
-                <Input v-model="info.id" disabled placeholder="自动生成"></Input>
-            </FormItem>
-            <FormItem label="工序分类">
-                <Select v-model="info.p_id" placeholder="请选择分类">
-                    <Option v-for="item of perSonnel" :key="item.id" :value="item.id" :label="item.title"></Option>
-                </Select>
-            </FormItem>
-            <FormItem  label="工序名称">
-                <Input v-model="info.title" placeholder="请输入工序分类名称"></Input>
-            </FormItem>
-            <FormItem label="工时">
-                <Input v-model="info.time" placeholder="请输入工时"></Input>
-            </FormItem>
-            <FormItem label="产能">
-                <Input v-model="info.capacity" placeholder="请输入产能"></Input>
-            </FormItem>
-            <FormItem label="工价">
-                <div style="display:flex;width:100%;">
-                    <Select v-model="info.type" style="width:200px;margin-right:10px;">
-                        <Option label="按天" :value='0'></Option>
-                        <Option label="按件" :value='1'></Option>
-                    </Select>
-                    <Input v-model="info.wages" placeholder="请输入价格"></Input>
-                </div>
-                
-            </FormItem>
-        </Form> -->
     </div>
 </template>
 
@@ -89,6 +59,7 @@ export default {
     mounted(){
         this.type = this.$route.query.type;
         this.id = this.$route.query.id;
+        this.info.p_id = this.id*1;
         if(this.id&&this.type == 2){
             this.getDetails(this.id)
         }

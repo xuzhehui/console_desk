@@ -39,7 +39,7 @@ export default {
             type:1,
             logList:[{title:'系统单号',value:'10998765'}],
             tableColums:[
-                {type:'selection',fixed:'left',width:'60'},
+                {type:'selection',fixed:'left',width:'90',align:'center'},
                 {title:'小区',align:'center',key:'type',width:'200'},
                 {title:'产品',align:'center',width:'150'},
                 {title:'部件',align:'center',width:'150'},
@@ -71,7 +71,6 @@ export default {
             this.axios('/api/orders_dispatch_detail',{params:row}).then(res=>{
                 if(res.code == 200){
                     this.tableData = res.data.data;
-                    this.getData({id:this.$route.query.id})
                 }
             })
         },

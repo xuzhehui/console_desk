@@ -29,7 +29,7 @@
 export default {
     data(){
         return {
-            id:this.$route.query.id,
+            house_id:this.$route.query.house_id,
             logList:[],
             tableColums:[
                 {title:'产品类型',align:'center',key:'type',fixed:'left',width:'100'},
@@ -46,9 +46,14 @@ export default {
             loading:false
         }
     },
+    created(){
+        if(this.$route.query.type){
+            this.type = this.$route.query.type
+        }
+    },
     mounted(){
-        if(this.id){
-            this.getData(this.id)
+        if(this.house_id){
+            this.getData(this.house_id)
         }
     },
     methods:{
@@ -58,11 +63,11 @@ export default {
         postData(){
 
         },
-        getData(id){
+        getData(house_id){
             this.loading = true;
-            this.axios('/api/order_product_list',{params:{id:id}}).then(res=>{
+            this.axios('/api/orders_product_list',{params:{house_id:house_id}}).then(res=>{
                 this.loading = false;
-                this.tableData = res.data.product;
+                this.tableData = res.data.list;
                 this.logList = res.data.detail;
             })
         },
@@ -70,8 +75,8 @@ export default {
             this.$router.push({
                 path:'/cms/productionorderlist/deliverylist/partsdetails',
                 query:{
-                    // house_id:row.h_id,
-                    order_product_id:row.id,
+                    order_product_id:row.order_product_id,
+                    type:this.type
                 }
             })
         },

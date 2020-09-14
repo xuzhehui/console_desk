@@ -28,9 +28,10 @@
             <div class="hierarchy" v-for="item of info.list" :key="item.id">
                 <span>{{item.name||item.title}}(单选)：</span>
                 <div class="radio-g">
-                    <RadioGroup v-model="item.select" type="button">
+                    <div @click="setRadioChange(item,_item)" :class="['radio-us',_item.show ? 'radio-us-foc' : '']" v-for='_item of item.cld' :key="_item.id">{{_item.title}}</div>
+                    <!-- <RadioGroup @on-change="changeRadio" v-model="item.select" type="button">
                         <Radio v-for='_item of item.cld' :key="_item.id" :label="_item.id">{{_item.title}}</Radio>
-                    </RadioGroup>
+                    </RadioGroup> -->
                 </div>
             </div>
 
@@ -144,7 +145,7 @@ export default {
             this.$router.go(-1)
         },
         getChangeLists(e){
-            console.log(e)
+            // console.log(e)
         },
         postData(){
             this.info.op = this.type == 1 ? 'add' : 'edit'
@@ -173,7 +174,6 @@ export default {
             this.axios('/api/process_route_detail',{params:{id:row}}).then(res=>{
                 this.info = res.data
                 this.info.bps.map(v=>{
-                    console.log(v)
                     if(v.select){
                         v.cld.map(z=>{
                             v.select.map(k=>{
@@ -186,6 +186,18 @@ export default {
                     }
                 })
                 this.tableData = this.selectTags;
+                this.info.list.map(v=>{
+                    if(v.select){
+                        v.cld.map(k=>{
+                            if(k.id == v.select){
+                                k.show = true;
+                            }else{
+                                k.show = false
+                            }
+                        })
+                    }
+                })
+                console.log(this.info.list)
             })
         },
         getParts(){
@@ -214,7 +226,6 @@ export default {
         },
         saveTableData(){
             this.tableData = this.selectTags;
-            console.log(this.tableData)
         },
         handleSubmit(name) {
             this.$refs[name].validate((valid) => {
@@ -223,6 +234,21 @@ export default {
                 }
             })
         },
+        changeRadio(e){
+            console.log(e)
+        },
+        setRadioChange(parent,child){
+            parent.cld.map(v=>v.show = false)
+            if(parent.select == child.id){
+                child.show = false;
+                parent.select = '';
+            }else{
+                parent.select = child.id;
+                child.show = true;
+            }
+            
+            this.$forceUpdate()
+        }
     },
     components:{SlickList,SlickItem}
 }
@@ -233,7 +259,10 @@ export default {
     .footer-log{color:#666666}
 }
 .hierarchy{
-    .radio-g{padding:10px 0;}
+    .radio-g{padding:10px 0;display:flex;
+        .radio-us{background: #F4F5F7;;padding:5px 20px;margin-right:18px;color:#999999;border-radius:15px;border:1px solid #DEDEDE;cursor:pointer;}
+        .radio-us-foc{color:#3764FF;background:#fff;border:1px solid #3764FF;}
+    }
 }
 .vertical-center-modal{display: flex;align-items: center;justify-content: center;.ivu-modal{top: 0;}}
 .modal-tags{display: flex;align-items: center;}

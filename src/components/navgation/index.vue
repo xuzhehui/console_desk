@@ -25,7 +25,14 @@
                         <template slot="title">
                             {{__item.title}}
                         </template>
-                        <MenuItem v-for="(___item,___index) of __item.sub" :key="___index" :name="index+'-'+_index+'-'+__index+'-'+___index">{{___item.title}}</MenuItem>
+
+                        <MenuItem v-if="___item.page" v-for="(___item,___index) of __item.sub" :key="___index" :name="index+'-'+_index+'-'+__index+'-'+___index">{{___item.title}}</MenuItem>
+                        <Submenu v-else :name="index+'-'+_index+'-'+__index+'-'+___index">
+                            <template slot="title">
+                                {{___item.title}}
+                            </template>
+                            <MenuItem v-for="(____item,____index) of ___item.sub" :key="____index" :name="index+'-'+_index+'-'+__index+'-'+___index+'-'+____index">{{____item.title}}</MenuItem>
+                        </Submenu>
                     </Submenu>
                 </Submenu>
             </Submenu>

@@ -12,8 +12,8 @@
         >   
             <div slot='titleButton'>
                 <Button  @click="back"  style="margin-right:10px;">返回</Button>
-                <!-- <Button type="error" style="margin-right:10px;" ghost>驳回审批</Button>
-                <Button type="success" ghost>通过审批</Button> -->
+                <Button type="error" style="margin-right:10px;" ghost>驳回审批</Button>
+                <Button type="success" ghost>通过审批</Button>
             </div>
         </FullPage>
     </div>
@@ -32,7 +32,6 @@ export default {
                 {title:'测量数据',align:'center',},
                 {title:'位置',align:'center',key:'position'},
                 {title:'出库时间',align:'center',},
-                // {title:'操作',align:'center',fixed:'right',width:'150'},
             ],
             tableData:[],
             pageIndex:1,

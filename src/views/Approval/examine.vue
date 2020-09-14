@@ -50,7 +50,7 @@
                 </div>
             </div>
 
-            <div class="table-zou">
+            <!-- <div class="table-zou">
                 <span>审批信息</span>
                 <div>
                     <table border="0" cellspacing='1' cellpadding="0">
@@ -76,7 +76,7 @@
                         </th>
                     </table>
                 </div>
-            </div>
+            </div> -->
 
             <div class="time-line">
                 <span>订单状态</span>

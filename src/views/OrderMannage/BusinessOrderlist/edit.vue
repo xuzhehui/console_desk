@@ -28,7 +28,7 @@
                 </FormItem>
 
                 <FormItem label="紧急程度:" prop='warning_state'>
-                    <Select class="auto-width" v-model="info.warning_state">
+                    <Select clearable class="auto-width" v-model="info.warning_state">
                         <Option label='不急' :value='0'></Option>
                         <Option label='比较急' :value='1'></Option>
                         <Option label='紧急' :value='2'></Option>
@@ -37,7 +37,9 @@
                 </FormItem>
 
                 <FormItem label="业务员:">
-                    <Select disabled v-model="info.salesman" class="auto-width"></Select>
+                    <Select clearable filterable v-model="info.salesman" class="auto-width">
+                        <Option v-for="item of users" :key="item.id" :label="item.nickname" :value="item.id"></Option>
+                    </Select>
                 </FormItem>
 
                 <FormItem label="收款:" prop='pay_state'>
@@ -241,6 +243,7 @@ export default {
             proxyObj:{},
             productType:1,
             partTableColumns:[],
+            users:[],
             headers:{'Authorization':localStorage.getItem('token')},
             originalTableColumns:[
                 {title:'原材料名称',align:'center',key:'title'},
@@ -274,12 +277,12 @@ export default {
                 residential_name:[{required: true,message:' ',trigger:'blur'}],
                 client_name:[{required: true,message:' ',trigger:'blur'}],
                 warning_state:[{required: true,message:' '}],
-                pay_state:[{required: true,message:' '}],
+                pay_state:[{required: true,message:'请选择'}],
                 address:[{required: true,message:' ',trigger:'blur'}],
                 mobile:[{required: true,validator: validateMobile, trigger: 'blur'}],
                 start_time:[{required: true,message:' '}],
                 end_time:[{required: true,message:' '}],  
-                renovation_type:[{required: true,message:' '}]
+                renovation_type:[{required: true,message:'请选择订单类型'}]
             },
             info:{
                 residential_name:'',//小区名称
@@ -332,6 +335,7 @@ export default {
     },
     created(e){
         this.tableWidth = window.innerWidth-300;
+        this.getUsers()
     },
     destroyed(){
     },
@@ -413,7 +417,7 @@ export default {
                 let _this = this;
                 let modalData = this.modalArray[n]
                 if(res.code == 200){
-                    modalData.product_name = row.label
+                    modalData.title = row.label
                     if(!ext){
                         modalData.top = res.data.top;
                     }
@@ -426,17 +430,19 @@ export default {
                     if(!ext){
                         modalData.parts = res.data.intermediate.parts
                     }
-                    
                     res.data.intermediate.parts_top.map(v=>{
-                        
                         if(v.state){
                             let render = function(h,params){
                                 const rows = params.row;
                                 const columns = params.column;
                                 let key = columns.key;
+                                
+                                if(!rows[key].child){
+                                    rows[key].child = [];
+                                }
                                 return h('Select',{
                                     props:{
-                                        value:rows[key].id,
+                                        value:rows[key] ? rows[key].id : '',
                                     },
                                     on:{
                                         'on-change':(event) => {
@@ -451,7 +457,8 @@ export default {
                                                     columnsData[i].id ? sendParams.ids.push(columnsData[i].id) : ''
                                                 } 
                                             }
-                                            _this.axios('/api/get_route',{params:columnsData}).then(res=>{
+                                            sendParams.ids = sendParams.ids.join(',')
+                                            _this.axios('/api/get_route',{params:sendParams}).then(res=>{
                                                 if(res.code == 200){
                                                     Object.assign(columnsData,res.data)
                                                 }
@@ -459,14 +466,14 @@ export default {
                                          }
                                     },
                                 },
-                                rows[key].child.map((item) =>{
+                                rows[key] ? rows[key].child.map((item) =>{
                                       return h('Option', {
                                           props: {
                                               value: item.id,
                                               label: item.title
                                           }
                                       })
-                                  })
+                                  }) : ''
                                 )
                             }
                             v.render = render
@@ -564,6 +571,9 @@ export default {
             let url = responce.data.url;
             this.modalArray[this.currentIndex].url = url
         },
+        getUsers(){
+            this.axios('/api/user').then(res=>this.users = res.data.data)
+        }
                                     
     }
 }

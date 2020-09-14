@@ -30,23 +30,27 @@
             </template>
 
             <div>
-                <Modal class-name="vertical-center-modal" @on-ok="postInfo" :title="showType == 1 ? '新增工艺属性': '编辑工艺属性'" v-model="showModal" :width="480" @on-visible-change='vivibleModal'>
+                <Modal class-name="vertical-center-modal"  :title="showType == 1 ? '新增工艺属性': '编辑工艺属性'" v-model="showModal" :width="480" @on-visible-change='vivibleModal'>
                     <Form :label-width="90">
                         <FormItem label="ID：">
                             <Input disabled placeholder="ID自动生成" v-model="classInfo.id"/>
                         </FormItem>
-                        <FormItem label="属性名称：">
+                        <span v-if="repeatFlag" style="color:red;margin-left:8px;">以下属性重复</span>
+                        <FormItem style="color:red" label="属性名称：" v-for="(item,index) of attribute" :key="index">
                             <div v-if="showType == 1">
-                                <div class="item-attr" v-for="(item,index) of attribute" :key="index">
+                                <div class="item-attr" >
                                     <Input placeholder="请输入属性名称" v-model="item.title"/>
                                     <Icon @click="addAttr(index)" style="'margin:0 10px" :color='index == attribute.length-1 ? "#32C800" : "#FF5E5C"' size='20' :type="index == attribute.length-1 ? 'ios-add-circle' : 'md-remove-circle'" />
                                 </div>
                             </div>
 
                             <Input v-if="showType == 2" placeholder="请输入属性名称" v-model="classInfo.title"/>
-                            
                         </FormItem>
                     </Form>
+                    <div slot="footer" class="modal-footer">
+                        <Button @click="showModal = false">取消</Button>
+                        <Button type="primary" @click="postInfo">确定</Button>
+                    </div>
                 </Modal>
             </div>
         </FullPage>
@@ -62,7 +66,7 @@ export default {
                 {title:'物料分类名称',name:'Input',value:'',serverName:'title',placeholder:'请输入属性名称'},
             ],
             tableColums:[
-                {title:'ID',align:'center',key:'id'},
+                {title:'ID',align:'center',key:'id',width:'100'},
                 {title:'属性名称',align:'center',key:'title'},
                 {title:'操作',align:'center',slot:'set',width:'150'},
             ],
@@ -76,6 +80,7 @@ export default {
             attribute:[{title:''}],
             loading:false,
             proxyObj:{},
+            repeatFlag:false,
         }
     },
     methods:{
@@ -117,7 +122,7 @@ export default {
         },
         vivibleModal(e){
             if(!e){
-                this.showType == 1 ? this.attribute=[{title:''}] : this.classInfo={}
+                this.showType == 1 ? this.attribute=[{title:''}] : this.classInfo={};this.repeatFlag = false;
             }
         },
         postInfo(){
@@ -137,8 +142,20 @@ export default {
             this.axios.post(post_url,post_data).then(res=>{
                 if(res.code == 200){
                     this.$Message.success(res.msg)
+                    this.showModal = false;
                     this.getData(this.proxyObj)
                     this.undata_navData()
+                }else{
+                    if(Array.isArray(res.data)){
+                        this.repeatFlag = true;
+                        let result = [];
+                        res.data.map(v=>{
+                            let obj = {};
+                            v ? obj.title = v : ''
+                            obj.title ? result.push(obj) : ''
+                        })
+                        this.attribute = result;
+                    }
                 }
             })
         },

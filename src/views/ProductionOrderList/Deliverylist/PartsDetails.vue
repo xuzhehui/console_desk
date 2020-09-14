@@ -12,7 +12,7 @@
         >   
             <div slot='titleButton'>
                 <Button @click="back" style="margin-right:10px;">返回</Button>
-                <Button type="primary" @click="postData">打印清单</Button>
+                <Button type="primary" >打印清单</Button>
             </div>
         </FullPage>
     </div>
@@ -22,14 +22,15 @@
 export default {
     data(){
         return {
-            type:1,
+            type:null,
             list:[],
             logList:[],
+            order_no:null,
             tableColums:[
                 {title:'部件',align:'center',key:'part_title',fixed:'left',width:'200'},
-                {title:'工艺路线',align:'center',key:'',width:'200'},
+                {title:'工艺路线',align:'center',key:'',width:'200',},
                 {title:'指导报价(元)',align:'center',key:'price',width:'200'},
-                {title:'数据',align:'center',key:'',width:'200'},
+                {title:'数据',align:'center',key:'company',width:'200'},
                 {title:'预估工期',align:'center',key:'predict_time',fixed:'right',width:'150'},
             ],
             list:[
@@ -42,11 +43,63 @@ export default {
             pageIndex:1,
             total:100,
             loading:false,
+            a_list:[
+                {
+                    title:'门套',
+                    child:[
+                        {title:'工艺1',id:1,show:false},
+                        {title:'工艺2',id:2,show:false}
+                    ]
+                },
+                {
+                    title:'门套1',
+                    child:[
+                        {title:'工艺1',id:1,show:false},
+                        {title:'工艺2',id:2,show:false}
+                    ]
+                }
+            ],
         }
+    },
+    created(){
+        if(this.$route.query.type){this.type = this.$route.query.type;}
+        if(this.type == 'produce'){
+            let _this = this;
+            this.tableColums.map(v=>{
+                if(v.title=='工艺路线'){
+                    v.render = function(h,params){
+                        return h('a',{
+                            props:{
+
+                            },
+                            on:{
+                                'click':(e)=>{
+                                    console.log(params)
+                                    let obj = {
+                                        order_no:_this.order_no,
+                                        product_id:params.row.product_id,
+                                        parts_id:params.row.parts_id
+                                    }
+                                    _this.selectProcessRouter({
+                                        params:obj,
+                                        then(data){
+                                            console.log(data)
+                                        }
+                                    })
+                                    
+                                }
+                            }
+                        },'选择工艺路线')
+                    }
+                }
+            })
+        }
+        
     },
     mounted(){
         this.getData(this.$route.query)
     },
+    // components:{SelectRoute},
     methods:{
         back(){
             this.$router.go(-1)
@@ -56,6 +109,7 @@ export default {
             this.axios('/api/orders_product_parts_list',{params:row}).then(res=>{
                 this.loading = false
                 this.logList = res.data.detail;
+                this.order_no = res.data.order_no
                 this.tableData = res.data.list;
                 res.data.top.map(v=>{v.width='200';this.tableColums.splice(1,0,v)})
             })

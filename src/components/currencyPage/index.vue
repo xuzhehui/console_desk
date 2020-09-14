@@ -6,7 +6,7 @@
 
         <div class="page-edit">
             <div class="nav" v-if="showTopSearch">
-                <Topsearch  :list='list' @init='init' @searchData='searchData'/>
+                <Topsearch @changeSelected='changeSelected'  :list='list' @init='init' @searchData='searchData'/>
                 <div>
                     <slot name='navButton'></slot>
                 </div>
@@ -99,6 +99,9 @@ export default {
         },
         changeSize(e){
             this.$emit('changeSize',e)
+        },
+        changeSelected(e){
+            this.$emit('changeSelected',e)
         }
     }
 }

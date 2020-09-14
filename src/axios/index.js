@@ -36,10 +36,14 @@ instance.interceptors.response.use(res => {
         if(res.data.code == 200){
             return res.data
         }else{//若code 非 200
+            if(res.data.code == 401){
+              localStorage.removeItem('token')
+            }
             Vue.prototype.$Message.error(res.data.msg)
             return res.data
         }
       }else{
+          
           return Vue.prototype.$Message.error(res.data.msg||'请求超时')
       }
     },

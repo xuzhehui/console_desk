@@ -62,7 +62,7 @@ export default {
                 {title:`颜色名称`,name:'Input',value:'',serverName:'title',placeholder:`请输入颜色名称`},
             ],
             tableColums:[
-                {title:'ID',align:'center',key:'id'},
+                {title:'ID',align:'center',key:'id',width:'100'},
                 {title:`颜色`,align:'center',key:'title'},
                 {title:'操作',align:'center',slot:'set',width:'150'},
             ],

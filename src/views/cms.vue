@@ -64,19 +64,22 @@ export default {
                 })
             }
             let split_array = name.split('-');
-            let [parant,child,last,end] = split_array;
-            let parantData = data[parant],childData = parantData.sub[child],lastChild,endChild;
+            let [parant,child,last,end,next_end] = split_array;
+            let parantData = data[parant],childData = parantData.sub[child],lastChild,endChild,nextEndChild;
             if(last){
                 lastChild = childData.sub[last]
             }
             if(end){
                 endChild = lastChild.sub[end]
             }
-            this.$store.commit('updateCrumbs',{parantData,childData,lastChild,endChild})
-            sessionStorage.setItem('crumbs',JSON.stringify({parantData,childData,lastChild,endChild}))
-            let page = endChild ? endChild.page : (lastChild ? lastChild.page : childData.page)
-            let title = endChild ? endChild.title : (lastChild ? lastChild.title : childData.title)
-            let id = endChild ? endChild.id : (lastChild ? lastChild.id : childData.id||'')
+            if(next_end){
+                nextEndChild = endChild.sub[next_end]
+            }
+            this.$store.commit('updateCrumbs',{parantData,childData,lastChild,endChild,nextEndChild})
+            sessionStorage.setItem('crumbs',JSON.stringify({parantData,childData,lastChild,endChild,nextEndChild}))
+            let page = nextEndChild ? nextEndChild.page : (endChild ? endChild.page : (lastChild ? lastChild.page : childData.page))
+            let title = nextEndChild ? nextEndChild.title : (endChild ? endChild.title : (lastChild ? lastChild.title : childData.title))
+            let id = nextEndChild ? nextEndChild.id : (endChild ? endChild.id : (lastChild ? lastChild.id : childData.id||''))
             this.$router.push({
                 path:page,
                 query:{

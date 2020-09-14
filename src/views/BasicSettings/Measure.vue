@@ -58,7 +58,7 @@ export default {
                 {title:'英文名称',name:'Input',value:'',serverName:'e_title',placeholder:'请输入英文名称'},
             ],
             tableColums:[
-                {title:'ID',align:'center',key:'id'},
+                {title:'ID',align:'center',key:'id',width:'100'},
                 {title:'单位名称',align:'center',key:'title'},
                 {title:'英文名称',align:'center',key:'e_title'},
                 {title:'操作',align:'center',slot:'set',width:'150'},
