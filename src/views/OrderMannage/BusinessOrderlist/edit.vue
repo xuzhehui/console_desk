@@ -378,9 +378,10 @@ export default {
             this.productType = n;
             this.showProduct = true;
             this.proxyObj = row;
+            console.log(this.proxyObj)
             this.modalArray = JSON.parse(JSON.stringify(row.product));
             this.modalArray.map((v,i)=>{
-                v.value = v.product_id;
+                v.value = v.product_id||this.productList[0].id;
                 v.parts = []
                 this.changeProduct(v,0,1)
                 setTimeout(()=>v.parts = row.product[i].parts)
