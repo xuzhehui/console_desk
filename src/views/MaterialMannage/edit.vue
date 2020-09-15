@@ -1,7 +1,7 @@
 <template>
     <div>
         <Toptitle :title='type == 1 ? "新增物料" : (type == 2 ? "编辑物料" : "查看物料")'>
-            <Button @click="back" style="margin-right:10px;">返回</Button>
+            <Button @click="back" type='primary' ghost style="margin-right:10px;">返回</Button>
             <Button v-if="type == 1 || type == 2" type="primary" @click="handleSubmit('Info')">保存</Button>
         </Toptitle>
 
@@ -13,7 +13,7 @@
                 <Input :disabled='type == 3 ? true : false' v-model="info.title"  placeholder="请输入物料名称"/>
             </FormItem>
             <FormItem label="物料分类" prop='m_id'>
-                <Select style="width:186px;" v-model="info.m_id" :disabled='type == 3 ? true : false' placeholder="请选择材质">
+                <Select filterable clearable style="width:186px;" v-model="info.m_id" :disabled='type == 3 ? true : false' placeholder="请选择材质">
                     <Option v-for="item of materialList" :key="item.id" :label="item.title" :value="item.id"></Option>
                 </Select>
             </FormItem>

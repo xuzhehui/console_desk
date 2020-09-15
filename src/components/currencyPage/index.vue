@@ -6,7 +6,7 @@
 
         <div class="page-edit">
             <div class="nav" v-if="showTopSearch">
-                <Topsearch @changeSelected='changeSelected'  :list='list' @init='init' @searchData='searchData'/>
+                <Topsearch :showbtn='showbtn' @changeSelected='changeSelected'  :list='list' @init='init' @searchData='searchData'/>
                 <div>
                     <slot name='navButton'></slot>
                 </div>
@@ -29,7 +29,7 @@
 
             <slot></slot>
         </div>
-        <Footer :pageIndex='pageIndex' :total='total' @changeSize='changeSize' @change='changePage' />
+        <Footer v-if="showPage" :pageIndex='pageIndex' :total='total' @changeSize='changeSize' @change='changePage' />
     </div>
 </template>
 
@@ -69,6 +69,14 @@ export default {
         logList:{
             type:Array,
             default:null,
+        },
+        showPage:{
+            type:Boolean,
+            default:true,
+        },
+        showbtn:{
+            type:Boolean,
+            default:true
         }
 
 
@@ -109,5 +117,5 @@ export default {
 
 <style lang="scss" scoped>
 .nav{display: flex;justify-content: space-between;align-items:center;}
-.page-edit{overflow: hidden;overflow-y: auto;position:relative;top:20px;height:80%;}
+.page-edit{overflow: hidden;overflow-y: auto;position:relative;top:0px;height:80%;}
 </style>

@@ -110,12 +110,29 @@ export default {
                 {type:'selection',align:'center',width:'100',fixed:'left'},
                 {title:'订单编号',align:'center',key:'order_no',width:'200'},
                 {title:'订单类型',align:'center',key:'show_type',width:'100'},
-                {title:'紧急程度',align:'center',key:'show_warning_state',width:'100'},
+                {title:'订单状态',align:'center',key:'state',width:'100',
+                    render(h,params){
+                        return h('span',{
+
+                        },'--')
+                    }
+                },
+                {title:'业务员',align:'center',key:'salesman',width:'150'},
+                {title:'紧急程度',align:'center',key:'show_warning_state',width:'100',
+                    render(h,params){
+                        return h('span',{
+                            props:{},
+                            style:{
+                                color:params.row.warning_state ==  0 ? '#32C800' : (params.row.warning_state == 1 ? '#FFA141' : '#FF5E5C')
+                            }
+                        },params.row.show_warning_state)
+                    }
+                },
                 {title:'小区',align:'center',key:'residential_name',width:'200'},
-                {title:'计划开始时间',align:'center',key:'show_start_time',width:'180'},
-                {title:'计划结束时间',align:'center',key:'show_end_time',width:'180'},
-                {title:'完成进度',align:'center',key:'show_state',width:'180'},
-                {title:'交货日期',align:'center',key:'show_predict_time',width:'200'},
+                {title:'订单开始日期',align:'center',key:'show_start_time',width:'180'},
+                {title:'订单交付日期',align:'center',key:'show_end_time',width:'180'},
+                {title:'完成进度',align:'center',key:'complete_rate',width:'180'},
+                {title:'预估交付日期',align:'center',key:'show_predict_time',width:'200'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'220',fixed:'right'},
             ],
             tableData:[],

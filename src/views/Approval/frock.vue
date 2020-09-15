@@ -14,7 +14,7 @@
         @selectTable='selectTable'
         >
             <div slot='titleButton'>
-                <Button  @click="back"  style="margin-right:10px;">返回</Button>
+                <Button type='primary' ghost  @click="back"  style="margin-right:10px;">返回</Button>
                 <Button type="error" style="margin-right:10px;" ghost>批量驳回审批</Button>
                 <Button type="success" ghost>批量通过审批</Button>
             </div>

@@ -1,7 +1,7 @@
 <template>
     <div>
         <Toptitle :title='type == 1 ? "新增工艺" : "编辑工艺"'>
-            <Button @click="back" style="margin-right:10px;">返回</Button>
+            <Button @click="back" type='primary' ghost style="margin-right:10px;">返回</Button>
             <Button @click="handleSubmit('Info')">保存</Button>
         </Toptitle>
 
@@ -12,7 +12,7 @@
                 </FormItem>
 
                 <FormItem label="部件名称" prop='parts_id'>
-                    <Select v-model="info.parts_id" style="width:186px;">
+                    <Select filterable clearable v-model="info.parts_id" style="width:186px;">
                         <Option v-for="item of partsList" :key="item.id" :value="item.id" :label="item.title"></Option>
                     </Select>
                 </FormItem>

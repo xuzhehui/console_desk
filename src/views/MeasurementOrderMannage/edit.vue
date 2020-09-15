@@ -1,7 +1,7 @@
 <template>
     <div>
         <Toptitle :title='type == 2 ? "编辑订单" : "查看订单" '>
-            <Button @click="back" style="margin-right:10px;">返回</Button>
+            <Button @click="back" type='primary' ghost style="margin-right:10px;">返回</Button>
             <Button :disabled='type == 3 ? true : false' type="primary" style="margin-right:10px;" @click="postData">保存</Button>
             <Button :disabled='type == 3 ? true : false' type="primary" @click="openModal">下生产</Button>
         </Toptitle>
@@ -35,7 +35,7 @@
             </div>
         </div>
 
-        <Modal class-name="vertical-center-modal" title='下生产计划' v-model="showPlan" @on-ok="sendPlanInfo">
+        <Modal class-name="vertical-center-modal" title='下生产' v-model="showPlan" @on-ok="sendPlanInfo">
             <Form>
                 <FormItem label="选择时间">
                     <div style="display:flex;">
@@ -64,6 +64,7 @@ export default {
                 {title:'图号',align:'center',width:'130',slot:'img_number',},
                 {title:'图纸',align:'center',slot:'up-load',width:'130'},
                 {title:'位置',align:'center',width:'200',key:'position'},
+                {title:'预估产品工期',align:'center',width:'200',key:'predict_working'},
                 {title:'测量数据',align:'center',fixed:'right',width:'200',key:'model'},
             ],
             tableData:[],
@@ -74,7 +75,7 @@ export default {
             currentIndex:0,
             showPlan:false,
             planInfo:{
-                id:null,
+                house_id:this.$route.query.house_id,
                 start_time:'',
                 end_time:''
             },
@@ -183,7 +184,7 @@ export default {
             })
         },
         openModal(){
-            this.planInfo.id = this.id;
+            // this.planInfo.id = this.id;
             this.showPlan = true;
         },
     }

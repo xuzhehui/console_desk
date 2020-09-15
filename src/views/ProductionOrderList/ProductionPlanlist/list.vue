@@ -44,8 +44,8 @@
                     </Form>
                 </Modal>
 
-                <Modal class-name="vertical-center-modal" title="派工单" v-model="showOrderMenu" @on-ok="sendDispatchInfo">
-                    <Form :label-width="100">
+                <Modal width='400' class-name="vertical-center-modal" title="派工单" v-model="showOrderMenu" @on-ok="sendDispatchInfo">
+                    <Form :label-width="85">
                         <FormItem label="产品">
                             <Select v-model="dispatchInfo.product_id">
                                 <Option v-for="(item,index) of info.product" :key="index" :value="item.id" :label="item.title"></Option>
@@ -82,7 +82,7 @@
                                 <Radio :label="0">否</Radio>
                             </RadioGroup>
                         </FormItem>
-                        <FormItem label="日薪">
+                        <FormItem label="日薪" v-if="dispatchInfo.work_type == 1">
                             <Input v-model="dispatchInfo.user_salary">
                                 <span slot="append">元</span>
                             </Input>
@@ -115,12 +115,23 @@ export default {
                 {type:'selection',fixed:'left',width:'90',align:'center'},
                 {title:'订单编号',align:'center',key:'order_no',width:'200'},
                 {title:'订单类型',align:'center',key:'order_type',width:'150'},
-                {title:'紧急程度',align:'center',key:'warning_state',width:'150'},
+                {title:'紧急程度',align:'center',key:'warning_state',width:'150',
+                    render(h,params){
+                        return h('span',{
+                            props:{},
+                            style:{
+                                color:params.row.warning_state ==  0 ? '#32C800' : (params.row.warning_state == 1 ? '#FFA141' : '#FF5E5C')
+                            }
+                        },
+                        params.row.warning_state == 0 ? '不急' :(params.row.warning_state == 1 ? '比较急' : (params.row.warning_state == 2 ? '紧急' : '非常急'))
+                        )
+                    }
+                },
                 {title:'小区',align:'center',key:'residential_name',width:'200'},
-                {title:'计划开始时间',align:'center',key:'plan_start_time',width:'200'},
-                {title:'计划结束时间',align:'center',key:'plan_end_time',width:'200'},
+                {title:'计划开始时间',align:'center',key:'show_plan_start_time',width:'200'},
+                {title:'计划结束时间',align:'center',key:'show_plan_end_time',width:'200'},
                 {title:'完成进度',align:'center',key:'complete_rate',width:'200'},
-                {title:'交货日期',align:'center',key:'predict_time',width:'200'},
+                // {title:'交货日期',align:'center',key:'predict_time',width:'200'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'150'},
             ],
             tableData:[],
@@ -133,7 +144,7 @@ export default {
             dispatchInfo:{
                 id:'',//id
                 user_id:'',//工人
-                work_type:1,
+                work_type:0,
                 start_time:'',//开始时间
                 end_time:'',//结束时间
                 user_salary:'',//日薪
@@ -168,6 +179,8 @@ export default {
         getData(row){
             this.axios('/api/orders_produce_plan_list',{params:row}).then(res=>{
                 res.data.data.map(v=>{
+                    v.show_plan_start_time = this.func.replaceDate(v.plan_start_time) 
+                    v.show_plan_end_time = this.func.replaceDate(v.plan_end_time) 
                 })
                 this.tableData = res.data.data;
                 this.total = res.data.total;

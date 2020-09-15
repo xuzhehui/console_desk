@@ -6,12 +6,6 @@ const routerMap = [
         component: resolve => require(['@/views/Home/index'], resolve)
     },
     {
-        path:'/cms/pageedit',
-        name:'PageEdit',//
-        meta:{index:3},
-        component: resolve => require(['@/views/pageEdit/index'], resolve)
-    },
-    {
         path:'/cms/personnelmanagement/user',
         name:'PersonnelManagementUser',//人员管理-->用户管理
         meta:{index:3},

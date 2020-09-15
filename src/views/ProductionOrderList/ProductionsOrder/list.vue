@@ -88,11 +88,28 @@ export default {
             ],
             tableColums:[
                 {title:'订单编号',align:'center',key:'order_no',fixed:'left',width:'200'},
+                {title:'生产订单编号',align:'center',key:'oa_order_no',width:'200'},
                 {title:'小区',align:'center',key:'residential_name',width:'200'},
-                {title:'紧急程度',align:'center',key:'warning_state',width:'100'},
-                {title:'发货日期',align:'center',key:'show_predict_time',width:'200'},
+                {title:'地址',align:'center',key:'address',width:'200'},
+                {title:'客户姓名',align:'center',key:'client_name',width:'200'},
+                {title:'手机号',align:'center',key:'mobile',width:'200'},
+                {title:'紧急程度',align:'center',key:'warning_state',width:'100',
+                    render(h,params){
+                        return h('span',{
+                            props:{},
+                            style:{
+                                color:params.row.warning_state ==  0 ? '#32C800' : (params.row.warning_state == 1 ? '#FFA141' : '#FF5E5C')
+                            }
+                        },
+                        params.row.warning_state == 0 ? '不急' :(params.row.warning_state == 1 ? '比较急' : (params.row.warning_state == 2 ? '紧急' : '非常急'))
+                        )
+                    }
+                },
+                // {title:'发货日期',align:'center',key:'show_predict_time',width:'200'},
                 {title:'下单日期',align:'center',key:'show_crt_time',width:'200'},
-                {title:'下测量日期',align:'center',key:'show_measure_start_time',width:'200'},
+                {title:'测量人员',align:'center',key:'show_measure_start_time',width:'200'},
+                {title:'测量开始日期',align:'center',key:'show_measure_start_time',width:'200'},
+                {title:'测量结束日期',align:'center',key:'show_measure_start_time',width:'200'},
                 {title:'实际测量时间',align:'center',key:'show_measure_time',width:'200'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'300'},
             ],
@@ -130,10 +147,10 @@ export default {
         getData(row){
             this.axios('/api/orders_produce_order_list',{params:row}).then(res=>{
                 res.data.data.map(v=>{
-                    v.show_predict_time = v.predict_time;
-                    v.show_crt_time = v.crt_time;
-                    v.show_measure_time = v.measure_time
-                    v.show_measure_start_time = v.measure_start_time
+                    v.show_predict_time = this.func.replaceDate(v.predict_time*1);
+                    v.show_crt_time = this.func.replaceDate(v.crt_time);
+                    v.show_measure_time = this.func.replaceDate(v.measure_time)
+                    v.show_measure_start_time = this.func.replaceDate(v.measure_start_time)
                 })
                 this.tableData = res.data.data;
                 this.total = res.data.total;

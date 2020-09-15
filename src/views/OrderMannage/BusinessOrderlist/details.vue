@@ -12,7 +12,7 @@
         :total='total'
         >   
             <div slot='titleButton'>
-                <Button @click="back" style="margin-right:10px;">返回</Button>
+                <Button @click="back" type='primary' ghost style="margin-right:10px;">返回</Button>
                 <Button type="primary" @click="postData">打印清单</Button>
             </div>
 
@@ -30,14 +30,15 @@ export default {
     data(){
         return {
             house_id:this.$route.query.house_id,
+            // type:this.$route.query.type,
             logList:[],
             tableColums:[
-                {title:'产品类型',align:'center',key:'type',fixed:'left',width:'100'},
-                {title:'产品名称',align:'center',key:'product_name',},
+                {title:'产品类型',align:'center',key:'type',fixed:'left',width:'100',key:'basics_title'},
+                {title:'产品名称',align:'center',key:'product_title',},
                 {title:'产品型号',align:'center',key:'model',},
                 {title:'测量数据',align:'center'},
                 {title:'位置',align:'center',key:'address',key:'position'},
-                {title:'预估产品工期',align:'center',key:'time'},
+                {title:'预估产品工期',align:'center',key:'predict_working'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'100'},
             ],
             tableData:[],
@@ -76,7 +77,7 @@ export default {
                 path:'/cms/productionorderlist/deliverylist/partsdetails',
                 query:{
                     order_product_id:row.order_product_id,
-                    type:this.type
+                    type:'oa'
                 }
             })
         },

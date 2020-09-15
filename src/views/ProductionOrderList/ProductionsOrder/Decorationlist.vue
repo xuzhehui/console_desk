@@ -14,7 +14,7 @@
         :total='total'
         >
             <div slot='titleButton'>
-                <Button  @click="back"  style="margin-right:10px;">返回</Button>
+                <Button  @click="back" type='primary' ghost  style="margin-right:10px;">返回</Button>
                 <Button type="primary" ghost style="margin-right:10px;">批量修改工艺路线</Button>
                 <Button type="primary" ghost style="margin-right:10px;" @click='openModal(selects)'>批量下生产计划</Button>
                 <Button type="primary" ghost>批量打印订单</Button>
@@ -22,8 +22,8 @@
             
             <template slot='set' slot-scope='row'>
                 <div class="table-set">
-                    <a @click="goDetail(row.row)">编辑</a>
-                    <a @click="goDetail(row.row)">详情</a>
+                    <!-- <a @click="goDetail(row.row)">编辑</a>
+                    <a @click="goDetail(row.row)">详情</a> -->
                     <a @click="openModal(row.row)">下生产计划</a>
                     <a>下载图纸</a>
                 </div>
@@ -71,17 +71,17 @@ export default {
             ],
             tableColums:[
                 {type:'selection',fixed:'left',width:'100',align:'center'},
-                {title:'订单号',align:'center',key:'order_no',width:'200',},
-                {title:'小区名称',align:'center',key:'residential_name',width:'200'},
+                // {title:'订单号',align:'center',key:'order_no',width:'200',},
+                // {title:'小区名称',align:'center',key:'residential_name',width:'200'},
                 {title:'楼幢',align:'center',key:'house',width:'200'},
                 {title:'单元',align:'center',key:'unit',width:'200'},
                 {title:'楼层',align:'center',key:'layer',width:'200'},
                 {title:'房号',align:'center',key:'number',width:'200'},
-                {title:'是否紧急',align:'center',key:'warning_state',width:'200'},
+                // {title:'是否紧急',align:'center',key:'warning_state',width:'200'},
                 {title:'单价',align:'center',key:'price',width:'200'},
-                {title:'交付日期',align:'center',key:'predict_time',width:'200'},
-                {title:'订单生产时间',align:'center',key:'upd_time',width:'200'},
-                {title:'图纸',align:'center',key:'url',width:'100'},
+                // {title:'交付日期',align:'center',key:'predict_time',width:'200'},
+                // {title:'订单生产时间',align:'center',key:'upd_time',width:'200'},
+                // {title:'图纸',align:'center',key:'url',width:'100'},
                 {title:'预估房号工期',align:'center',key:'predict_working',width:'200'},
                 {title:'操作',align:'center',slot:'set',width:'280',fixed:'right'},
             ],

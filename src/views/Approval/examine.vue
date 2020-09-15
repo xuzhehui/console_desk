@@ -1,7 +1,7 @@
 <template>
     <div>
         <Toptitle title='审批详情'>
-            <Button  @click="back"  style="margin-right:10px;">返回</Button>
+            <Button  @click="back" type='primary' ghost  style="margin-right:10px;">返回</Button>
             <Button :disabled='examMineData.state == 0' @click="showModal = true" type="error" style="margin-right:10px;" ghost>驳回审批</Button>
             <Button type="success" :disabled='examMineData.state == 0' @click="approved" ghost>通过审批</Button>
         </Toptitle>

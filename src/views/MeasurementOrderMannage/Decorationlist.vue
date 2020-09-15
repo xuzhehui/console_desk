@@ -14,7 +14,7 @@
         :total='total'
         >   
             <div slot='titleButton'>
-                <Button @click="back" style="margin-right:10px;">返回</Button>
+                <Button @click="back" type='primary' ghost style="margin-right:10px;">返回</Button>
                 <Button @click="openModal(selects)" type="primary" style="margin-right:10px;" ghost>批量下生产</Button>
                 <Button type="primary" ghost>批量导出</Button>
             </div>
@@ -28,7 +28,7 @@
                 </div>
             </template>
 
-            <Modal class-name="vertical-center-modal" title='下生产计划' v-model="showPlan" @on-ok="sendPlanInfo">
+            <Modal class-name="vertical-center-modal" title='下生产' v-model="showPlan" @on-ok="sendPlanInfo">
                 <Form>
                     <FormItem label="选择时间">
                         <div style="display:flex;">
@@ -63,17 +63,17 @@ export default {
                 },
             ],
             tableColums:[
-                {type:'selection',fixed:'left',width:60},
-                {title:'下单编号',align:'center',key:'type',width:'200'},
-                {title:'订单号',align:'center',key:'order_no',width:'200'},
-                {title:'小区',align:'center',key:'residential_name',width:'200'},
+                {type:'selection',fixed:'left',width:90,align:'center'},
+                // {title:'测量单号',align:'center',key:'oa_order_no',width:'200'},
+                // {title:'订单号',align:'center',key:'order_no',width:'200'},
+                // {title:'小区',align:'center',key:'residential_name',width:'200'},
                 {title:'楼幢',align:'center',width:'200',key:'house'},
                 {title:'单元',align:'center',width:'200',key:'unit'},
                 {title:'楼层',align:'center',width:'200',key:'layer'},
                 {title:'房间号',align:'center',width:'200',key:'number'},
-                {title:'订单状态',align:'center',width:'200',key:'type'},
-                {title:'测量开始时间',align:'center',width:'200',key:'measure_start_time'},
-                {title:'测量结束时间',align:'center',width:'200',key:'end_time'},
+                // {title:'订单状态',align:'center',width:'200',key:'type'},
+                // {title:'测量开始时间',align:'center',width:'200',key:'measure_start_time'},
+                // {title:'测量结束时间',align:'center',width:'200',key:'end_time'},
                 {title:'实际完成时间',align:'center',width:'200',key:'plan_start_time'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'200'},
             ],

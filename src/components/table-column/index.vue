@@ -25,6 +25,13 @@
                 <FormItem label="分类名称：">
                      <Input placeholder="请输入分类名称" v-model="classInfo.title"/>
                 </FormItem>
+                <FormItem label='类型：'>
+                    <Select v-model="classInfo.type">
+                        <Option :value='1'>生产</Option>
+                        <Option :value='2'>运输</Option>
+                        <Option :value='3'>安装</Option>
+                    </Select>
+                </FormItem>
             </Form>
         </Modal>
     </div>
@@ -72,6 +79,7 @@ export default {
             this.showType = type;
             this.classInfo.id = obj.id;
             this.classInfo.title = edit == 1 ? obj.title : '';
+            this.classInfo.type = obj.type || 1;
         },
         postInfo(){
             let post_url = this.showType == 1 ? '/api/basics_procedure_add' : '/api/basics_procedure_edit';
@@ -87,7 +95,8 @@ export default {
             if(!e){
                 this.classInfo = {
                     id:null,
-                    title:''
+                    title:'',
+                    type:null,
                 }
             }
         },

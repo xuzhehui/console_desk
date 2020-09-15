@@ -1,7 +1,7 @@
 <template>
     <div>
         <Toptitle :title='type == 1 ? "新增用户" : "编辑用户"'>
-            <Button @click="back" style="margin-right:10px;">返回</Button>
+            <Button @click="back" type='primary' ghost style="margin-right:10px;">返回</Button>
             <Button type="primary" @click="handleSubmit('Info')">保存</Button>
         </Toptitle>
         <div class="page-edit">
@@ -12,8 +12,8 @@
             <FormItem label="用户名称" prop='nickname'>
                 <Input v-model="info.nickname" placeholder="请输入用户名称"/>
             </FormItem>
-            <FormItem label="选择角色" prop='group_id'>
-                <Select v-model="info.group_id" style="width:186px;">
+            <FormItem  label="选择角色" prop='group_id'>
+                <Select filterable clearable v-model="info.group_id" style="width:186px;">
                     <Option v-for="item of roleList" :key="item.id" :value="item.id" :label="item.group_title"></Option>
                 </Select>
             </FormItem>

@@ -28,7 +28,7 @@
                 <DatePicker v-model="item.end_value" size='small' type="date" :placeholder="item.end_placeholder" class="margin"></DatePicker>
             </div>
         </div>
-        <Button @click="searchData" :type="btnType" size="small">{{btnName}}</Button>
+        <Button v-if="showbtn" @click="searchData" :type="btnType" size="small">{{btnName}}</Button>
     </div>
 </template>
  
@@ -46,6 +46,10 @@ export default {
         btnType:{
             type:String,
             default:"primary"
+        },
+        showbtn:{
+            type:Boolean,
+            default:true,
         }
     },
     data(){

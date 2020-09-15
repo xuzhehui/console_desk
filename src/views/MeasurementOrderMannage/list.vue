@@ -18,7 +18,7 @@
             </div>
             <template slot='set' slot-scope='{row}'>
                 <div>
-                    <a @click="approvalDetails(row)" style="margin:0 5px">审批流程</a>
+                    <!-- <a @click="approvalDetails(row)" style="margin:0 5px">审批流程</a> -->
                     <a style="margin:0 5px" @click="goPage(2,row)">编辑</a>
                     <a style="margin:0 5px" @click="goPage(3,row)">查看</a>
                     <a style="margin:0 5px" @click="openModal(row)">下生产</a>
@@ -26,7 +26,7 @@
             </template>
 
             <div>
-                <Modal class-name="vertical-center-modal" title='下生产计划' v-model="showPlan" @on-ok="sendPlanInfo">
+                <Modal class-name="vertical-center-modal" title='下生产' v-model="showPlan" @on-ok="sendPlanInfo">
                     <Form>
                         <FormItem label="选择时间">
                             <div style="display:flex;">
@@ -60,16 +60,25 @@ export default {
             ],
             tableColums:[
                 {title:'订单编号',align:'center',key:'order_no',fixed:'left',width:'200'},
+                {title:'测量单号',align:'center',key:'oa_order_no',width:'200'},
                 {title:'小区',align:'center',key:'residential_name',width:'200'},
                 {title:'地址',align:'center',key:'address',width:'200'},
-                {title:'订单类型',align:'center',key:'show_type',width:'100'},
-                {title:'发货日期',align:'center',key:'plan_end_time',width:'200'},
+                {title:'客户姓名',align:'center',key:'client_name',width:'200'},
+                {title:'电话',align:'center',key:'mobile',width:'200'},
+                {title:'订单类型',align:'center',key:'show_type',width:'100',
+                    render(h,params){
+                        return h('span',{
+
+                        },params.row.order_type == 1 ? '工装' : '家装')
+                    }
+                },
+                // {title:'发货日期',align:'center',key:'plan_end_time',width:'200'},
                 {title:'测量开始时间',align:'center',key:'measure_start_time',width:'200'},
                 {title:'测量结束时间',align:'center',key:'measure_end_time',width:'200'},
                 {title:'实际完成时间',align:'center',key:'plan_start_time',width:'200'},
                 {title:'订单状态',align:'center',key:'show_sub_state',width:'100'},
                 {title:'备注',align:'center',key:'remark',width:'200'},
-                {title:'操作',align:'center',slot:'set',width:'250',fixed:'right'},
+                {title:'操作',align:'center',slot:'set',width:'200',fixed:'right'},
             ],
             tableData:[],
             pageIndex:1,

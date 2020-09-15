@@ -1,7 +1,7 @@
 <template>
   <div>
         <Toptitle :title='$route.query.type == 1 ? "新增订单" : "编辑订单"'>
-            <Button @click="back" style="margin-right:10px;">返回</Button>
+            <Button @click="back" type='primary' ghost style="margin-right:10px;">返回</Button>
             <Button type="primary" @click="handleSubmit('infoOrder')">保存</Button>
         </Toptitle>
 
@@ -89,8 +89,8 @@
                         <span>户型{{index+1}}</span>
                     </div>
                     <div class="header-right">
-                        <Button v-if="index<1" type="success" style="margin-right:10px;" ghost shape="circle" @click="addHours(info.house)">添加</Button>
-                        <Button v-if="index>0" type="error" ghost shape="circle" @click="delItems(info.house,index)">删除</Button>
+                        <Button v-if="index == info.house.length-1" type="success" style="margin-right:10px;" ghost shape="circle" @click="addHours(info.house)">添加</Button>
+                        <Button v-if="index<info.house.length-1" type="error" ghost shape="circle" @click="delItems(info.house,index)">删除</Button>
                     </div>
                 </div>
 
@@ -159,7 +159,7 @@
                 <div class="modal-items" v-for="(item,idx) in modalArray" :key="idx">
                     <Form inline >
                         <FormItem label="选择产品">
-                            <Select label-in-value size='small' :disabled='productType == 3 ? true : false' v-model="item.product_id" @on-change='changeProduct($event,idx)' style="width:186px;">
+                            <Select filterable clearable label-in-value size='small' :disabled='productType == 3 ? true : false' v-model="item.product_id" @on-change='changeProduct($event,idx)' style="width:186px;">
                                 <Option v-for="item of productList" :tag='item.img_url' :key="item.id" :label="item.title" :value='item.id'></Option>
                             </Select>
                         </FormItem>
@@ -168,7 +168,7 @@
                             <Input type="number" size='small' :disabled='productType == 3 ? true : false' v-model="item.real_price" placeholder="请输入议价"></Input>
                         </FormItem>
                         <FormItem label="计量单位">
-                            <Input size='small' :disabled='productType == 3 ? true : false' v-model="item.unit" placeholder="请输入计量单位"></Input>
+                            <Input size='small' disabled v-model="item.unit" placeholder="请输入计量单位"></Input>
                         </FormItem>
                         <FormItem label="位置">
                             <Input size='small' :disabled='productType == 3 ? true : false' v-model="item.position" placeholder="请输入位置"></Input>
@@ -207,8 +207,8 @@
                     </Table>
 
                     <div class="modal-footer-button">
-                        <Button v-if="idx<1" @click="addParts(item)" type="success" style="margin-right:10px;" ghost shape="circle">添加</Button>
-                        <Button v-if="idx>0" @click="delItems(modalArray,idx)" type="error" ghost shape="circle">删除</Button>
+                        <Button v-if="idx == modalArray.length-1" @click="addParts(item)" type="success" style="margin-right:10px;" ghost shape="circle">添加</Button>
+                        <Button v-if="idx<modalArray.length-1" @click="delItems(modalArray,idx)" type="error" ghost shape="circle">删除</Button>
                     </div>
                 </div>
             </div>
@@ -241,6 +241,7 @@ export default {
             tableWidth:null,
             currentIndex:null,
             proxyObj:{},
+            _proxyObj:{},
             productType:1,
             partTableColumns:[],
             users:[],
@@ -256,7 +257,7 @@ export default {
             ],
             originalData:[],
             tableColumns:[
-                {title:'产品类型',align:'center',key:'product_name',width:'100',fixed:'left'},
+                {title:'产品类型',align:'center',key:'product_type',width:'100',fixed:'left'},
                 {title:'指导价格(元)',align:'center',key:'price',width:'120'},
                 {title:'议价(元)',align:'center',key:'real_price',width:'100'},
                 {title:'产品名称',align:'center',key:'title',width:'150'},
@@ -268,7 +269,7 @@ export default {
                 {title:'位置',align:'center',key:'position',width:'100'},
                 {title:'图号',align:'center',key:'url_number',width:'150',},
                 {title:'图纸',align:'center',width:'80',key:'url',slot:'url'},
-                {title:'预估工期',align:'center',key:'',width:'200'},
+                {title:'预估工期',align:'center',key:'limit_time',width:'200'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'150'},
             ],
             tableData:[],
@@ -321,6 +322,7 @@ export default {
                                 url_number:'',
                                 url:'',
                                 route_id:'',
+                                limit_time:null,
                                 parts:[
                                     {
 
@@ -378,17 +380,13 @@ export default {
             this.productType = n;
             this.showProduct = true;
             this.proxyObj = row;
-            console.log(this.proxyObj)
             this.modalArray = JSON.parse(JSON.stringify(row.product));
             this.modalArray.map((v,i)=>{
                 v.value = v.product_id||this.productList[0].id;
                 v.parts = []
                 this.changeProduct(v,0,1)
                 setTimeout(()=>v.parts = row.product[i].parts)
-                
             })
-
-            
             if(this.partTableColumns){
                 this.modalArray.map(v=>v.parts_top = this.partTableColumns)
             }
@@ -417,6 +415,10 @@ export default {
             this.axios('/api/order_product_detail',{params:{id:row.value}}).then(res=>{
                 let _this = this;
                 let modalData = this.modalArray[n]
+                modalData.product_type = res.data.detail.product_type||''
+                modalData.unit = res.data.detail.unit||''
+                modalData.model = res.data.detail.modalData || ''
+
                 if(res.code == 200){
                     modalData.title = row.label
                     if(!ext){
@@ -437,25 +439,27 @@ export default {
                                 const rows = params.row;
                                 const columns = params.column;
                                 let key = columns.key;
-                                
                                 if(!rows[key].child){
                                     rows[key].child = [];
                                 }
                                 return h('Select',{
                                     props:{
-                                        value:rows[key] ? rows[key].id : '',
+                                        value:rows[key] ? rows[key].attr_id : '',
+                                        filterable:true, 
+                                        clearable:true,
                                     },
                                     on:{
                                         'on-change':(event) => {
+                                            console.log(event)
                                             let columnsData = modalData.parts[params.index]
-                                            columnsData[key].id = event;
+                                            columnsData[key].attr_id = event;
                                             let sendParams = {
                                                 part_id:columnsData.id,
                                                 ids:[],
                                             };
                                             for(let i in columnsData){
                                                 if(_this.func.isType(columnsData[i])==='Object'){
-                                                    columnsData[i].id ? sendParams.ids.push(columnsData[i].id) : ''
+                                                    columnsData[i].attr_id ? sendParams.ids.push(columnsData[i].attr_id) : ''
                                                 } 
                                             }
                                             sendParams.ids = sendParams.ids.join(',')
@@ -464,10 +468,11 @@ export default {
                                                     Object.assign(columnsData,res.data)
                                                 }
                                             })
+                                            _this.$forceUpdate()
                                          }
                                     },
                                 },
-                                rows[key] ? rows[key].child.map((item) =>{
+                                rows[key]&&rows[key].child.length>0 ? rows[key].child.map((item) =>{
                                       return h('Option', {
                                           props: {
                                               value: item.id,
@@ -489,14 +494,16 @@ export default {
             this.modalArray.push({
                 product_id:null,
                 price:'',
-                real_price:'',
+                real_price:null,
                 long:'',
                 width:'',
                 high:'',
                 type:null,
                 unit:'',
                 img:'',
-                product_name:''
+                limit_time:null,
+                model:'',
+                product_type:''
             })
         },
         changeSelect(e,item,row,n){
@@ -527,6 +534,16 @@ export default {
                         v[i] = obj[i]
                     }
                 }
+            })
+
+            this.modalArray.map(v=>{
+                let s = null
+                v.parts.map(k=>{
+                    s+=k.maber_time
+                    v.price += k.price
+                })
+                console.log(s)
+                v.limit_time = s
             })
             this.proxyObj.product = this.modalArray;
             // this.modalArray = [];

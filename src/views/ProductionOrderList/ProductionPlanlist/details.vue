@@ -13,7 +13,7 @@
         :total='total'
         >   
             <div slot='titleButton'>
-                <Button @click="back" style="margin-right:10px;">返回</Button>
+                <Button @click="back" type='primary' ghost style="margin-right:10px;">返回</Button>
                 <Button type="primary" style="margin-right:10px;" ghost>打印清单</Button>
                 <Button type="primary" ghost>批量派工单</Button>
             </div>
@@ -39,7 +39,7 @@ export default {
                 {title:'产品',align:'center',key:'product_title',width:'200'},
                 {title:'位置',align:'center',key:'house',width:'200'},
                 {title:'部件',align:'center',key:'parts_title',width:'200'},
-                {title:'左右式',align:'center',key:'product_type',width:'200'},
+                // {title:'左右式',align:'center',key:'product_type',width:'200'},
                 {title:'包装码',align:'center',width:'200'},
                 {title:'部件是否贴标签',align:'center',width:'200'},
                 {title:'贴标签零部件',align:'center',width:'200'},
@@ -49,8 +49,9 @@ export default {
                 {title:'测量尺寸',align:'center',width:'200'},
                 {title:'单位',align:'center',width:'200'},
                 {title:'数量',align:'center',width:'200'},
-                {title:'二维码',align:'center',width:'200'},
-                {title:'芯片编号',align:'center',fixed:'right',width:'200'},
+                // {title:'二维码',align:'center',width:'200'},
+                {title:'芯片编号',align:'center',width:'200'},
+                {title:'操作',align:'center',fixed:'right',width:'200'},
             ],
             tableData:[],
             pageIndex:1,

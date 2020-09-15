@@ -1,7 +1,7 @@
 <template>
     <div>
         <Toptitle :title='type == 1 ? "新增商品" : (type == 2 ? "编辑商品" : "查看商品") '>
-            <Button @click="back" style="margin-right:10px;">返回</Button>
+            <Button @click="back" type='primary' ghost style="margin-right:10px;">返回</Button>
             <Button v-if="type == 1 || type == 2" type="primary" @click="handleSubmit('Info')">保存</Button>
         </Toptitle>
 
@@ -17,7 +17,7 @@
 
             <Form inline ref='Info' :model="info" :rules='rules'>
                 <FormItem label='商品名称' prop='product_id'>
-                    <Select :disabled='type == 3 ? true : false' @on-change="changeSelect" v-model="info.product_id" style="width:300px;" placeholder="请选择商品名称">
+                    <Select filterable clearable :disabled='type == 3 ? true : false' @on-change="changeSelect" v-model="info.product_id" style="width:300px;" placeholder="请选择商品名称">
                         <Option v-for="item of productList" :key='item.id' :label="item.title" :value="item.id"></Option>
                     </Select>
                 </FormItem>

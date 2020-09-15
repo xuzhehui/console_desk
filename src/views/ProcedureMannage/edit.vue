@@ -1,7 +1,7 @@
 <template>
     <div>
          <Toptitle :title='type == 1 ? "新增工序" : "编辑工序" '>
-            <Button @click="back" style="margin-right:10px;">返回</Button>
+            <Button @click="back" type='primary' ghost style="margin-right:10px;">返回</Button>
             <Button type="primary" @click="postData">保存</Button>
         </Toptitle>
 
@@ -11,7 +11,7 @@
                     <Input v-model="info.id" disabled placeholder="自动生成"></Input>
                 </FormItem>
                 <FormItem label="工序分类">
-                    <Select v-model="info.p_id" placeholder="请选择分类">
+                    <Select filterable clearable v-model="info.p_id" placeholder="请选择分类">
                         <Option v-for="item of perSonnel" :key="item.id" :value="item.id" :label="item.title"></Option>
                     </Select>
                 </FormItem>

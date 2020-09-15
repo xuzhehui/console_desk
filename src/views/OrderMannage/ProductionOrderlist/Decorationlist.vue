@@ -12,7 +12,7 @@
         :total='total'
         >   
             <div slot='titleButton'>
-                <Button @click="back" style="margin-right:10px;">返回</Button>
+                <Button @click="back" type='primary' ghost style="margin-right:10px;">返回</Button>
                 <Button type="primary" ghost  style="margin-right:10px;">批量派工单</Button>
                 <Button type="primary" ghost>打印清单</Button>
             </div>

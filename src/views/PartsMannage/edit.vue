@@ -1,14 +1,14 @@
 <template>
     <div>
         <Toptitle :title='type == 1 ? "新增部件" : (type == 2 ? "编辑部件" : "查看部件") '>
-            <Button @click="back" style="margin-right:10px;">返回</Button>
+            <Button @click="back" type='primary' ghost style="margin-right:10px;">返回</Button>
             <Button v-if="type == 1 || type == 2" type="primary" @click="handleSubmit('Info')">保存</Button>
         </Toptitle>
 
         <div class="page-edit">
             <Form style="width:30%" ref='Info' :model="info" :rules='rules'>
                 <FormItem label="部件分类名称" prop='p_id'>
-                    <Select v-model="info.p_id">
+                    <Select filterable clearable v-model="info.p_id">
                         <Option v-for="item of partList" :key="item.id" :value="item.id" :label="item.title"></Option>
                     </Select>
                 </FormItem>
@@ -27,7 +27,7 @@
                 <FormItem label="关联产品分类" prop='p_id'>
                     <div style="display:flex;align-items:center;width:100%;">
                         <Dropdown>
-                            <Button>选择产品</Button>
+                            <Button type='primary' ghost>选择产品</Button>
                             <DropdownMenu slot="list">
                                 <Downtree @childByValue='handleClick' :parent='productTypes'></Downtree>
                             </DropdownMenu>
@@ -127,11 +127,10 @@ export default {
             ],
             tableData:[],
             rules:{
-                p_id:[{required: true, message: '请选择部件分类名称',}],
+                p_id:[{required: true, message:' ',}],
                 label:[{required: true, message: '请选择标签',}],
                 title:[{required: true, message: ' ', trigger: 'blur'}],
                 company:[{required: true, message: ' ', trigger: 'blur'}],
-                p_id:[{required:true}]
             },
             addObj:{
                 title:'',

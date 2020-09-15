@@ -53,7 +53,16 @@ export default {
                 {title:'客户',align:'center',key:'client_name',width:'120'},
                 {title:'手机号',align:'center',key:'mobile',width:'150'},
                 {title:'审批类型',align:'center',key:'show_type',width:'100'},
-                {title:'审批状态',align:'center',key:'show_state',width:'100'},
+                {title:'审批状态',align:'center',key:'show_state',width:'100',
+                    render(h,params){
+                        return h('span',{
+                            props:{},
+                            style:{
+                                color:params.row.state == 0 ? '#FFA141' : (params.row.state == 1 ? '#32C800' : '#FF5E5C')
+                            }
+                        },params.row.show_state)
+                    }
+                },
                 {title:'创建人员',align:'center',key:'nickname',width:'100'},
                 {title:'审批开始时间',align:'center',key:'show_crt_time',width:'180'},
                 {title:'审批结束时间',align:'center',key:'show_upd_time',width:'180'},

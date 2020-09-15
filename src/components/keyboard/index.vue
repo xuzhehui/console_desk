@@ -7,12 +7,12 @@
             <div class="show">{{result.join('')}}</div>
             <div class="key-box" >
                 <div class="left-key" @click="clickItem">
-                    <div :class="['left-key-items',index == 0 || index == (key_list_left.length-2) ? 'left-key-long' : '']" v-for="(item,index) of key_list_left" :key="index">{{item}}</div>
+                    <div :data-key='item' :class="['left-key-items',index == 0 || index == (key_list_left.length-2) ? 'left-key-long' : '']" v-for="(item,index) of key_list_left" :key="index">{{item}}</div>
                 </div>
                 <div class="right-key" @click="clickItem">
                     <div class="right-key-row" v-for="(item,index) of key_list_right" :key='index'>
                         
-                        <div class="right-item" v-for="(_item,_index) of item" :key="_index">{{_item.e_title}}</div>
+                        <div :data-key='_item.e_title' class="right-item" v-for="(_item,_index) of item" :key="_index">{{_item.e_title+'('+_item.title+')'}}</div>
                     </div>
                 </div>
             </div>
@@ -78,10 +78,7 @@ export default {
             return new_arr
         },
         clickItem(e){
-            let key_code = e.target.innerText//此处用到了事件委托，当点击到中间的缝隙时直接跳出函数
-            if(key_code.length>10){
-                return false
-            }
+            let key_code = e.target.dataset.key//此处用到了事件委托，当点击到中间的缝隙时直接跳出函数
             if(key_code == 'C'){
                 this.result.pop()
             }else{

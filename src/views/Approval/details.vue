@@ -11,7 +11,7 @@
         :total='total'
         >   
             <div slot='titleButton'>
-                <Button  @click="back"  style="margin-right:10px;">返回</Button>
+                <Button  @click="back" type='primary' ghost  style="margin-right:10px;">返回</Button>
                 <Button type="error" style="margin-right:10px;" ghost>驳回审批</Button>
                 <Button type="success" ghost>通过审批</Button>
             </div>

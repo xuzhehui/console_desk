@@ -1,7 +1,7 @@
 <template>
     <div>
         <Toptitle :title='type == 1 ? "新增角色" : (type == 2 ? "编辑角色" : "查看角色") '>
-            <Button @click="back" style="margin-right:10px;">返回</Button>
+            <Button @click="back" type='primary' ghost style="margin-right:10px;">返回</Button>
             <Button v-if="type == 1 || type == 2" type="primary" @click="handleSubmit('Info')">保存</Button>
         </Toptitle>
         <div class="page-edit">

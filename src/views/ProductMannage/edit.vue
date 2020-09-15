@@ -1,7 +1,7 @@
 <template>
     <div >
         <Toptitle :title='type == 1 ? "新增产品" : (type == 2 ? "编辑产品" : "查看产品") '>
-            <Button @click="back" style="margin-right:10px;">返回</Button>
+            <Button @click="back" type='primary' ghost style="margin-right:10px;">返回</Button>
             <Button v-if="type == 1 || type == 2" type="primary" @click="handleSubmit('Info')">保存</Button>
         </Toptitle>
 
@@ -197,7 +197,7 @@ export default {
         }
     },
     mounted(){
-        this.getPartsData()
+        this.getPartsData(this.$route.query.back_id)
         this.type = this.$route.query.type||1;
         this.id = this.$route.query.id||null;
         this.info.bp_id = this.type == 1 ?  this.$route.query.back_id*1 : this.info.bp_id;
@@ -281,20 +281,17 @@ export default {
             e.target.value = null
         },
         getProductFiledData(id){
-            // this.changeProduct(id){
-
-            // }
             this.axios('/api/basics_product_index').then(res=>{
                 this.productFiled = res.data.data;
-            })
+            });
         },
         getData(row){
             this.axios('/api/product',{params:{id:row}}).then(res=>{
                 this.info = res.data;
             })
         },
-        getPartsData(){
-            this.axios('/api/parts_index').then(res=>{
+        getPartsData(id){
+            this.axios('/api/parts_index',{params:{bp_id:id}}).then(res=>{
                 this.parts = res.data.data;
             })
         },
@@ -327,7 +324,8 @@ export default {
                     this.productFiled = res.data;
                     this.measureList = res.data[0].measure
                 }
-            })
+            });
+            this.getPartsData(e)
         }
     }
 }
