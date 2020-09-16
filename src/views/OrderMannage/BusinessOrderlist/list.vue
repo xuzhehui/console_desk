@@ -48,25 +48,6 @@
                         </FormItem>
                     </Form>
                 </Modal>
-
-                <Modal @on-visible-change="visibleModal" class-name="vertical-center-modal" title='下测量' v-model="show_lower" @on-ok="lowerMeter(postInfo)">
-                    <Form inline :label-width="100">
-                        <FormItem label="测量人员">
-                            <Select v-model="postInfo.user_id" style="width:186px;">
-                                <Option v-for="item of users" :key="item.id" :label="item.nickname" :value="item.id"></Option>
-                            </Select>
-                        </FormItem>
-
-                        <FormItem label="选择时间">
-                            <div style="display:flex;">
-                                <DatePicker v-model="postInfo.start_time" type="date" placeholder="开始时间"></DatePicker>
-                                -
-                                <DatePicker v-model="postInfo.end_time" type="date" placeholder="结束时间"></DatePicker>
-                            </div>
-                             
-                        </FormItem>
-                    </Form>
-                </Modal>
             </div>
         </FullPage>
     </div>
@@ -110,13 +91,7 @@ export default {
                 {type:'selection',align:'center',width:'100',fixed:'left'},
                 {title:'订单编号',align:'center',key:'order_no',width:'200'},
                 {title:'订单类型',align:'center',key:'show_type',width:'100'},
-                {title:'订单状态',align:'center',key:'state',width:'100',
-                    render(h,params){
-                        return h('span',{
-
-                        },'--')
-                    }
-                },
+                {title:'订单状态',align:'center',key:'sub_state',width:'150',},
                 {title:'业务员',align:'center',key:'salesman',width:'150'},
                 {title:'紧急程度',align:'center',key:'show_warning_state',width:'100',
                     render(h,params){
@@ -207,38 +182,22 @@ export default {
             this.$router.push({
                 path:'/cms/ordermannage/businessorderlist/decorationlist',
                 query:{
-                    id:row.id
+                    id:row.id,
+                    type:'business'
                 }
             })
         },
         openLower(row){
             if(!row){return this.$Message.warning('请至少选择一项')}
             this.postInfo.order_no = Array.isArray(row) ? row.join(',') : row.order_no
-            this.show_lower = true;
-            this.axios('/api/user').then(res=>this.users = res.data.data)
-        },
-        lowerMeter(postData){
-            try{
-                postData.start_time = new Date(postData.start_time).toLocaleDateString().replace(/\//g,"-")
-                postData.end_time = new Date(postData.end_time).toLocaleDateString().replace(/\//g,"-")
-            }catch(e){}
-            this.axios.post('/api/orders_set_measure',postData).then(res=>{
-                if(res.code == 200){
-                    this.$Message.success(res.msg)
-                    this.selectIds = null;//清空多选项
+            this.dowmMeasurement({
+                params:this.postInfo,
+                then:()=>{
+                    this.selectIds = [];
                     this.postInfo = {}
-                }
+                },
+                cancel:()=>{console.log(this.postInfo = {})}
             })
-        },
-        visibleModal(e){
-            if(!e){
-                this.postInfo = {
-                    order_no:'',
-                    start_time:'',
-                    end_time:'',
-                    user_id:null,
-                }
-            }
         },
         selectTable(e){
             let result = [];

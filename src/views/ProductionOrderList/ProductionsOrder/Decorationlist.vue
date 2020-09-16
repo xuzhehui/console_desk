@@ -20,11 +20,10 @@
                 <Button type="primary" ghost>批量打印订单</Button>
             </div>
             
-            <template slot='set' slot-scope='row'>
+            <template slot='set' slot-scope='{row}'>
                 <div class="table-set">
-                    <!-- <a @click="goDetail(row.row)">编辑</a>
-                    <a @click="goDetail(row.row)">详情</a> -->
-                    <a @click="openModal(row.row)">下生产计划</a>
+                    <a >更改芯片</a>
+                    <a @click="openModal(row)">下生产计划</a>
                     <a>下载图纸</a>
                 </div>
             </template>
@@ -68,21 +67,20 @@ export default {
             list:[
                 {title:'按房号',name:'Input',value:'',serverName:'number',placeholder:'请输入ID'},
                 {title:'产品',name:'Input',value:'',serverName:'title',placeholder:'请输入部件名称'},
+                {title:'是否存在工艺路线',name:'Input',value:'',serverName:'title',placeholder:'请输入部件名称'},
             ],
             tableColums:[
                 {type:'selection',fixed:'left',width:'100',align:'center'},
-                // {title:'订单号',align:'center',key:'order_no',width:'200',},
-                // {title:'小区名称',align:'center',key:'residential_name',width:'200'},
                 {title:'楼幢',align:'center',key:'house',width:'200'},
                 {title:'单元',align:'center',key:'unit',width:'200'},
                 {title:'楼层',align:'center',key:'layer',width:'200'},
-                {title:'房号',align:'center',key:'number',width:'200'},
-                // {title:'是否紧急',align:'center',key:'warning_state',width:'200'},
+                {title:'房号',align:'center',key:'number_detail',width:'200'},
                 {title:'单价',align:'center',key:'price',width:'200'},
-                // {title:'交付日期',align:'center',key:'predict_time',width:'200'},
-                // {title:'订单生产时间',align:'center',key:'upd_time',width:'200'},
-                // {title:'图纸',align:'center',key:'url',width:'100'},
-                {title:'预估房号工期',align:'center',key:'predict_working',width:'200'},
+                {title:'产品',align:'center',key:'product_title',width:'200'},
+                {title:'部件名',align:'center',key:'part_title',width:'200'},
+                {title:'部件相关',align:'center',key:'',width:'200'},
+                {title:'芯片',align:'center',key:'',width:'200'},
+                {title:'预估房号工期',align:'center',key:'predict_time',width:'200'},
                 {title:'操作',align:'center',slot:'set',width:'280',fixed:'right'},
             ],
             tableData:[],
@@ -101,6 +99,7 @@ export default {
                 end_time:''
             },
             selects:[],
+            order_no:null,
         }
     },
     methods:{
@@ -109,7 +108,8 @@ export default {
             this.getData({order_no:this.$route.query.order_no,type:'produce'})
         },
         getData(row){
-            this.axios('/api/orders_house_list',{params:row}).then(res=>{
+            this.axios('/api/orders_produce_parts_list',{params:row}).then(res=>{
+                this.order_no = res.data.order_no;
                 this.logList = res.data.detail
                 this.tableData = res.data.list;
             })
@@ -118,8 +118,8 @@ export default {
         },
         goDetail(row){
             this.$router.push({
-                // path:'/cms/productionorderlist/productionsorder/details',
-                path:'/cms/ordermannage/businessorderlist/details',
+                path:'/cms/productionorderlist/productionsorder/details',
+                // path:'/cms/ordermannage/businessorderlist/details',
                 query:{
                     house_id:row.house_id,
                     type:'produce'
@@ -139,8 +139,9 @@ export default {
                 row.map(v=>result.push(v.order_no))
                 this.planInfo.order_no = result.join(',')
             }else{//单个下生产
-                this.planInfo.order_no = row.order_no;
+                // this.planInfo.order_no = row.order_no;
             }
+            this.planInfo.order_no = this.order_no;
             this.showPlan = true;
         },
         sendPlanInfo(){

@@ -120,7 +120,7 @@
                 </div>
 
                 <div class="items-table">
-                    <Table :style="'width:'+tableWidth+'px'" border :columns="tableColumns" :data="item.product">
+                    <Table :style="'width:'+tableWidth+'px'" border :columns="item.product_top" :data="item.product">
                         <template slot='url' slot-scope='{row}'>
                             <div>
                                <img style="max-width:50px;max-height:50px;" v-if="row.url" :src="$store.state.ip+row.url" alt="">
@@ -136,7 +136,7 @@
                                     <use xlink:href="#iconxiangqing"></use>
                                 </svg>
 
-                                <svg v-if="index<1 ? false : true" @click="delItems(item.product,index)" class="icon icon-nav" style="font-size:20px" color='red' aria-hidden="true">
+                                <svg  @click="delItems(item.product,index)" class="icon icon-nav" style="font-size:20px" color='red' aria-hidden="true">
                                     <use xlink:href="#iconshanchu"></use>
                                 </svg>
                             </div>
@@ -258,17 +258,14 @@ export default {
             originalData:[],
             tableColumns:[
                 {title:'产品类型',align:'center',key:'product_type',width:'100',fixed:'left'},
-                {title:'指导价格(元)',align:'center',key:'price',width:'120'},
-                {title:'议价(元)',align:'center',key:'real_price',width:'100'},
                 {title:'产品名称',align:'center',key:'title',width:'150'},
-                {title:'长',align:'center',key:'long',width:'100'},
-                {title:'宽',align:'center',key:'width',width:'100'},
-                {title:'高',align:'center',key:'high',width:'100'},
                 {title:'产品型号',align:'center',key:'model',width:'100'},
                 {title:'测量数据',align:'center',key:'',width:'100'},
                 {title:'位置',align:'center',key:'position',width:'100'},
-                {title:'图号',align:'center',key:'url_number',width:'150',},
                 {title:'图纸',align:'center',width:'80',key:'url',slot:'url'},
+                {title:'图号',align:'center',key:'url_number',width:'150',},
+                {title:'指导价格(元)',align:'center',key:'price',width:'120'},
+                {title:'议价(元)',align:'center',key:'real_price',width:'100'},
                 {title:'预估工期',align:'center',key:'limit_time',width:'200'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'150'},
             ],
@@ -306,6 +303,19 @@ export default {
                         unit:null,
                         layer:null,
                         number:null,
+                        product_top:[
+                            {title:'产品类型',align:'center',key:'product_type',width:'100',fixed:'left'},
+                            {title:'产品名称',align:'center',key:'title',width:'150'},
+                            {title:'产品型号',align:'center',key:'model',width:'100'},
+                            {title:'测量数据',align:'center',key:'',width:'100'},
+                            {title:'位置',align:'center',key:'position',width:'100'},
+                            {title:'图纸',align:'center',width:'80',key:'url',slot:'url'},
+                            {title:'图号',align:'center',key:'url_number',width:'150',},
+                            {title:'指导价格(元)',align:'center',key:'price',width:'120'},
+                            {title:'议价(元)',align:'center',key:'real_price',width:'100'},
+                            {title:'预估工期',align:'center',key:'limit_time',width:'200'},
+                            {title:'操作',align:'center',slot:'set',fixed:'right',width:'150'},
+                        ],
                         product:[
                             {
                                 product_id:null,
@@ -335,15 +345,20 @@ export default {
             },
         }
     },
+    
     created(e){
         this.tableWidth = window.innerWidth-300;
         this.getUsers()
+        this.type = this.$route.query.type
+        
     },
     destroyed(){
     },
     mounted(){
-        this.type = this.$route.query.type
         if(this.id){
+            if(this.id){
+                this.info = {}
+            }
             this.getDate(this.id)
         }
         this.getProducts()
@@ -372,7 +387,6 @@ export default {
         getDate(id){
             this.axios('/api/order_detail',{params:{id:id}}).then(res=>{
                 this.info = res.data;
-                this.$forceUpdate()
                 this.tapProduct()
             })
         },
@@ -411,26 +425,27 @@ export default {
         getProducts(){
             this.axios('/api/product').then(res=>this.productList = res.data.data)
         },
-        async changeProduct(row,n,ext){
+        changeProduct(row,n,ext){
             this.axios('/api/order_product_detail',{params:{id:row.value}}).then(res=>{
                 let _this = this;
                 let modalData = this.modalArray[n]
                 modalData.product_type = res.data.detail.product_type||''
                 modalData.unit = res.data.detail.unit||''
-                modalData.model = res.data.detail.modalData || ''
-
+                modalData.model = res.data.detail.model || ''
                 if(res.code == 200){
                     modalData.title = row.label
                     if(!ext){
                         modalData.top = res.data.top;
                     }
-                    
                     modalData.parts_top = res.data.intermediate.parts_top
-
                     if(this.func.isType(res.data.intermediate.parts)!='Array'){
                         return this.$Message.error('parts must be Array got Object')
                     }
                     if(!ext){
+                        res.data.intermediate.parts.map(v=>{
+                            console.log(v.maber_time = 0)
+                            v.price = 0
+                        })
                         modalData.parts = res.data.intermediate.parts
                     }
                     res.data.intermediate.parts_top.map(v=>{
@@ -439,10 +454,8 @@ export default {
                                 const rows = params.row;
                                 const columns = params.column;
                                 let key = columns.key;
-                                if(!rows[key].child){
-                                    rows[key].child = [];
-                                }
                                 return h('Select',{
+                                    
                                     props:{
                                         value:rows[key] ? rows[key].attr_id : '',
                                         filterable:true, 
@@ -450,7 +463,6 @@ export default {
                                     },
                                     on:{
                                         'on-change':(event) => {
-                                            console.log(event)
                                             let columnsData = modalData.parts[params.index]
                                             columnsData[key].attr_id = event;
                                             let sendParams = {
@@ -466,9 +478,10 @@ export default {
                                             _this.axios('/api/get_route',{params:sendParams}).then(res=>{
                                                 if(res.code == 200){
                                                     Object.assign(columnsData,res.data)
+                                                    _this.$forceUpdate()
                                                 }
                                             })
-                                            _this.$forceUpdate()
+                                            
                                          }
                                     },
                                 },
@@ -503,7 +516,8 @@ export default {
                 img:'',
                 limit_time:null,
                 model:'',
-                product_type:''
+                product_type:'',
+                parts:[]
             })
         },
         changeSelect(e,item,row,n){
@@ -536,19 +550,29 @@ export default {
                 }
             })
 
-            this.modalArray.map(v=>{
-                let s = null
+            this.modalArray.map(v=>{//计算预估工期，指导报价
+                let t = 0,p = 0;
                 v.parts.map(k=>{
-                    s+=k.maber_time
-                    v.price += k.price
+                     t += k.maber_time ? k.maber_time : 0
+                     p += k.price ? k.price : 0
                 })
-                console.log(s)
-                v.limit_time = s
+                v.limit_time = t
+                v.price = p
+            })
+            let product_top = JSON.parse(JSON.stringify(this.tableColumns));
+            this.modalArray.map(v=>{//找出产品合并表头
+                v.top.map(v=>{
+                    let n = product_top.findIndex(m=>m.key == v.key)
+                    if(n==-1){
+                        v.width = '200'
+                        product_top.splice(product_top.length-2,0,v)
+                    }
+                })
             })
             this.proxyObj.product = this.modalArray;
-            // this.modalArray = [];
             this.showProduct = false;
             this.tapProduct()
+            this.$forceUpdate()
             
         },
         cancelModal(){
@@ -591,7 +615,7 @@ export default {
         },
         getUsers(){
             this.axios('/api/user').then(res=>this.users = res.data.data)
-        }
+        },
                                     
     }
 }

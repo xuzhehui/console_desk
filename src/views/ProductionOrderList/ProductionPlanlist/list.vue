@@ -114,7 +114,19 @@ export default {
             tableColums:[
                 {type:'selection',fixed:'left',width:'90',align:'center'},
                 {title:'订单编号',align:'center',key:'order_no',width:'200'},
-                {title:'订单类型',align:'center',key:'order_type',width:'150'},
+                {title:'订单类型',align:'center',key:'order_type',width:'150',
+                    render(h,params){
+                        return h('span',{},params.row.order_type == 1 ? '工装' : '家装')
+                    }
+                },
+                {title:'订单状态',align:'center',key:'state',width:'100',
+                    render(h,params){
+                        return h('span',{
+                            
+                        },'--')
+                    }
+                },
+                {title:'业务员',align:'center',key:'salesman',width:'150'},
                 {title:'紧急程度',align:'center',key:'warning_state',width:'150',
                     render(h,params){
                         return h('span',{
@@ -131,7 +143,7 @@ export default {
                 {title:'计划开始时间',align:'center',key:'show_plan_start_time',width:'200'},
                 {title:'计划结束时间',align:'center',key:'show_plan_end_time',width:'200'},
                 {title:'完成进度',align:'center',key:'complete_rate',width:'200'},
-                // {title:'交货日期',align:'center',key:'predict_time',width:'200'},
+                {title:'预估交付日期',align:'center',key:'predict_time',width:'200'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'150'},
             ],
             tableData:[],
@@ -192,8 +204,10 @@ export default {
         goDetial(row){
             this.$router.push({
                 path:'/cms/productionorderlist/productionplanlist/details',
+                // path:'/cms/ordermannage/businessorderlist/decorationlist',
                 query:{
-                    order_no:row.order_no
+                    order_no:row.order_no,
+                    type:'plan',
                 }
             })
         },

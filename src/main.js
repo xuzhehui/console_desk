@@ -12,6 +12,8 @@ import VCharts from 'v-charts'
 
 import ConfirmDelete from './components/confirm-delete/index.js'
 import SelectProcessRouter from './components/selectProcessRoute/index.js'
+import DownMeasurement from './components/DownMeasurement/index.js'
+import DownProduction from './components/DownProduction/index.js'
 
 Vue.use(ViewUI)
 
@@ -21,7 +23,9 @@ Vue.use(VCharts)
 Vue.use(components)
 
 Vue.use(ConfirmDelete)
-Vue.use(SelectProcessRouter)
+Vue.use(SelectProcessRouter)//工艺路线
+Vue.use(DownMeasurement)//下测量
+Vue.use(DownProduction)//下生产---下生产计划
 
 Vue.prototype.axios = axios
 

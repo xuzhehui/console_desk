@@ -163,8 +163,10 @@ export default {
         goDetial(row){
             this.$router.push({
                 path:'/cms/productionorderlist/productionsorder/Decorationlist',
+                // path:'/cms/ordermannage/businessorderlist/decorationlist',
                 query:{
-                    order_no:row.order_no
+                    order_no:row.order_no,
+                    type:'produce'
                 }
             })
         },

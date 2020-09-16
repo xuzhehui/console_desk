@@ -52,7 +52,11 @@ export default {
                 {title:'订单类型',align:'center',key:'show_order_type',width:'100'},
                 {title:'客户',align:'center',key:'client_name',width:'120'},
                 {title:'手机号',align:'center',key:'mobile',width:'150'},
-                {title:'审批类型',align:'center',key:'show_type',width:'100'},
+                {title:'审批类型',align:'center',width:'100',
+                    render(h,params){
+                        return h('span',{},params.row.type == 1 ? '测量' : '生产')
+                    }
+                },
                 {title:'审批状态',align:'center',key:'show_state',width:'100',
                     render(h,params){
                         return h('span',{
@@ -90,7 +94,6 @@ export default {
                 this.loading = false;
                 res.data.data.map(v=>{
                     v.show_state = v.state == 0 ? '待审批' : (v.state == 1 ? '同意' : (v.state == 2 ? '驳回' :'取消'))
-                    v.show_type = v.state == 1 ? '测量' : '生产'
                     v.show_order_type = v.order_type == 1 ? '工装' : '家装'
                     v.show_crt_time = this.func.replaceDate(v.crt_time*1)
                     v.show_upd_time = this.func.replaceDate(v.upt_time*1)

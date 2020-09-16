@@ -130,10 +130,11 @@ export default {
         goPage(n,row){
             let oa_order_no = row ? row.oa_order_no : '';
             this.$router.push({
-                path:'/cms/measurementordermannage/Decorationlist',
+                // path:'/cms/measurementordermannage/Decorationlist',
+                path:'/cms/ordermannage/businessorderlist/decorationlist',
                 query:{
-                    type:n,
-                    oa_order_no:oa_order_no
+                    oa_order_no:oa_order_no,
+                    type:'oa',
                 }
             })
         },
