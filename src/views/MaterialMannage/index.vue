@@ -41,7 +41,6 @@ export default {
     data(){
         return {
             list:[
-                {title:'ID',name:'Input',serverName:'id',placeholder:'请输入ID',value:''},
                 {title:'物料',name:'Input',serverName:'title',placeholder:'请输入物料',value:''}
             ],
             tableColums:[

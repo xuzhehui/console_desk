@@ -14,7 +14,7 @@
                 </div>
             </div>
             <div>
-                <Table :width="tableWidth" class="overflow-table" border stripe :columns="tableColums" :data="tableData">
+                <Table  @on-selection-change='selectTable'  :width="tableWidth" class="overflow-table" border stripe :columns="tableColums" :data="tableData">
 
                     <div slot-scope="{index }" v-for="(item,_key) in tableTop" :key="_key" :slot="item.slot">
                         <Input v-model="tableData[index][item.key]" :placeholder="'请输入'+item.title"></Input> 
@@ -58,6 +58,7 @@ export default {
             house_id:null,
             logList:[{title:'系统单号',value:'10998765'}],
             tableColums:[
+                {type:'selection',width:100,align:'center',fixed:'left'},
                 {title:'产品名称',align:'center',key:'product_title',fixed:'left',width:'200'},
                 {title:'产品型号',align:'center',key:'model',width:'150'},
                 {title:'单位',align:'center',key:'unit',width:'130'},
@@ -75,12 +76,11 @@ export default {
             currentIndex:0,
             showPlan:false,
             planInfo:{
-                house_id:this.$route.query.house_id,
-                start_time:'',
-                end_time:''
+                order_product_id:'',
             },
             tableWidth:null,
             tableTop:[],
+            select:[],
         }
     },
     created(){
@@ -97,6 +97,11 @@ export default {
     methods:{
         back(){
             this.$router.go(-1)
+        },
+        selectTable(e){
+            let result = [];
+            e.map(v=>result.push(v.order_product_id))
+            this.select = result;
         },
         postData(){
             let result= [];
@@ -130,26 +135,12 @@ export default {
             })
         },
         getData(oa_order_no,house_id){
-
             this.axios('/api/orders_product_list',{params:{oa_order_no:oa_order_no,house_id:house_id,type:'oa'}}).then(res=>{
                 this.tableData = res.data.list;
                 this.logList = res.data.detail
-
-                // res.data.top.map(v=>v.slot=v.key)
                 this.tableTop = res.data.top;
                 console.log(this.tableTop)
                 res.data.top.map(v=>{
-                    // let _this = this
-                    // v.render = function(h,params){
-                    //     let key = params.column.key
-                    //     let value = params.row[key]
-                    //     return h('Input',{
-                    //         props:{
-                    //             value:value,
-                    //             placeholder:'请输入'+v.title
-                    //         }   
-                    //     })
-                    // }
                     v.width=200;
                     v.slot=v.key;
                     this.tableColums.splice(2,0,v)
@@ -184,8 +175,15 @@ export default {
             })
         },
         openModal(){
-            // this.planInfo.id = this.id;
-            this.showPlan = true;
+            if(!this.select||this.select.length<1){return this.$Message.error('请至少选择一项')}
+            this.planInfo.order_product_id = this.select.join(',')
+            this.downProduction({
+                title:'下生产',
+                type:2,
+                params:this.planInfo,
+                then:(e)=>{},
+                cancel:(e)=>{},
+            })
         },
     }
 }

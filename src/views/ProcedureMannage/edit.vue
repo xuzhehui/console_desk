@@ -11,9 +11,10 @@
                     <Input v-model="info.id" disabled placeholder="自动生成"></Input>
                 </FormItem>
                 <FormItem label="工序分类">
-                    <Select filterable clearable v-model="info.p_id" placeholder="请选择分类">
+                    <Input disabled v-model="info.classify"></Input>
+                    <!-- <Select filterable clearable v-model="info.p_id" placeholder="请选择分类">
                         <Option v-for="item of perSonnel" :key="item.id" :value="item.id" :label="item.title"></Option>
-                    </Select>
+                    </Select> -->
                 </FormItem>
                 <FormItem  label="工序名称">
                     <Input v-model="info.title" placeholder="请输入工序分类名称"></Input>
@@ -51,8 +52,9 @@ export default {
                 time:'',
                 capacity:'',
                 wages:'',
-                type:0,
-                p_id:'',
+                type:1,
+                p_id:this.$route.query.id,
+                classify:''
             },
         }
     },
@@ -81,8 +83,10 @@ export default {
              
         },
         getData(row){
-            this.axios('/api/basics_procedure_index').then(res=>{
-                this.perSonnel = res.data.data;
+            this.axios('/api/basics_procedure_get_title',{params:{id:this.info.p_id}}).then(res=>{
+                if(res.code == 200){
+                    this.info.classify = res.data;
+                }
             })
         },
         getDetails(row){

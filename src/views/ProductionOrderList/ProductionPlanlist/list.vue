@@ -57,7 +57,7 @@
                             </Select>
                         </FormItem>
                         <FormItem label="工序">
-                            <Select v-model="dispatchInfo.produce_id">
+                            <Select v-model="dispatchInfo.procedure_id">
                                 <Option v-for="(item,index) of info.produce" :key="index" :value="item.id" :label="item.title"></Option>
                             </Select>
                         </FormItem>
@@ -154,7 +154,6 @@ export default {
             showTableColums:false,
             showOrderMenu:false,//派工单
             dispatchInfo:{
-                id:'',//id
                 user_id:'',//工人
                 work_type:0,
                 start_time:'',//开始时间
@@ -207,7 +206,7 @@ export default {
                 // path:'/cms/ordermannage/businessorderlist/decorationlist',
                 query:{
                     order_no:row.order_no,
-                    type:'plan',
+                    // type:'plan',
                 }
             })
         },

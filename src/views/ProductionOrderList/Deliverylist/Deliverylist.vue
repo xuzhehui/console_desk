@@ -61,9 +61,7 @@ export default {
                 {title:'订单状态',align:'center',key:'long'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'150'},
             ],
-            tableData:[
-                {id:'1',title:'222'}
-            ],
+            tableData:[],
             pageIndex:1,
             total:100,
             showTableColums:false,
@@ -71,9 +69,12 @@ export default {
     },
     methods:{
         init(row){
-            // this.axios('/api/material').then(res=>{
-            //     this.tableData = res.data;
-            // })
+            this.getData()
+        },
+        getData(row){
+            this.axios('/api/orders_transport').then(res=>{
+                console.log(res)
+            })
         },
         changePage(e){
 

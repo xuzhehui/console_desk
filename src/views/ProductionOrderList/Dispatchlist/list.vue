@@ -48,9 +48,7 @@ export default {
                 {title:'预估工期',align:'center',key:'predict_time',width:'200'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'240'},
             ],
-            tableData:[
-                {id:'1',title:'222'}
-            ],
+            tableData:[],
             pageIndex:1,
             total:0,
             proxyObj:{},
@@ -88,7 +86,7 @@ export default {
             this.$router.push({
                 path:'/cms/productionorderlist/dispatchlist/details',
                 query:{
-                    id:row.id,
+                    order_no:row.order_no,
                 }
             })
         }

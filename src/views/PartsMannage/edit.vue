@@ -140,7 +140,7 @@ export default {
                 wide:'',
                 thick:'',
                 requirement:'',
-                label:'',
+                label:2,
                 p_id:null,
             },
             zeroParts:[],

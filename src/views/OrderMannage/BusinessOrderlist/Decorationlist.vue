@@ -18,30 +18,26 @@
             <div slot='titleButton'>
                 <Button @click="back" type='primary' ghost style="margin-right:10px;">返回</Button>
 
-                <Button v-if="type == 'oa'" type="primary" style="margin-right:10px;" @click="openLower(selectIds)" ghost>
+                <Button v-if="type == 'measure'" type="primary" style="margin-right:10px;" @click="openModal(selectIds)" ghost>
                     批量下生产
                 </Button>
 
                 <Button v-if="type == 'business'" type="primary" style="margin-right:10px;" @click="openLower(selectIds)" ghost>
                     批量下测量
                 </Button>
-                 <Button type="primary" v-if="type == 'plan'" style="margin-right:10px;" ghost>批量派工单</Button>
 
-                <Button v-if='type=="produce"' type="primary" ghost style="margin-right:10px;">批量修改工艺路线</Button>
-                <Button v-if='type == "produce"' type="primary" ghost style="margin-right:10px;" @click='openModal(selectIds)'>批量下生产计划</Button>
-                <Button type="primary" ghost>打印清单</Button>
+                <Button type="error" v-if="type == 'oa'" style="margin-right:10px;" ghost>批量驳回审批</Button>
+                <Button type="success" @click="approved" v-if="type == 'oa'" style="margin-right:10px;" ghost>批量通过审批</Button>
+
+                <Button v-if='type!="oa"' type="primary" ghost>打印清单</Button>
             </div>
 
             <template slot='set' slot-scope='{row}'>
                 <div>
-                   <a v-if='type == "business"||type == "oa"' style="margin:0 5px;" @click="goPage(row)">编辑</a>
-                   <a v-if='type == "business"||type == "oa"' style="margin:0 5px;" @click="goPage(row)">详情</a>
+                   <a v-if='type == "business"||type == "measure"' style="margin:0 5px;" @click="goPage(row)">编辑</a>
+                   <a v-if='type == "business"||type == "measure"||type == "oa"' style="margin:0 5px;" @click="goPage(row)">详情</a>
                    <a v-if='type == "business"' style="margin:0 5px;" @click="openLower(row)">下测量</a>
-                   <a v-if="type == 'oa'" style="margin:0 5px;" @click="openModal(row)">下生产</a>
-
-                    <a v-if='type=="produce"||type == "plan"' style="margin:0 5px;">更改芯片</a>
-                    <a v-if='type=="produce"' @click="openModal(row)" style="margin:0 5px;">下生产计划</a>
-                    <a v-if='type=="produce"' style="margin:0 5px;">下载图纸</a>
+                   <a v-if="type == 'measure'" style="margin:0 5px;" @click="openModal(row)">下生产</a>
                 </div>
             </template>
         </FullPage>
@@ -76,7 +72,7 @@ export default {
                 {title:'楼层',align:'center',key:'layer'},
                 {title:'房间号',align:'center',key:'number_detail'},
                 {title:'单价',align:'center',key:'price'},
-                {title:'预估房间工期',align:'center',key:'time',width:'200'},
+                {title:'预估房间工期',align:'center',key:'predict_time',width:'200'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'250'},
             ],
 
@@ -89,13 +85,11 @@ export default {
             units:[],
             house:[],
             postInfo:{//下测量数据
-                order_no:'',
                 start_time:'',
                 end_time:'',
                 user_id:null,
             },
             planInfo:{
-                order_no:'',
                 house_id:null,
             },//下生产数据
             users:[],
@@ -179,6 +173,7 @@ export default {
                     }
                 })
                 this.tableData = roomArray.length>0 ? roomArray : ( layerArray.length>0 ? layerArray : (unitArray.length>0 ? unitArray :  houseArray))
+                this.tableData = this.func.deteleObject(this.tableData)
            }  
         },
         back(){
@@ -219,7 +214,7 @@ export default {
         changeSelected(e){},
         goPage(row){
             this.$router.push({
-                path:this.type == 'oa' ? '/cms/measurementordermannage/edit' : '/cms/ordermannage/businessorderlist/details',
+                path:this.type == 'measure' ? '/cms/measurementordermannage/edit' : '/cms/ordermannage/businessorderlist/details',
                 query:{
                     house_id: this.type == 'business' ? row.id :  row.house_id,
                     oa_order_no:row.oa_order_no,
@@ -250,11 +245,10 @@ export default {
                 this.planInfo.house_id = result.join(',')
             }else{
                 this.planInfo.house_id = row.house_id;
-                // this.planInfo.order_no = row.order_no;
             }
             this.downProduction({
-                title:this.type == 'produce' ? '下生产计划' : '下生产',
-                type:this.type == 'produce' ? 1 : 2,
+                title:'下生产',
+                type:2,
                 params:this.planInfo,
                 then:(e)=>{},
                 cancel:(e)=>{},
@@ -262,9 +256,33 @@ export default {
         },
         selectTable(e){
             let result = [];
-            e.map(v=>result.push(this.type == 'business' ? v.id : v.house_id))
+            e.map(v=>result.push(this.type == 'business' ? v.id : (this.type == 'oa' ? v.oa_order_no : v.house_id)))
             this.selectIds = result;
         },
+        postData(state,arr){//state(1:通过|2:驳回)
+            let params = {oa_order_no:arr.join(','),state:state}
+            state == 2 ? params.remark = this.remark : '';
+            this.axios.post('/api/order_oa_approve',params).then(res=>{
+                if(res.code == 200){
+                    this.$Message.success(res.msg||'无提示')
+                    this.back()
+                }
+            })
+        },
+        approved(){
+            this.confirmDelete({
+                content:'是否通过此订单审核？',
+                title:'审批通过',
+                type:'primary',
+                then:()=>{
+                    this.postData(1,this.selectIds)
+                },
+                cancel:()=>{}
+            })
+        },
+        rejectApprove(){
+            this.postData(2,this.selectIds)
+        }
         
     }
 }

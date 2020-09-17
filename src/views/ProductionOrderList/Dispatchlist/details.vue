@@ -3,6 +3,7 @@
         <FullPage 
         title='派工单详情' 
         :showTopSearch='false'
+        :logList='logList'
         @changePage='changePage'
         @selectTable='selectTable'
         :tableColums='tableColums'
@@ -14,13 +15,6 @@
                 <Button @click="back" style="margin-right:10px;">返回</Button>
                 <Button type="primary" style="margin-right:10px;" ghost>打印派工单</Button>
                 <Button @click="finish(selectIds)" type="success" ghost>批量完成</Button>
-            </div>
-
-            <div slot='text-list' class="log-list">
-                <div class="log-item" v-for="(item,index) of logList" :key="index">
-                    <span>{{item.title}}：</span>
-                    <span>{{item.value}}</span>
-                </div>
             </div>
 
             <template slot='set' slot-scope='{row}'>
@@ -40,28 +34,28 @@ export default {
             logList:[{title:'系统单号',value:'10998765'}],
             tableColums:[
                 {type:'selection',fixed:'left',width:'90',align:'center'},
-                {title:'小区',align:'center',key:'type',width:'200'},
-                {title:'产品',align:'center',width:'150'},
-                {title:'部件',align:'center',width:'150'},
+                {title:'小区',align:'center',key:'residential_name',width:'200'},
+                {title:'产品',align:'center',width:'150',key:'product_title'},
+                {title:'部件',align:'center',width:'150',key:'part_title'},
                 {title:'包装码',align:'center',width:'150'},
-                {title:'部件是否贴标签',align:'center',width:'150'},
-                {title:'贴标签零部件',align:'center',width:'150'},
-                {title:'工序分类',align:'center',width:'150'},
-                {title:'工序',align:'center',width:'150'},
-                {title:'测量尺寸',align:'center',width:'150'},
-                {title:'单位',align:'center',width:'100'},
-                {title:'二维码',align:'center',width:'150'},
-                {title:'芯片编号',align:'center',width:'150'},
+                {title:'部件是否贴标签',align:'center',width:'150',key:''},
+                {title:'贴标签零部件',align:'center',width:'150',key:''},
+                {title:'工序分类',align:'center',width:'150',key:''},
+                {title:'工序',align:'center',width:'150',key:'procedure_title'},
+                {title:'测量尺寸',align:'center',width:'150',key:''},
+                {title:'单位',align:'center',width:'100',key:''},
+                // {title:'二维码',align:'center',width:'150',key:''},
+                {title:'芯片编号',align:'center',width:'150',key:''},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'150'},
             ],
-            tableData:[{type:'123',id:99},{type:'123',id:99}],
+            tableData:[],
             pageIndex:1,
             total:100,
             selectIds:[],
         }
     },
     mounted(){
-        this.getData({id:this.$route.query.id})
+        this.getData({order_no:this.$route.query.order_no})
     },
     methods:{
         back(){
@@ -70,7 +64,8 @@ export default {
         getData(row){
             this.axios('/api/orders_dispatch_detail',{params:row}).then(res=>{
                 if(res.code == 200){
-                    this.tableData = res.data.data;
+                    this.tableData = res.data.list;
+                    this.logList = res.data.detail;
                 }
             })
         },

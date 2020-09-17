@@ -178,23 +178,26 @@
                         </FormItem>
                         <FormItem label='上传图纸'>
                             <Upload :disabled='productType == 3 ? true : false'  :headers="headers" :on-success='successUpload' :show-upload-list='false' :action="$store.state.ip+'/api/upload_pic'">
-                                
                                 <Button size='small' v-if="!item.url" @click="mapRow(idx)" icon="ios-cloud-upload-outline">上传</Button>
-                                <img @click="mapRow(idx)" style="max-width:50px;max-height:50px;position:relative;top:3px" v-if="item.url" :src="$store.state.ip+item.url" alt="">
+                                <img @click="mapRow(idx)" style="max-width:30px;max-height:30px;position:relative;top:3px" v-if="item.url" :src="$store.state.ip+item.url" alt="">
                             </Upload>
                         </FormItem>
 
-                        <FormItem v-for="(obj,_key) in item.top" :key="_key" :label="obj.title">
-                            <div v-if="obj.key=='img'">
-                                <a target="_blank" :href="$store.state.ip+obj.value">
-                                    <img  style="max-width:50px;max-height:50px;top:5px;position:relative;cursor:pointer;"  :src="$store.state.ip+obj.value">
-                                </a>
-                                
-                                <Icon v-if="obj.key=='img'&&!obj.value" style="position:relative;top:-10px;" size='50' type="md-images" />
-                            </div>
-                            
-                            <Input :disabled='productType == 3||obj.type==2 ? true : false' v-else :placeholder="'请输入'+obj.title" size='small' v-model="obj.value"/>
+                        <FormItem v-for="(measuring,measuring_key) in item.measuring" :label="measuring.title" :key="measuring_key+11">
+                            <Input :disabled='productType == 3 ? true : false' :placeholder="'请输入'+measuring.title" size='small' v-model="measuring.value"/>
                         </FormItem>
+
+                        <FormItem v-for="(outh,outh_key) in item.outh" :label="outh.title" :key="outh_key+21">
+                            <a v-if="outh.key=='img'" target="_blank" :href="$store.state.ip+outh.value">
+                                <img  style="max-width:30px;max-height:30px;top:0px;position:relative;cursor:pointer;"  :src="$store.state.ip+outh.value">
+                            </a>
+                            <Input v-if="outh.key!='img'" disabled placeholder="自动生成" size='small' v-model="outh.value"/>
+                        </FormItem>
+
+                        <FormItem v-for="(remake,remake_key) in item.product_remake" :label="remake.title" :key="remake_key+31">
+                            <Input disabled placeholder="自动生成" size='small' v-model="remake.value"/>
+                        </FormItem>
+
                     </Form>
                     <Table stripe border :columns="item.parts_top" :data="item.parts">
                         <template slot='set' slot-scope='{row,index}'>
@@ -285,7 +288,7 @@ export default {
             info:{
                 residential_name:'',//小区名称
                 order_no:'',//订单号
-                renovation_type:null,//订单类型
+                renovation_type:1,//订单类型
                 client_name:'',//客户名称
                 address:'',//
                 mobile:'',//手机号
@@ -294,9 +297,10 @@ export default {
                 pay_state:'',//是否支付
                 warning_state:0,//是否紧急
                 predict_time:'',//预估交付日期
-                salesman:null,//业务员
+                salesman:this.$store.state.userInfo.id||null,//业务员
                 predict_price:null,//预估工价,
                 predict_working:null,//预估工期
+                remark:'',
                 house:[
                     {
                         house:null,
@@ -427,15 +431,19 @@ export default {
         },
         changeProduct(row,n,ext){
             this.axios('/api/order_product_detail',{params:{id:row.value}}).then(res=>{
+                
                 let _this = this;
                 let modalData = this.modalArray[n]
                 modalData.product_type = res.data.detail.product_type||''
                 modalData.unit = res.data.detail.unit||''
                 modalData.model = res.data.detail.model || ''
+                // modalData.product_id = row.value;
                 if(res.code == 200){
-                    modalData.title = row.label
                     if(!ext){
-                        modalData.top = res.data.top;
+                        modalData.title = row.label
+                        modalData.measuring = res.data.measuring;
+                        modalData.outh = res.data.outh;
+                        modalData.product_remake = res.data.product_remake;
                     }
                     modalData.parts_top = res.data.intermediate.parts_top
                     if(this.func.isType(res.data.intermediate.parts)!='Array'){
@@ -536,9 +544,10 @@ export default {
 
         },
         saveParts(){
+            console.log(this.modalArray)
             this.modalArray.map(v=>{
                 let obj = {}
-                v.top.map(k=>{
+                v.measuring.map(k=>{
                     for(let i in k){
                         obj[k['key']] = k['value']
                     }
@@ -561,15 +570,35 @@ export default {
             })
             let product_top = JSON.parse(JSON.stringify(this.tableColumns));
             this.modalArray.map(v=>{//找出产品合并表头
-                v.top.map(v=>{
+                v.measuring.map(v=>{
                     let n = product_top.findIndex(m=>m.key == v.key)
                     if(n==-1){
                         v.width = '200'
+                        v.align = 'center'
+                        product_top.splice(product_top.length-2,0,v)
+                    }
+                }) 
+                v.outh.map(v=>{
+                    let n = product_top.findIndex(m=>m.key == v.key)
+                    if(n==-1){
+                        v.width = '200'
+                        v.align = 'center'
+                        product_top.splice(product_top.length-2,0,v)
+                    }
+                })
+                 v.product_remake.map(v=>{
+                    v.key = v.title
+                    let n = product_top.findIndex(m=>m.key == v.key)
+                    if(n==-1){
+                        v.width = '200'
+                        v.align = 'center'
                         product_top.splice(product_top.length-2,0,v)
                     }
                 })
             })
             this.proxyObj.product = this.modalArray;
+            this.proxyObj.product_top = product_top;
+            this.$forceUpdate()
             this.showProduct = false;
             this.tapProduct()
             this.$forceUpdate()

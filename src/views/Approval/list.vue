@@ -109,9 +109,11 @@ export default {
         },
         goPage(row){
             row.order_type == 1 ? this.$router.push({
-                path:'/cms/approval/frock',
+                // path:'/cms/approval/frock',
+                path:'/cms/ordermannage/businessorderlist/decorationlist',
                 query:{
-                    oa_order_no:row.oa_order_no
+                    oa_order_no:row.oa_order_no,
+                    type:'oa'
                 }
             }) : this.$router.push({
                 path:'/cms/approval/details',

@@ -43,7 +43,6 @@ export default {
     data(){
         return {
             list:[
-                {title:'ID',name:'Input',value:'',serverName:'p_id',placeholder:'请输入ID'},
                 {title:'工序名称',name:'Input',value:'',serverName:'title',placeholder:'请输入工序名称'},
             ],
             tableColums:[

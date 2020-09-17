@@ -94,7 +94,7 @@ export default {
             showTableColums:false,
             showPlan:false,
             planInfo:{
-                order_no:null,
+                order_product_id:null,
                 start_time:'',
                 end_time:''
             },
@@ -119,7 +119,6 @@ export default {
         goDetail(row){
             this.$router.push({
                 path:'/cms/productionorderlist/productionsorder/details',
-                // path:'/cms/ordermannage/businessorderlist/details',
                 query:{
                     house_id:row.house_id,
                     type:'produce'
@@ -133,15 +132,15 @@ export default {
             this.$router.go(-1)
         },
         openModal(row){
+            console.log(row)
             if(Array.isArray(row)){//批量下生产操作
                 if(row.length<1){return this.$Message.warning('请至少选择一项')}
                 let result = [];
-                row.map(v=>result.push(v.order_no))
-                this.planInfo.order_no = result.join(',')
+                row.map(v=>result.push(v.order_product_id))
+                this.planInfo.order_product_id = result.join(',')
             }else{//单个下生产
-                // this.planInfo.order_no = row.order_no;
+                this.planInfo.order_product_id = row.order_product_id;
             }
-            this.planInfo.order_no = this.order_no;
             this.showPlan = true;
         },
         sendPlanInfo(){

@@ -72,7 +72,6 @@ export default {
                         },params.row.order_type == 1 ? '工装' : '家装')
                     }
                 },
-                // {title:'发货日期',align:'center',key:'plan_end_time',width:'200'},
                 {title:'测量开始时间',align:'center',key:'measure_start_time',width:'200'},
                 {title:'测量结束时间',align:'center',key:'measure_end_time',width:'200'},
                 {title:'实际完成时间',align:'center',key:'plan_start_time',width:'200'},
@@ -134,7 +133,7 @@ export default {
                 path:'/cms/ordermannage/businessorderlist/decorationlist',
                 query:{
                     oa_order_no:oa_order_no,
-                    type:'oa',
+                    type:'measure',
                 }
             })
         },

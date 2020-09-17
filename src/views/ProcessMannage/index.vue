@@ -58,7 +58,6 @@ export default {
     data(){
         return {
             list:[
-                {title:'ID',name:'Input',value:'',serverName:'p_id',placeholder:'请输入ID'},
                 {title:`颜色名称`,name:'Input',value:'',serverName:'title',placeholder:`请输入颜色名称`},
             ],
             tableColums:[
@@ -85,9 +84,9 @@ export default {
         console.log(this.$route)
         if(this.$route.query.id){
             this.proxyObj.id = this.$route.query.id;
-             this.list[1].title = `${this.title}名称`;
-            this.list[1].placeholder = `请输入${this.title}名称`
-            this.tableColums[1].title = this.title
+             this.list[0].title = `${this.title}名称`;
+            this.list[0].placeholder = `请输入${this.title}名称`
+            this.tableColums[0].title = this.title
             this.getData(this.proxyObj)
         }
 
@@ -97,8 +96,8 @@ export default {
             this.title = to.query.title;
             this.id = to.query.id;
             this.proxyObj.id = this.id
-            this.list[1].title = `${this.title}名称`;
-            this.list[1].placeholder = `请输入${this.title}名称`
+            this.list[0].title = `${this.title}名称`;
+            this.list[0].placeholder = `请输入${this.title}名称`
             this.tableColums[1].title = this.title
             this.getData(this.proxyObj)
             this.classInfo.id = this.id;

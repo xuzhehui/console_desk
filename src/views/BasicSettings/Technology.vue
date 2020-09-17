@@ -155,6 +155,7 @@ export default {
                             obj.title ? result.push(obj) : ''
                         })
                         this.attribute = result;
+                        this.getData(this.proxyObj)
                     }
                 }
             })

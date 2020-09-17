@@ -143,6 +143,7 @@ export default {
                 if(res.code == 200){
                     this.$Message.success(res.msg)
                     this.getData(this.proxyObj)
+                    this.showModal = false;
                     this.undata_navData()
                 }else{
                     if(Array.isArray(res.data)){
@@ -154,6 +155,7 @@ export default {
                             obj.title ? result.push(obj) : ''
                         })
                         this.attribute = result;
+                        this.getData(this.proxyObj)
                     }
                 }
             })

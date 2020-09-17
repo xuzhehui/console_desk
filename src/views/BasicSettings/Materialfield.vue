@@ -145,8 +145,9 @@ export default {
                     id:'',
                     title:''
                 }
+                
                 this.attribute = [{title:''}]
-                repeatFlag = false;
+                this.repeatFlag = false;
             }
         },
         addAttr(n){
@@ -171,6 +172,7 @@ export default {
                     this.$Message.success(res.msg)
                     this.getData(this.proxyObj)
                     this.undata_navData()
+                    this.showModal = false;
                 }else{
                     if(Array.isArray(res.data)){
                         this.repeatFlag = true
@@ -181,6 +183,7 @@ export default {
                             obj.title ? result.push(obj) : ''
                         })
                         this.attribute = result;
+                        this.getData(this.proxyObj)
                     }
                 }
             })
