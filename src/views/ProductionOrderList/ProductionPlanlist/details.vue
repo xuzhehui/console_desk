@@ -21,7 +21,7 @@
 
             <template slot='set' slot-scope='{row}'>
                 <div>
-                    <a style="margin:0 5px">更改芯片</a>
+                    <a style="margin:0 5px" @click="setZoro(row)">更改芯片</a>
                 </div>
             </template>
         </FullPage>
@@ -43,17 +43,17 @@ export default {
             ],
             tableColums:[
                 {type:'selection',align:'center',fixed:'left',width:'100'},
-                {title:'楼幢',align:'center',key:'house',width:'120'},
-                {title:'单元',align:'center',key:'unit',width:'200'},
-                {title:'楼层',align:'center',key:'layer',width:'200'},
-                {title:'房间号',align:'center',key:'number_detail',width:'200'},
-                {title:'位置',align:'center',key:'position',width:'200'},
+                {title:'楼幢',align:'center',key:'house',width:'100'},
+                {title:'单元',align:'center',key:'unit',width:'100'},
+                {title:'楼层',align:'center',key:'layer',width:'100'},
+                {title:'房间号',align:'center',key:'number_detail',width:'100'},
+                {title:'位置',align:'center',key:'position',width:'100'},
                 {title:'产品',align:'center',key:'product_title',width:'200'},
                 {title:'部件',align:'center',key:'part_title',width:'200'},
                 {title:'部件是否贴标签',align:'center',width:'200'},
                 {title:'贴标签零部件',align:'center',width:'200'},
                 {title:'工序分类',align:'center',key:'basics_procedure_title',width:'200'},
-                {title:'工序',align:'procedure_title',key:'procedure_title',width:'200'},
+                {title:'工序',align:'center',key:'procedure_title',width:'200'},
                 {title:'是否完成',align:'center',key:'is_complete',width:'200'},
                 {title:'测量尺寸',align:'center',width:'200'},
                 {title:'单位',align:'center',width:'200'},
@@ -99,6 +99,9 @@ export default {
             e.forEach(v=>result.push(v.house_id));
             this.selects = result;
             console.log(this.selects)
+        },
+        setZoro(row){
+            console.log(row)
         }
     }
 }

@@ -40,7 +40,7 @@ export default {
                 {title:'包装码',align:'center',width:'150'},
                 {title:'部件是否贴标签',align:'center',width:'150',key:''},
                 {title:'贴标签零部件',align:'center',width:'150',key:''},
-                {title:'工序分类',align:'center',width:'150',key:''},
+                {title:'工序分类',align:'center',width:'150',key:'basics_procedure_title'},
                 {title:'工序',align:'center',width:'150',key:'procedure_title'},
                 {title:'测量尺寸',align:'center',width:'150',key:''},
                 {title:'单位',align:'center',width:'100',key:''},

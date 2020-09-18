@@ -126,7 +126,7 @@ export default {
                         },'--')
                     }
                 },
-                {title:'业务员',align:'center',key:'salesman',width:'150'},
+                {title:'业务员',align:'center',key:'nickname',width:'150'},
                 {title:'紧急程度',align:'center',key:'warning_state',width:'150',
                     render(h,params){
                         return h('span',{
@@ -140,9 +140,15 @@ export default {
                     }
                 },
                 {title:'小区',align:'center',key:'residential_name',width:'200'},
-                {title:'计划开始时间',align:'center',key:'show_plan_start_time',width:'200'},
-                {title:'计划结束时间',align:'center',key:'show_plan_end_time',width:'200'},
-                {title:'完成进度',align:'center',key:'complete_rate',width:'200'},
+                {title:'计划开始时间',align:'center',width:'200',
+                    render:(h,params)=>h('span',{},this.func.replaceDate(params.row.plan_start_time))
+                },
+                {title:'计划结束时间',align:'center',width:'200',
+                    render:(h,params)=>h('span',{},this.func.replaceDate(params.row.plan_end_time))
+                },
+                {title:'完成进度',align:'center',key:'complete_rate',width:'100',
+                    render:(h,params)=>h('span',{},params.row.complete_rate*100+'%') 
+                },
                 {title:'预估交付日期',align:'center',key:'predict_time',width:'200'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'150'},
             ],
@@ -189,10 +195,6 @@ export default {
         },
         getData(row){
             this.axios('/api/orders_produce_plan_list',{params:row}).then(res=>{
-                res.data.data.map(v=>{
-                    v.show_plan_start_time = this.func.replaceDate(v.plan_start_time) 
-                    v.show_plan_end_time = this.func.replaceDate(v.plan_end_time) 
-                })
                 this.tableData = res.data.data;
                 this.total = res.data.total;
             })

@@ -82,7 +82,11 @@ export default {
                 {title:'订单状态',align:'center',key:'sub_state',width:'150'},
                 {title:'客户姓名',align:'center',key:'client_name',width:'100'},
                 {title:'手机号',align:'center',key:'mobile',width:'150'},
-                {title:'完成进度',align:'center',key:'complete_rate',width:'100'},
+                {title:'完成进度',align:'center',key:'complete_rate',width:'100',
+                    render(h,params){
+                        return h('span',{},params.row.complete_rate*100+'%')
+                    },
+                },
                 {title:'预估生产工期',align:'center',key:'predict_working',width:'200'},
                 {title:'生产开始时间',align:'center',key:'start_time',width:'200'},
                 {title:'生产结束时间',align:'center',key:'end_time',width:'200'},

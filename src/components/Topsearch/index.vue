@@ -23,9 +23,9 @@
             </div>
 
             <div class="items" v-if="item.isDate">
-                <DatePicker v-model="item.start_value"  size='small' type="date" :placeholder="item.start_placeholder" class="margin"></DatePicker>
+                <DatePicker :type='item.type ? item.type : "data"' v-model="item.start_value"  size='small'  :placeholder="item.start_placeholder" class="margin"></DatePicker>
                 ~
-                <DatePicker v-model="item.end_value" size='small' type="date" :placeholder="item.end_placeholder" class="margin"></DatePicker>
+                <DatePicker :type="item.type ?item.type : 'data'" v-model="item.end_value" size='small' :placeholder="item.end_placeholder" class="margin"></DatePicker>
             </div>
         </div>
         <Button v-if="showbtn" @click="searchData" :type="btnType" size="small">{{btnName}}</Button>

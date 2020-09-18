@@ -1,7 +1,7 @@
 <template>
     <div>
         <FullPage 
-        title='工装订单列表2'
+        title='生产订单详情'
         :list='list' 
         @init='init' 
         :logList='logList'
@@ -66,8 +66,13 @@ export default {
         return {
             list:[
                 {title:'按房号',name:'Input',value:'',serverName:'number',placeholder:'请输入ID'},
-                {title:'产品',name:'Input',value:'',serverName:'title',placeholder:'请输入部件名称'},
-                {title:'是否存在工艺路线',name:'Input',value:'',serverName:'title',placeholder:'请输入部件名称'},
+                {title:'产品名称',name:'Input',value:'',serverName:'title',placeholder:'请输入产品名称'},
+                {title:'是否存在工艺路线',name:'Select',value:'',serverName:'process_router',
+                    option:[
+                        {label:'是',value:1},
+                        {label:'否',value:0,}
+                    ]
+                },
             ],
             tableColums:[
                 {type:'selection',fixed:'left',width:'100',align:'center'},
@@ -78,7 +83,7 @@ export default {
                 {title:'单价',align:'center',key:'price',width:'200'},
                 {title:'产品',align:'center',key:'product_title',width:'200'},
                 {title:'部件名',align:'center',key:'part_title',width:'200'},
-                {title:'部件相关',align:'center',key:'',width:'200'},
+                {title:'部件相关',align:'center',key:'properties',width:'200'},
                 {title:'芯片',align:'center',key:'',width:'200'},
                 {title:'预估房号工期',align:'center',key:'predict_time',width:'200'},
                 {title:'操作',align:'center',slot:'set',width:'280',fixed:'right'},

@@ -12,6 +12,24 @@ const routerMap = [
         component: resolve => require(['@/views/PersonnelManagement/user'], resolve)
     },
     {
+        path:'/cms/finance/index',
+        name:'Finance',//财务-->首页
+        meta:{index:3},
+        component: resolve => require(['@/views/Finance/index'], resolve)
+    },
+    {
+        path:'/cms/finance/month',
+        name:'FinanceMonth',//财务-->月份
+        meta:{index:3},
+        component: resolve => require(['@/views/Finance/month'], resolve)
+    },
+    {
+        path:'/cms/finance/salary',
+        name:'FinanceSalary',//财务-->月份-->工人工资
+        meta:{index:3},
+        component: resolve => require(['@/views/Finance/salaryDetails'], resolve)
+    },
+    {
         path:'/cms/personnelmanagement/role',
         name:'PersonnelManagementRole',//人员管理-->角色管理
         meta:{index:4},
@@ -142,6 +160,18 @@ const routerMap = [
         name:'ProcedureMannageEdit',//工序管理通用页面 --> 新增--编辑
         meta:{index:4},
         component: resolve => require(['@/views/ProcedureMannage/edit'], resolve)
+    },
+    {
+        path:'/cms/productionorderlist/inboundform/index',
+        name:'InboundForm',//生产订单列表-->入库表
+        meta:{index:4},
+        component: resolve => require(['@/views/ProductionOrderList/InboundForm/index'], resolve)
+    },
+    {
+        path:'/cms/productionorderlist/inboundform/details',
+        name:'InboundFormDetails',//生产订单列表-->入库表详情
+        meta:{index:4},
+        component: resolve => require(['@/views/ProductionOrderList/InboundForm/details'], resolve)
     },
     {
         path:'/cms/productionorderlist/deliverylist/deliverylist',

@@ -106,7 +106,11 @@ export default {
                 {title:'小区',align:'center',key:'residential_name',width:'200'},
                 {title:'订单开始日期',align:'center',key:'show_start_time',width:'180'},
                 {title:'订单交付日期',align:'center',key:'show_end_time',width:'180'},
-                {title:'完成进度',align:'center',key:'complete_rate',width:'180'},
+                {title:'完成进度',align:'center',key:'complete_rate',width:'180',
+                    render(h,params){
+                        return h('span',{},params.row.complete_rate*100+'%')
+                    },
+                },
                 {title:'预估交付日期',align:'center',key:'show_predict_time',width:'200'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'220',fixed:'right'},
             ],

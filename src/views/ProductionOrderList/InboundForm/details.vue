@@ -1,7 +1,7 @@
 <template>
     <div>
         <FullPage 
-        title='工资列表'
+        title='入库详情'
         :list='list' 
         @init='init' 
         :loading='loading'
@@ -14,18 +14,8 @@
         :total='total'
         >
             <div slot='titleButton'>
-                <Button type="warning" ghost >批量导出</Button>
+                <Button type="warning" ghost >批量出库</Button>
             </div>
-            
-            <template slot='set' slot-scope='{row}'>
-                <div class="table-set">
-                    <svg style="font-size:20px" color='green' @click="goPage(row)" class="icon icon-nav" aria-hidden="true">
-                        <use xlink:href="#iconxiangqing"></use>
-                    </svg>
-                </div>
-            </template>
-            
-        
         </FullPage>
     </div>
 </template>
@@ -36,14 +26,26 @@ export default {
     data(){
         return {
             list:[
-                {title:'日期范围',type:'month',start_server:'start_time',end_server:'end_time',start_value:'',end_value:'',isDate:true,start_placeholder:'开始月份',end_placeholder:'结束月份'},
+                {title:'楼幢',name:'Input',value:'',width:'100'},
+                {title:'单元',name:'Input',value:'',width:'100'},
+                {title:'房号',name:'Input',value:'',},
+                {title:'产品名称',name:'Input',value:'',},
             ],
             tableColums:[
-                {title:'年/月份',align:'center',key:'month'},
-                {title:'应发金额',align:'center',key:'price'},
-                {title:'操作',align:'center',slot:'set'},
+                {type:'selection',align:'center',width:'100',},
+                {title:'序号',align:'center',key:'month'},
+                {title:'楼幢',align:'center',key:'price'},
+                {title:'单元',align:'center',},
+                {title:'楼层',align:'center',},
+                {title:'房号',align:'center',},
+                {title:'产品名称',align:'center',},
+                {title:'部件',align:'center',},
+                {title:'包装码',align:'center',},
+                {title:'单位',align:'center',},
+                {title:'状态',align:'center',},
+                {title:'芯片编号',align:'center',},
             ],
-            tableData:[{month:'9月份',price:'11500'}],
+            tableData:[],
             pageIndex:1,
             total:0,
             pageSize:10,
@@ -60,7 +62,7 @@ export default {
         },
         getData(row){
             this.loading = true;
-            this.axios('/api/finance_total',{params:row}).then(res=>{
+            this.axios('/api/orders_dispatch_detail',{params:row}).then(res=>{
                 this.loading = false;
                 this.tableData = res.data.data;
                 this.total = res.data.total;
@@ -76,15 +78,6 @@ export default {
             this.proxyObj.page_size = this.pageSize;
             this.getData(this.proxyObj)
         },
-        goPage(row){
-            this.$router.push({
-                path:'/cms/finance/month',
-                query:{
-                    title:row.month,
-                    id:row.id||''
-                }
-            })
-        }
     }
 }
 </script>

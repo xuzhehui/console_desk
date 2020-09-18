@@ -1,7 +1,7 @@
 <template>
     <div>
         <FullPage 
-        title='工资列表'
+        :title='$route.query.title'
         :list='list' 
         @init='init' 
         :loading='loading'
@@ -14,6 +14,7 @@
         :total='total'
         >
             <div slot='titleButton'>
+                <Button @click="back" type='primary' ghost style="margin-right:10px;" >返回</Button>
                 <Button type="warning" ghost >批量导出</Button>
             </div>
             
@@ -24,26 +25,25 @@
                     </svg>
                 </div>
             </template>
-            
-        
         </FullPage>
     </div>
 </template>
 
 <script>
-import {mapActions} from 'vuex'
 export default {
     data(){
         return {
             list:[
-                {title:'日期范围',type:'month',start_server:'start_time',end_server:'end_time',start_value:'',end_value:'',isDate:true,start_placeholder:'开始月份',end_placeholder:'结束月份'},
+                {title:'人员名称',name:'Input',serverName:'user_name',value:'',placeholder:'请输入人名'}
             ],
             tableColums:[
-                {title:'年/月份',align:'center',key:'month'},
-                {title:'应发金额',align:'center',key:'price'},
+                {title:'月份',align:'center',key:'month'},
+                {title:'人名',align:'center',key:'user'},
+                {title:'数量',align:'center',key:'number'},
+                {title:'应发金额(元)',align:'center',key:'price'},
                 {title:'操作',align:'center',slot:'set'},
             ],
-            tableData:[{month:'9月份',price:'11500'}],
+            tableData:[{month:'9月份',user:'小红',number:'147',price:'11500'}],
             pageIndex:1,
             total:0,
             pageSize:10,
@@ -60,7 +60,7 @@ export default {
         },
         getData(row){
             this.loading = true;
-            this.axios('/api/finance_total',{params:row}).then(res=>{
+            this.axios('/api/month_salary_list',{params:row}).then(res=>{
                 this.loading = false;
                 this.tableData = res.data.data;
                 this.total = res.data.total;
@@ -78,13 +78,14 @@ export default {
         },
         goPage(row){
             this.$router.push({
-                path:'/cms/finance/month',
+                path:'/cms/finance/salary',
                 query:{
-                    title:row.month,
-                    id:row.id||''
+                   title:row.user,
+                   id:row.id||''
                 }
             })
-        }
+        },
+        back(){this.$router.go(-1)},
     }
 }
 </script>

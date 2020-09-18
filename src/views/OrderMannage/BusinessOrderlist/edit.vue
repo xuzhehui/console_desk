@@ -544,7 +544,6 @@ export default {
 
         },
         saveParts(){
-            console.log(this.modalArray)
             this.modalArray.map(v=>{
                 let obj = {}
                 v.measuring.map(k=>{

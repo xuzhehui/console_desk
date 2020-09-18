@@ -77,7 +77,7 @@ export default {
                 path:'/cms/productionorderlist/deliverylist/partsdetails',
                 query:{
                     order_product_id:row.order_product_id,
-                    type:'oa'
+                    type:this.$route.query.type
                 }
             })
         },

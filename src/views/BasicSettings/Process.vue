@@ -47,6 +47,7 @@
                                 <Option :value='1'>生产</Option>
                                 <Option :value='2'>运输</Option>
                                 <Option :value='3'>安装</Option>
+                                <Option :value='4'>包装</Option>
                             </Select>
                         </FormItem>
                     </Form>

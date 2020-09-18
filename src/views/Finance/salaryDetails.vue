@@ -1,7 +1,7 @@
 <template>
     <div>
         <FullPage 
-        title='工资列表'
+        :title='$route.query.title+"工资详情"'
         :list='list' 
         @init='init' 
         :loading='loading'
@@ -14,36 +14,44 @@
         :total='total'
         >
             <div slot='titleButton'>
+                <Button @click="back" type='primary' ghost style="margin-right:10px;" >返回</Button>
                 <Button type="warning" ghost >批量导出</Button>
             </div>
             
             <template slot='set' slot-scope='{row}'>
                 <div class="table-set">
-                    <svg style="font-size:20px" color='green' @click="goPage(row)" class="icon icon-nav" aria-hidden="true">
+                    <svg style="font-size:20px" color='green' @click="goDetial(3,row)" class="icon icon-nav" aria-hidden="true">
                         <use xlink:href="#iconxiangqing"></use>
                     </svg>
                 </div>
             </template>
-            
-        
         </FullPage>
     </div>
 </template>
 
 <script>
-import {mapActions} from 'vuex'
 export default {
     data(){
         return {
             list:[
-                {title:'日期范围',type:'month',start_server:'start_time',end_server:'end_time',start_value:'',end_value:'',isDate:true,start_placeholder:'开始月份',end_placeholder:'结束月份'},
+                {title:'订单号',name:'Input',value:'',serverName:'order_no',placeholder:'请输入订单号'},
+                {title:'工序',name:'Input',value:'',serverName:'produce',placeholder:'请输入工序'},
+                {title:'产品名称',name:'Input',value:'',serverName:'product_title',placeholder:'请输入产品名称'},
+                {title:'日期范围',name:'Input',start_server:'start_time',serverName:'order_no',end_server:'end_time',start_value:'',end_value:'',isDate:true,start_placeholder:'开始日期',end_placeholder:'结束日期'},
+                {title:'工价',name:'Input',value:'',serverName:'price',placeholder:'请输入工价'},
             ],
             tableColums:[
-                {title:'年/月份',align:'center',key:'month'},
-                {title:'应发金额',align:'center',key:'price'},
-                {title:'操作',align:'center',slot:'set'},
+                {title:'订单号',align:'center',key:'order_no'},
+                {title:'工序',align:'center',key:'produce'},
+                {title:'产品名称',align:'center',key:'product_title'},
+                {title:'图号(元)',align:'center',key:'number_url'},
+                {title:'工价',align:'center',key:'price'},
+                {title:'天/计件',align:'center',key:'type'},
+                {title:'时间',align:'center',key:'time'},
             ],
-            tableData:[{month:'9月份',price:'11500'}],
+            tableData:[
+                {order_no:'1027689',produce:'木工',product_title:'产品1',number_url:'bs-28',price:'128',type:'按件',time:'2019-8-29'}
+            ],
             pageIndex:1,
             total:0,
             pageSize:10,
@@ -60,7 +68,7 @@ export default {
         },
         getData(row){
             this.loading = true;
-            this.axios('/api/finance_total',{params:row}).then(res=>{
+            this.axios('/api/salary_list_detail',{params:row}).then(res=>{
                 this.loading = false;
                 this.tableData = res.data.data;
                 this.total = res.data.total;
@@ -76,15 +84,7 @@ export default {
             this.proxyObj.page_size = this.pageSize;
             this.getData(this.proxyObj)
         },
-        goPage(row){
-            this.$router.push({
-                path:'/cms/finance/month',
-                query:{
-                    title:row.month,
-                    id:row.id||''
-                }
-            })
-        }
+        back(){this.$router.go(-1)},
     }
 }
 </script>
