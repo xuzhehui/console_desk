@@ -121,7 +121,8 @@ export default {
             this.$router.push({
                 path:'/cms/productionorderlist/inboundform/details',
                 query:{
-                    order_no:row.order_no
+                    order_no:row.order_no,
+                    type:4
                 }
             })
         }

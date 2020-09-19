@@ -7,7 +7,7 @@
         <div class="page-edit">
             <div class="nav" v-if="showTopSearch">
                 <Topsearch :showbtn='showbtn' @changeSelected='changeSelected'  :list='list' @init='init' @searchData='searchData'/>
-                <div>
+                <div style="padding-bottom:15px;">
                     <slot name='navButton'></slot>
                 </div>
             </div>
@@ -116,6 +116,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.nav{display: flex;justify-content: space-between;align-items:center;}
+.nav{display: flex;justify-content: space-between;align-items:flex-end;}
 .page-edit{overflow: hidden;overflow-y: auto;position:relative;top:0px;height:80%;}
 </style>

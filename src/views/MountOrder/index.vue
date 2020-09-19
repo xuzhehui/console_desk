@@ -19,7 +19,8 @@
             
             <template slot='set' slot-scope='{row}'>
                 <div>
-                    <a style="margin:0 5px" @click="goDetial(row)">详情</a>
+                    <a style="margin:0 5px" @click="goPage(row)">详情</a>
+                    <a style="margin:0 5px" @click="confirmSuccess(row)">完成</a>
                 </div>
             </template>
         </FullPage>
@@ -29,6 +30,7 @@
 <script>
 export default {
     data(){
+        let _this = this;
         return {
             title:'',
             list:[
@@ -118,13 +120,17 @@ export default {
                 }
             })
         },
-        goDetial(row){
+        goPage(row){
             this.$router.push({
-                path:'/cms/ordermannage/productionplanlist/details',
+                path:'/cms/mountorder/details',
                 query:{
-                    order_no:row.order_no
+                    order_no:row.order_no,
+                    type:3
                 }
             })
+        },
+        confirmSuccess(row){
+            
         }
     }
 }

@@ -353,6 +353,12 @@ const routerMap = [
         meta:{index:1},
         component: resolve => require(['@/views/MountOrder/index'], resolve)
     },
+    {
+        path:'/cms/mountorder/details',  
+        name:'MountOrderDetails',//安装订单--->安装订单详情
+        meta:{index:1},
+        component: resolve => require(['@/views/MountOrder/details'], resolve)
+    },
 
 ]
 
