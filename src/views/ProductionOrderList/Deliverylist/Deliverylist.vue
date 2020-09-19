@@ -4,39 +4,23 @@
         title='出库表'
         :list='list' 
         @init='init' 
+        :loading='loading'
         @searchData='init' 
         @changePage='changePage'
+        @changeSize='changeSize'
         :tableColums='tableColums'
         :tableData='tableData'
         :pageIndex='pageIndex'
         :total='total'
         >
             <div slot='navButton'>
-                <Button @click="setTableColums" type="primary" ghost icon='ios-cog'>表头设置</Button>
+                
             </div>
             
-            <template slot='set' slot-scope='row'>
-                <div>
-                    <Icon @click="goDetial(row.row)" size='20' style="color:#32C800;cursor:pointer" type="ios-paper-outline" />
-                </div>
+            <template slot='set' slot-scope='{row}'>
+                <a @click="confirmOutStock(row,1)" class="map-margin">确认出库</a>
+                <a @click="confirmOutStock(row,2)" class="map-margin">确认运输</a>
             </template>
-
-            <div>
-                <Modal :width='1064' class-name="vertical-center-modal" v-model="showTableColums" title='设置表头'>
-                    <Form>
-                        <FormItem label='订单信息:'>
-                            <div style="width:100%;display:flex;">
-                                <CheckboxGroup style="width:100%">
-                                    <Checkbox label="香蕉"></Checkbox>
-                                    <Checkbox label="苹果"></Checkbox>
-                                    <Checkbox label="西瓜"></Checkbox>
-                                    <Checkbox label="香蕉"></Checkbox>
-                                </CheckboxGroup>
-                            </div>
-                        </FormItem>
-                    </Form>
-                </Modal>
-            </div>
         </FullPage>
     </div>
 </template>
@@ -51,41 +35,65 @@ export default {
                 {title:'出库日期范围',name:'Input',start_value:'',end_value:'',isDate:true,start_placeholder:'开始日期',end_placeholder:'结束日期'}
             ],
             tableColums:[
-                {title:'订单编号',align:'center',key:'id',fixed:'left',},
-                {title:'订单类型',align:'center',key:'type_name',width:'150'},
+                {title:'订单编号',align:'center',key:'order_no',fixed:'left',width:'200'},
+                {title:'订单类型',align:'center',key:'type_name',width:'150',
+                    render:(h,params)=>h('span',{},params.row.type == 1 ? '工装' : '家装')
+                },
                 {title:'紧急程度',align:'center',key:'title',width:'150'},
-                {title:'小区名称',align:'center',key:'stock'},
-                {title:'出库时间',align:'center',key:'unit'},
-                {title:'客户',align:'center',key:'warning_number'},
-                {title:'手机号',align:'center',key:'price'},
-                {title:'订单状态',align:'center',key:'long'},
-                {title:'操作',align:'center',slot:'set',fixed:'right',width:'150'},
+                {title:'小区名称',align:'center',key:'residential_name',width:'150'},
+                {title:'出库时间',align:'center',key:'unit',width:'150'},
+                {title:'客户',align:'center',key:'warning_number',width:'150'},
+                {title:'手机号',align:'center',key:'mobile',width:'150'},
+                {title:'订单状态',align:'center',key:'long',width:'150'},
+                {title:'操作',align:'center',slot:'set',fixed:'right',width:'200'},
             ],
             tableData:[],
             pageIndex:1,
             total:100,
-            showTableColums:false,
+            proxyObj:{},
+            loading:false,
         }
     },
     methods:{
         init(row){
-            this.getData()
+            this.proxyObj = row;
+            this.getData(row)
         },
         getData(row){
-            this.axios('/api/orders_transport').then(res=>{
-                console.log(res)
+            this.loading = true;
+            this.axios('/api/orders_out_list',{params:row}).then(res=>{
+                this.loading = false;
+                if(res.code == 200){
+                    this.tableData = res.data.data
+                }
             })
         },
         changePage(e){
-
+            this.pageIndex = e;
+            this.proxyObj.page_index = this.pageIndex;
+            this.getData(this.proxyObj)
         },
-        setTableColums(){//设置表头
-            this.showTableColums = true;
+        changeSize(e){
+            this.pageSize = e;
+            this.proxyObj.page_size = this.pageSize;
+            this.getData(this.proxyObj)
         },
-        goDetial(row){
-            this.$router.push({
-                path:'/cms/productionorderlist/deliverylist/decorationlist',
-                query:{}
+        confirmOutStock(row,type){//type 1出库  2运输
+            let post_url = type == 1 ? '/api/orders_out_confirm' : '/api/orders_transport_complete'
+            this.confirmDelete({
+                title:'确认出库',
+                content:'确认出库么？',
+                type:'primary',
+                then:e=>{
+                    this.axios.post(post_url,{transport_no:row.transport_no}).then(res=>{
+                        if(res.code == 200){
+                            this.getData(this.proxyObj)
+                        }
+                    })
+                },
+                cancel:e=>{
+                    console.log(e)
+                }
             })
         }
     }
@@ -93,12 +101,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.vertical-center-modal{
-    display: flex;
-     align-items: center;
-    justify-content: center;
-    .ivu-modal{
-        top: 0;
-    }
-}
 </style>

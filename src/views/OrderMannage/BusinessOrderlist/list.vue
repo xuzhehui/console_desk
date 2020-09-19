@@ -91,7 +91,7 @@ export default {
                 {type:'selection',align:'center',width:'100',fixed:'left'},
                 {title:'订单编号',align:'center',key:'order_no',width:'200'},
                 {title:'订单类型',align:'center',key:'show_type',width:'100'},
-                {title:'订单状态',align:'center',key:'sub_state',width:'150',},
+                {title:'订单状态',align:'center',key:'state',width:'150',},
                 {title:'业务员',align:'center',key:'salesman',width:'150'},
                 {title:'紧急程度',align:'center',key:'show_warning_state',width:'100',
                     render(h,params){

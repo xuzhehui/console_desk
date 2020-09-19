@@ -348,10 +348,10 @@ const routerMap = [
         component: resolve => require(['@/views/MeasurementOrderMannage/edit'], resolve)
     },
     {
-        path:'/cms/shippingorder/index',  
-        name:'ShippingOrder',//运输type=1 安装type=2 订单管理-->订单列表
+        path:'/cms/mountorder/index',  
+        name:'MountOrder',//安装订单
         meta:{index:1},
-        component: resolve => require(['@/views/ShippingOrder/index'], resolve)
+        component: resolve => require(['@/views/MountOrder/index'], resolve)
     },
 
 ]

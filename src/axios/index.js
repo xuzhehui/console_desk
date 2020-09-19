@@ -39,7 +39,7 @@ instance.interceptors.response.use(res => {
             if(res.data.code == 401){
               localStorage.removeItem('token')
             }
-            Vue.prototype.$Message.error(res.data.msg)
+            Vue.prototype.$Message.error(res.data.msg||'数据格式不统一')
             return res.data
         }
       }else{

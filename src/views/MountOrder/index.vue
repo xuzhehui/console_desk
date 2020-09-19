@@ -1,7 +1,7 @@
 <template>
     <div>
         <FullPage 
-        :title='title'
+        title='安装订单列表'
         :list='list' 
         @init='init'
         :loading='loading' 
@@ -29,9 +29,7 @@
 <script>
 export default {
     data(){
-        let _this = this;
         return {
-            type:1,//1运输 2安装
             title:'',
             list:[
                 {title:'订单编号',name:'Input',serverName:'order_no',placeholder:'请输入订单编号',value:''},
@@ -83,8 +81,6 @@ export default {
         }
     },
     created(){
-       this.type = this.$route.query.type
-       this.title = this.type == 1 ? '运输订单列表' : '安装订单列表' 
     },
     mounted(){
         
@@ -92,7 +88,6 @@ export default {
     watch:{
         $route(to,from){
             this.type = to.query.type ? to.query.type : '';
-            this.title = this.type == 1 ? '运输订单列表' : '安装订单列表' ;
             this.getData(this.proxyObj)
         }
     },
@@ -100,7 +95,6 @@ export default {
         init(row){
             row.page_index = this.pageIndex;
             row.page_size = this.pageSize;
-            row.sub_state = 5
             this.proxyObj = row
             this.getData(row)
         },
@@ -116,11 +110,12 @@ export default {
         },
         getData(row){
             this.loading = true;
-            let url = this.type == 1 ? '/api/orders_transport_list' : '/api/orders_install_list'
-            this.axios(url,{params:row}).then(res=>{
+            this.axios('/api/orders_install_list',{params:row}).then(res=>{
                 this.loading = false;
-                this.tableData = res.data.data;
-                this.total = res.data.total;
+                if(res.code == 200){
+                    this.tableData = res.data.data;
+                    this.total = res.data.total;
+                }
             })
         },
         goDetial(row){

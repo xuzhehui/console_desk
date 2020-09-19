@@ -13,7 +13,6 @@
         >
             <div slot='titleButton'>
                 <Button  @click="back"  style="margin-right:10px;">返回</Button>
-                <Button type="primary" style="margin-right:10px;">批量下测量</Button>
                 <Button type="primary">打印清单</Button>
             </div>
 

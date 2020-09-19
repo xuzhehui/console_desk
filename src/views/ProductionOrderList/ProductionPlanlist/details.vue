@@ -16,7 +16,7 @@
             <div slot='titleButton'>
                 <Button @click="back" type='primary' ghost style="margin-right:10px;">返回</Button>
                 <Button type="primary" style="margin-right:10px;" ghost>打印清单</Button>
-                <Button type="primary" ghost>批量派工单</Button>
+                <Button type="primary" ghost @click="batchDispatchOrder">批量派工单</Button>
             </div>
 
             <template slot='set' slot-scope='{row}'>
@@ -102,6 +102,13 @@ export default {
         },
         setZoro(row){
             console.log(row)
+        },
+        batchDispatchOrder(){
+            if(!this.selects||this.selects.length<1){return this.$Message.error('请至少选择一项')}
+            this.dispatchOrder({
+                params:{house_id:this.selects.join(',')},
+                then(res){}
+            })
         }
     }
 }

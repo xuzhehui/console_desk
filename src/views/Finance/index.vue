@@ -55,6 +55,8 @@ export default {
         init(row){
             row.page_index = this.pageIndex;
             row.page_size = this.pageSize;
+            row.start_time = this.checkData(row.start_time)
+            row.end_time = this.checkData(row.end_time)
             this.proxyObj = row;
             this.getData(row)
         },
@@ -62,7 +64,7 @@ export default {
             this.loading = true;
             this.axios('/api/finance_total',{params:row}).then(res=>{
                 this.loading = false;
-                this.tableData = res.data.data;
+                this.tableData = res.data
                 this.total = res.data.total;
             })
         },
@@ -81,9 +83,15 @@ export default {
                 path:'/cms/finance/month',
                 query:{
                     title:row.month,
-                    id:row.id||''
                 }
             })
+        },
+        checkData(str){
+            if(!str){return ''};
+            str = str.split('-');
+            let [year,month] = str;
+            month = month<10 ? '0'+month : month;
+            return `${year}-${month}`
         }
     }
 }

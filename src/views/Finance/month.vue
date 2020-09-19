@@ -1,7 +1,7 @@
 <template>
     <div>
         <FullPage 
-        :title='$route.query.title'
+        :title='$route.query.title+"工资详情"'
         :list='list' 
         @init='init' 
         :loading='loading'
@@ -34,11 +34,11 @@ export default {
     data(){
         return {
             list:[
-                {title:'人员名称',name:'Input',serverName:'user_name',value:'',placeholder:'请输入人名'}
+                {title:'人员名称',name:'Input',serverName:'name',value:'',placeholder:'请输入人名'}
             ],
             tableColums:[
                 {title:'月份',align:'center',key:'month'},
-                {title:'人名',align:'center',key:'user'},
+                {title:'人名',align:'center',key:'name'},
                 {title:'数量',align:'center',key:'number'},
                 {title:'应发金额(元)',align:'center',key:'price'},
                 {title:'操作',align:'center',slot:'set'},
@@ -55,15 +55,19 @@ export default {
         init(row){
             row.page_index = this.pageIndex;
             row.page_size = this.pageSize;
+            row.month = this.$route.query.title;
             this.proxyObj = row;
+            console.log(row)
             this.getData(row)
         },
         getData(row){
             this.loading = true;
-            this.axios('/api/month_salary_list',{params:row}).then(res=>{
+            this.axios('/api/finance_total_detail',{params:row}).then(res=>{
                 this.loading = false;
-                this.tableData = res.data.data;
-                this.total = res.data.total;
+                if(res.code == 200){
+                    this.tableData = res.data;
+                    this.total = res.data.total;
+                }  
             })
         },
         changePage(e){
@@ -80,8 +84,7 @@ export default {
             this.$router.push({
                 path:'/cms/finance/salary',
                 query:{
-                   title:row.user,
-                   id:row.id||''
+                   title:row.name,
                 }
             })
         },
