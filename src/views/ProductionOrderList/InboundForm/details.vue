@@ -17,12 +17,17 @@
         >
             <div slot='titleButton'>
                 <Button @click="back" type='primary' ghost style="margin-right:10px;">返回</Button>
-                <Button @click="confirmSuccess(selects)" type="success" ghost style="margin-right:10px;" >批量入库</Button>
-                <Button type="warning" ghost @click="outStock(selects_out)">批量出库</Button>
+                <Button v-if="$route.query.type == 4" @click="confirmSuccess(selects)" type="success" ghost style="margin-right:10px;" >批量入库</Button>
+                <Button v-if="$route.query.type == 4" type="warning" ghost @click="outStock(selects_out)">批量出库</Button>
+                <Button v-if="$route.query.type == 2" @click="outShip(selects,1)" type="success" ghost style="margin-right:10px;" >批量确认出库</Button>
+                <Button v-if="$route.query.type == 2" @click="outShip(selects,2)" type="success" ghost style="margin-right:10px;" >批量运输</Button>
+                
             </div>
             <template slot-scope="{ row }" slot="set">
-                <a class="map-margin" @click="confirmSuccess(row)">确认入库</a>
-                <a v-if="row.order_in_no" class="map-margin" @click="outStock(row)">出库</a>
+                <a v-if="$route.query.type == 4&&!row.order_in_no" class="map-margin" @click="confirmSuccess(row)">确认入库</a>
+                <a v-if="$route.query.type == 4&&row.order_in_no" class="map-margin" @click="outStock(row)">出库</a>
+                <a v-if="$route.query.type == 2" class="map-margin" @click="outShip(row,1)">确认出库</a>
+                <a v-if="$route.query.type == 2" class="map-margin" @click="outShip(row,2)">运输</a>
             </template>
 
             <Modal class-name="vertical-center-modal" width='400' title='确认出库' v-model="showStock" @on-ok="confirmOutStock">
@@ -59,27 +64,27 @@ export default {
     data(){
         return {
             list:[
-                {title:'楼幢',name:'Input',value:'',width:'50'},
-                {title:'单元',name:'Input',value:'',width:'50'},
-                {title:'房号',name:'Input',value:'',},
-                {title:'产品名称',name:'Input',value:'',},
+                {title:'楼幢',name:'Input',serverName:'house',value:'',width:'50'},
+                {title:'单元',name:'Input',serverName:'unit',value:'',width:'50'},
+                {title:'房号',name:'Input',serverName:'number_detail',value:'',placeholder:'请输入房号'},
+                {title:'产品名称',name:'Input',serverName:'product_title',value:'',placeholder:'请输入产品名称'},
             ],
             logList:[],
             tableColums:[
                 {type:'selection',align:'center',width:'100',fixed:'left'},
-                {title:'序号',align:'center',key:'',width:'100'},
                 {title:'楼幢',align:'center',key:'house',width:'100'},
                 {title:'单元',align:'center',width:'100',key:'layer'},
                 {title:'楼层',align:'center',width:'100',key:'unit'},
                 {title:'房号',align:'center',width:'100',key:'number_detail'},
                 {title:'产品名称',align:'center',width:'200',key:'product_title'},
                 {title:'部件',align:'center',width:'200',key:'part_title'},
-                {title:'包装码',align:'center',width:'200',key:''},
-                {title:'单位',align:'center',width:'100',key:''},
-                {title:'状态',align:'center',width:'200',key:''},
-                {title:'芯片编号',align:'center',width:'200'},
-                {title:'操作',align:'center',width:'150',fixed:'right',slot:'set'
+                this.$route.query.type == 4 ? {title:'包装码',align:'center',width:'200',key:'order_in_no'} : {title:'运输单号',align:'center',width:'200',key:''},
+                {title:'单位',align:'center',width:'100',key:'company'},
+                {title:'状态',align:'center',width:'200',key:'',
+                    render:(h,params)=>h('span',{},params.row.sub_state==0 ? '未指派' : (params.row.sub_state == 1 ? '可以派工' : (params.row.sub_state == 2 ? '已派工' : '已完成')))
                 },
+                {title:'芯片编号',align:'center',width:'200'},
+                {title:'操作',align:'center',width:'150',fixed:'right',slot:'set'},
             ],
             tableData:[],
             pageIndex:1,
@@ -98,7 +103,8 @@ export default {
                 user_salary:''
             },
             users:[],
-            time:''
+            time:'',
+            shipArray:[]
         }
     },
     
@@ -133,11 +139,18 @@ export default {
         back(){this.$router.go(-1)},
         selectTable(row){
             let result = [],outResult = [];
-            row.map(v=>{
-                v.orders_procedure_id ? result.push(v.orders_procedure_id) : ''
-            })
-            this.selects = result
-            this.selects_out = outResult
+            if(this.$route.query.type == 2){
+                row.map(v=>v.transport_no ? result.push(v.transport_no) : '')
+            }else{
+                row.map(v=>{
+                    v.orders_procedure_id ? result.push(v.orders_procedure_id) : ''
+                    v.order_in_no ? outResult.push(v.order_in_no) : ''
+                })
+            }
+            this.selects = result||[];
+            this.selects_out = outResult||[]
+            console.log(this.selects)
+            
         },
         confirmSuccess(row){
             let params = '';
@@ -162,23 +175,45 @@ export default {
             })
         },
         outStock(row){
+            console.log(row.join(','))
             if(!row||row.length<1){return this.$Message.error('您未选择或者未确认出库')}
-            this.info.order_in_no = Array.isArray(row) ? this.selects_out.join(',') : row.order_in_no
+            this.info.order_in_no = Array.isArray(row) ? row.join(',') : row.order_in_no
             this.showStock = true;
-            this.info.order_in_no = row.order_in_no
         },
         confirmOutStock(){
+            console.log(this.info)
             if(this.time.length>0){
                 this.info.start_time = new Date(this.time[0]).toLocaleDateString().replace(/\//g,"-")
                 this.info.end_time = new Date(this.time[1]).toLocaleDateString().replace(/\//g,"-")
             }
-            this.axios.post('/api/orders_in',this.info).then(res=>{
+            this.axios.post('/api/orders_out',this.info).then(res=>{
                 if(res.code == 200){
                     this.$Message.success(res.msg)
                     setTimeout(()=>this.back(),500)
                 }
             })
-        }
+        },
+
+        outShip(row,type){//type 1出库  2运输
+            if(!row||row.length<1){return this.$Message.error('请至少选择一项')}
+            let transport_no = Array.isArray(row) ? row.join(',') : row.transport_no;
+            let post_url = type == 1 ? '/api/orders_out_confirm' : '/api/orders_transport_complete';
+            this.confirmDelete({
+                title:type == 1 ? '确认出库' : '确认运输',
+                content:type == 1 ? '确认出库么？' : '确认运输么',
+                type:'primary',
+                then:e=>{
+                    this.axios.post(post_url,{transport_no:row.transport_no}).then(res=>{
+                        if(res.code == 200){
+                            this.getData(this.proxyObj)
+                        }
+                    })
+                },
+                cancel:e=>{
+                    console.log(e)
+                }
+            })
+        },
     }
 }
 </script>

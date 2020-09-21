@@ -100,7 +100,7 @@ export default {
                             style:{
                                 color:params.row.warning_state ==  0 ? '#32C800' : (params.row.warning_state == 1 ? '#FFA141' : '#FF5E5C')
                             }
-                        },params.row.show_warning_state)
+                        },params.row.warning_state == 0 ? '不急' : (params.row.warning_state == 1 ? '比较急' : (params.row.warning_state == 2 ? '紧急' : '非常急')))
                     }
                 },
                 {title:'小区',align:'center',key:'residential_name',width:'200'},
@@ -148,7 +148,6 @@ export default {
                 res.data.data.map(v=>{
                     v.show_type = v.type == 1 ? '工装' : '家装'
                     v.show_state = v.state == 0 ? '未审核' : (v.state == 1 ? '审核中' : (v.state == 2 ? '审核通过' : (v.state == 3 ? '订单生产中' : '完成')))
-                    v.show_warning_state = v.warning_state == 0 ? '不急' : (v.warning_state == 1 ? '比较急' : (v.warning_state == 2 ? '紧急' : '非常急'))
                     v.show_sub_state = v.sub_state == 0 ? '测量未审核' : (v.sub_state == 1 ? '测量审核' : 
                     (v.sub_state == 2 ? '测量通过' : (v.sub_state == 3 ? '生产审核中' : (v.sub_state == 4 ? '生产通过' : '到生产计划'))))
                     v.show_start_time = this.func.replaceDate(v.start_time)

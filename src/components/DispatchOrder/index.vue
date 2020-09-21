@@ -64,6 +64,7 @@ export default {
                 product_id:'',
             },
             info:{},
+            show:false,
             params:{},
         }
     },

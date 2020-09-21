@@ -13,7 +13,8 @@ const routes = [
     {
         path:'/',
         name:'Login',
-        meta:{index:1},
+        meta:{index:1,title:'九方家装'},
+        
         component: resolve => require(['@/views/login'], resolve)
     },
     {
@@ -36,6 +37,9 @@ const router = new VueRoute({
 
 router.beforeEach((to, from, next) => {
     if(to.path === '/'){
+      if(to.meta.title){
+        document.title  = to.meta.title;
+      }
       next();
     }else{
       let token = localStorage.getItem('token');

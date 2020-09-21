@@ -5,8 +5,10 @@
         :list='list' 
         @init='init' 
         :logList='logList'
+        :loading='loading'
         @searchData='init' 
         @changePage='changePage'
+        @changeSize='changeSize'
         @selectTable='selectTable'
         :tableColums='tableColums'
         :tableData='tableData'
@@ -95,7 +97,7 @@ export default {
             showType:1,
             logList:[],
             classInfo:{},
-            searchObj:{},
+            proxyObj:{},
             showTableColums:false,
             showPlan:false,
             planInfo:{
@@ -105,18 +107,25 @@ export default {
             },
             selects:[],
             order_no:null,
+            loading:false,
         }
     },
     methods:{
         init(row){
-            this.searchObj = row;
-            this.getData({order_no:this.$route.query.order_no,type:'produce'})
+            row.page_index = this.pageIndex;
+            row.page_size = this.pageSize;
+            Object.assign(row,this.$route.query)
+            this.proxyObj = row;
+            this.getData(row)
         },
         getData(row){
+            this.loading = true
             this.axios('/api/orders_produce_parts_list',{params:row}).then(res=>{
+                this.loading = false;
                 this.order_no = res.data.order_no;
                 this.logList = res.data.detail
                 this.tableData = res.data.list;
+                this.total = res.data.total
             })
             this.tableData.push({order_no:'222222'})
             this.tableData.push({order_no:'222222'})
@@ -130,8 +139,15 @@ export default {
                 }
             })
         },
-        changePage(e){
+         changePage(e){
             this.pageIndex = e;
+            this.proxyObj.page_index = e;
+            this.getData(this.proxyObj)
+        },
+        changeSize(e){
+            this.pageSize = e;
+            this.proxyObj.page_size = this.pageSize;
+            this.getData(this.proxyObj)
         },
         back(){
             this.$router.go(-1)

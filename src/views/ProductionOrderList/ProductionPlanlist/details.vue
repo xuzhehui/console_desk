@@ -72,11 +72,11 @@ export default {
     },
     methods:{
         init(row){
+            row.page_index = this.pageIndex;
+            row.page_size = this.pageSize;
             this.order_no = this.$route.query.order_no;
-            row.order_no = this.order_no;
-            if(this.order_no){
-                this.getDetails(row)
-            }
+            Object.assign(row,this.$route.query)
+            this.getData(row)
         },
         searchData(row){
 
@@ -84,7 +84,7 @@ export default {
         back(){
             this.$router.go(-1)
         },
-        getDetails(row){
+        getData(row){
             this.axios('/api/orders_procedure_list',{params:row}).then(res=>{
                 this.logList = res.data.detail;
                 this.tableData = res.data.list;

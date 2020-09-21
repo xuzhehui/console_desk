@@ -109,72 +109,22 @@ export default {
             setTimeout(()=>{this.loading = false},500)
         },
         filterTable(row){
-           let params = [];
-           for(let i in row){
-               if(Array.isArray(row[i])&&row[i].length>0){
-                   row[i].map(v=>params.push({key:i,value:v}))
-               }
-           }
-           let houseArray = [],unitArray = [],layerArray = [],roomArray = [];
-           if(params.length<1){
-               this.tableData = this.reset_Table;
-           }else{
-               params.map(v=>{
-                    if(v.key == 'house'){
-                        houseArray = houseArray.concat(this.reset_Table.filter(k=>k[v.key] == v.value))
-                        if(houseArray.length>0){
-                            params.map(k=>{
-                                if(k.key == 'unit'){
-                                    unitArray = unitArray.concat(houseArray.filter(m=>m[k.key] == k.value))
-                                    if(unitArray.length>0){
-                                        params.map(b=>{
-                                            if(b.key == 'layer'){
-                                                layerArray = layerArray.concat(unitArray.filter(m=>m[b.key] == b.value))
-                                            }
-                                        })
-                                        if(layerArray.length>0){
-                                            params.map(z=>{
-                                                if(z.key == 'number_detail'){
-                                                    roomArray = roomArray.concat(layerArray.filter(m=>m[z.key] == z.value))
-                                                }
-                                            })
-                                        }
-                                    }
-                                }
-                            })
-                        }
-                    }else if(v.key == 'unit'){
-                        let res = houseArray.length>0 ? houseArray : this.reset_Table
-                        unitArray = unitArray.concat(res.filter(k=>k[v.key] == v.value)) 
-                        if(unitArray.length>0){
-                            params.map(b=>{
-                                if(b.key == 'layer'){
-                                    layerArray = layerArray.concat(unitArray.filter(m=>m[b.key] == b.value))
-                                }
-                            })
-                            if(layerArray.length>0){
-                                params.map(b=>{
-                                    if(b.key == 'number_detail'){
-                                        roomArray = roomArray.concat(unitArray.filter(m=>m[b.key] == b.value))
-                                    }
-                                })
-                            }
-                        }
-                    }else if(v.key=='layer'){
-                        let res = unitArray.length>0 ? unitArray : this.reset_Table
-                        layerArray = layerArray.concat(res.filter(k=>k[v.key] == v.value)) 
-                        if(layerArray.length>0){
-                            roomArray = roomArray.concat(res.filter(k=>k[v.key] == v.value)) 
-                        }
-                        
-                    }else if(v.key=='number_detail'){
-                        let res = layerArray.length>0 ? layerArray : this.reset_Table
-                        roomArray = roomArray.concat(res.filter(k=>k[v.key] == v.value)) 
-                    }
-                })
-                this.tableData = roomArray.length>0 ? roomArray : ( layerArray.length>0 ? layerArray : (unitArray.length>0 ? unitArray :  houseArray))
-                this.tableData = this.func.deteleObject(this.tableData)
-           }  
+            let resg = '';
+            if(row.house){
+                row.house.map((m,i)=>resg+=`${i==0? '(' : ''}v.house == ${m}${i==row.house.length-1&&(row.unit.length>0||row.layer.length>0||row.number_detail.length>0) ? ')&&' : (i==row.house.length-1 ? ')' : '||')}`)
+            }
+            if(row.unit){
+                row.unit.map((m,i)=>resg+=`${i==0? '(' : ''}v.unit == ${m}${i==row.unit.length-1&&(row.layer.length>0||row.number_detail>0) ? ')&&' : (i==row.unit.length-1 ? ')' : '||')}`)
+            }
+            if(row.layer){
+                row.layer.map((m,i)=>resg+=`${i==0? '(' : ''}v.layer == ${m}${i==row.layer.length-1&&row.number_detail.length>0 ? ')&&' : (i==row.layer.length-1 ? ')' : '||')}`)
+            }
+            if(row.number_detail){
+                row.number_detail.map((m,i)=>resg+=`${i==0? '(' : ''}v.number_detail == ${'"'+m+'"'}${i==row.number_detail.length-1 ? ')' : '||'}`)
+            } 
+            this.tableData = this.reset_Table.filter(v=>{
+               return eval(resg)
+            })
         },
         back(){
             this.$router.go(-1)

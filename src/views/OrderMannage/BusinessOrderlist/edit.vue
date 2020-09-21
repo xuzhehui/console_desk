@@ -184,7 +184,7 @@
                         </FormItem>
 
                         <FormItem v-for="(measuring,measuring_key) in item.measuring" :label="measuring.title" :key="measuring_key+11">
-                            <Input :disabled='productType == 3 ? true : false' :placeholder="'请输入'+measuring.title" size='small' v-model="measuring.value"/>
+                            <Input :disabled='productType == 3 ? true : false' :placeholder="'请输入'+measuring.title" size='small' v-model="item[measuring.key]"/>
                         </FormItem>
 
                         <FormItem v-for="(outh,outh_key) in item.outh" :label="outh.title" :key="outh_key+21">
@@ -195,7 +195,7 @@
                         </FormItem>
 
                         <FormItem v-for="(remake,remake_key) in item.product_remake" :label="remake.title" :key="remake_key+31">
-                            <Input disabled placeholder="自动生成" size='small' v-model="remake.value"/>
+                            <Input  placeholder="请输入" size='small' v-model="item[remake.title]"/>
                         </FormItem>
 
                     </Form>
@@ -258,6 +258,7 @@ export default {
                 {title:'原材料单位',align:'center',key:'unit'},
                 {title:'原材料预估费用',align:'center',key:'num_price'},
             ],
+            Top:[],
             originalData:[],
             tableColumns:[
                 {title:'产品类型',align:'center',key:'product_type',width:'100',fixed:'left'},
@@ -308,17 +309,17 @@ export default {
                         layer:null,
                         number:null,
                         product_top:[
-                            {title:'产品类型',align:'center',key:'product_type',width:'100',fixed:'left'},
-                            {title:'产品名称',align:'center',key:'title',width:'150'},
-                            {title:'产品型号',align:'center',key:'model',width:'100'},
-                            {title:'测量数据',align:'center',key:'',width:'100'},
-                            {title:'位置',align:'center',key:'position',width:'100'},
-                            {title:'图纸',align:'center',width:'80',key:'url',slot:'url'},
-                            {title:'图号',align:'center',key:'url_number',width:'150',},
-                            {title:'指导价格(元)',align:'center',key:'price',width:'120'},
-                            {title:'议价(元)',align:'center',key:'real_price',width:'100'},
-                            {title:'预估工期',align:'center',key:'limit_time',width:'200'},
-                            {title:'操作',align:'center',slot:'set',fixed:'right',width:'150'},
+                            // {title:'产品类型',align:'center',key:'product_type',width:'100',fixed:'left'},
+                            // {title:'产品名称',align:'center',key:'title',width:'150'},
+                            // {title:'产品型号',align:'center',key:'model',width:'100'},
+                            // {title:'测量数据',align:'center',key:'',width:'100'},
+                            // {title:'位置',align:'center',key:'position',width:'100'},
+                            // {title:'图纸',align:'center',width:'80',key:'url',slot:'url'},
+                            // {title:'图号',align:'center',key:'url_number',width:'150',},
+                            // {title:'指导价格(元)',align:'center',key:'price',width:'120'},
+                            // {title:'议价(元)',align:'center',key:'real_price',width:'100'},
+                            // {title:'预估工期',align:'center',key:'limit_time',width:'200'},
+                            // {title:'操作',align:'center',slot:'set',fixed:'right',width:'150'},
                         ],
                         product:[
                             {
@@ -337,6 +338,7 @@ export default {
                                 url:'',
                                 route_id:'',
                                 limit_time:null,
+
                                 parts:[
                                     {
 
@@ -430,20 +432,23 @@ export default {
             this.axios('/api/product').then(res=>this.productList = res.data.data)
         },
         changeProduct(row,n,ext){
-            this.axios('/api/order_product_detail',{params:{id:row.value}}).then(res=>{
-                
+            let id = row ? row.value : this.productList[0].id
+            this.axios('/api/order_product_detail',{params:{id:id}}).then(res=>{
                 let _this = this;
                 let modalData = this.modalArray[n]
                 modalData.product_type = res.data.detail.product_type||''
                 modalData.unit = res.data.detail.unit||''
                 modalData.model = res.data.detail.model || ''
-                // modalData.product_id = row.value;
+                console.log(this.Top)
                 if(res.code == 200){
                     if(!ext){
-                        modalData.title = row.label
+                        if(row){modalData.title = row.label||''}
                         modalData.measuring = res.data.measuring;
                         modalData.outh = res.data.outh;
                         modalData.product_remake = res.data.product_remake;
+                        this.Top = res.data.product_top;
+                    }else{
+                        this.Top = res.data.product_top;
                     }
                     modalData.parts_top = res.data.intermediate.parts_top
                     if(this.func.isType(res.data.intermediate.parts)!='Array'){
@@ -451,7 +456,7 @@ export default {
                     }
                     if(!ext){
                         res.data.intermediate.parts.map(v=>{
-                            console.log(v.maber_time = 0)
+                            v.maber_time = 0
                             v.price = 0
                         })
                         modalData.parts = res.data.intermediate.parts
@@ -489,7 +494,6 @@ export default {
                                                     _this.$forceUpdate()
                                                 }
                                             })
-                                            
                                          }
                                     },
                                 },
@@ -513,19 +517,19 @@ export default {
         },
         addParts(row){
             this.modalArray.push({
-                product_id:null,
-                price:'',
-                real_price:null,
-                long:'',
-                width:'',
-                high:'',
-                type:null,
-                unit:'',
-                img:'',
-                limit_time:null,
-                model:'',
-                product_type:'',
-                parts:[]
+                // product_id:null,
+                // price:'',
+                // real_price:null,
+                // long:'',
+                // width:'',
+                // high:'',
+                // type:null,
+                // unit:'',
+                // img:'',
+                // limit_time:null,
+                // model:'',
+                // product_type:'',
+                // parts:[]
             })
         },
         changeSelect(e,item,row,n){
@@ -544,20 +548,7 @@ export default {
 
         },
         saveParts(){
-            this.modalArray.map(v=>{
-                let obj = {}
-                v.measuring.map(k=>{
-                    for(let i in k){
-                        obj[k['key']] = k['value']
-                    }
-                })
-                for(let i in obj){
-                    if(obj[i]){
-                        v[i] = obj[i]
-                    }
-                }
-            })
-
+            let _this = this;
             this.modalArray.map(v=>{//计算预估工期，指导报价
                 let t = 0,p = 0;
                 v.parts.map(k=>{
@@ -567,40 +558,13 @@ export default {
                 v.limit_time = t
                 v.price = p
             })
-            let product_top = JSON.parse(JSON.stringify(this.tableColumns));
-            this.modalArray.map(v=>{//找出产品合并表头
-                v.measuring.map(v=>{
-                    let n = product_top.findIndex(m=>m.key == v.key)
-                    if(n==-1){
-                        v.width = '200'
-                        v.align = 'center'
-                        product_top.splice(product_top.length-2,0,v)
-                    }
-                }) 
-                v.outh.map(v=>{
-                    let n = product_top.findIndex(m=>m.key == v.key)
-                    if(n==-1){
-                        v.width = '200'
-                        v.align = 'center'
-                        product_top.splice(product_top.length-2,0,v)
-                    }
-                })
-                 v.product_remake.map(v=>{
-                    v.key = v.title
-                    let n = product_top.findIndex(m=>m.key == v.key)
-                    if(n==-1){
-                        v.width = '200'
-                        v.align = 'center'
-                        product_top.splice(product_top.length-2,0,v)
-                    }
-                })
-            })
             this.proxyObj.product = this.modalArray;
-            this.proxyObj.product_top = product_top;
+            this.Top[0].fixed='left'
+            this.proxyObj.product_top = this.Top;
+            this.proxyObj.product_top.map(v=>{v.width=200,v.align = 'center'})
             this.$forceUpdate()
-            this.showProduct = false;
             this.tapProduct()
-            this.$forceUpdate()
+            this.showProduct = false;
             
         },
         cancelModal(){

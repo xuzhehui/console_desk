@@ -1,7 +1,7 @@
 <template>
     <div>
         <FullPage 
-        title='入库详情'
+        title='安装详情'
         :list='list' 
         @init='init' 
         :logList='logList'
@@ -17,15 +17,13 @@
         >
             <div slot='titleButton'>
                 <Button @click="back" type='primary' ghost style="margin-right:10px;">返回</Button>
-                <Button @click="confirmSuccess(selects)" type="success" ghost style="margin-right:10px;" >批量入库</Button>
-                <Button type="warning" ghost @click="outStock(selects_out)">批量出库</Button>
+                <Button @click="confirmSuccess(selects)" type="success" ghost style="margin-right:10px;" >批量完成</Button>
             </div>
             <template slot-scope="{ row }" slot="set">
-                <a class="map-margin" @click="confirmSuccess(row)">确认入库</a>
-                <a v-if="row.order_in_no" class="map-margin" @click="outStock(row)">出库</a>
+                <a class="map-margin" @click="confirmSuccess(row)">完成</a>
             </template>
 
-            <Modal class-name="vertical-center-modal" width='400' title='确认出库' v-model="showStock" @on-ok="confirmOutStock">
+            <!-- <Modal class-name="vertical-center-modal" width='400' title='确认出库' v-model="showStock" @on-ok="confirmOutStock">
                 <Form :label-width="100">
                     <FormItem label='选择人员'>
                         <Select clearable v-model="info.user_id">
@@ -48,7 +46,7 @@
                         </Input>
                     </FormItem>
                 </Form>
-            </Modal>
+            </Modal> -->
         </FullPage>
     </div>
 </template>
@@ -59,27 +57,26 @@ export default {
     data(){
         return {
             list:[
-                {title:'楼幢',name:'Input',value:'',width:'50'},
-                {title:'单元',name:'Input',value:'',width:'50'},
-                {title:'房号',name:'Input',value:'',},
-                {title:'产品名称',name:'Input',value:'',},
+                {title:'楼幢',name:'Input',serverName:'house',value:'',width:'50'},
+                {title:'单元',name:'Input',serverName:'unit',value:'',width:'50'},
+                {title:'房号',name:'Input',serverName:'number_detail',value:'',placeholder:'请输入房号'},
+                {title:'产品名称',name:'Input',serverName:'product_title',value:'',placeholder:'请输入产品名称'},
             ],
             logList:[],
             tableColums:[
                 {type:'selection',align:'center',width:'100',fixed:'left'},
-                {title:'序号',align:'center',key:'',width:'100'},
+                {title:'订单编号',align:'center',key:'',width:'100'},
                 {title:'楼幢',align:'center',key:'house',width:'100'},
                 {title:'单元',align:'center',width:'100',key:'layer'},
                 {title:'楼层',align:'center',width:'100',key:'unit'},
                 {title:'房号',align:'center',width:'100',key:'number_detail'},
                 {title:'产品名称',align:'center',width:'200',key:'product_title'},
-                {title:'部件',align:'center',width:'200',key:'part_title'},
-                {title:'包装码',align:'center',width:'200',key:''},
-                {title:'单位',align:'center',width:'100',key:''},
-                {title:'状态',align:'center',width:'200',key:''},
-                {title:'芯片编号',align:'center',width:'200'},
-                {title:'操作',align:'center',width:'150',fixed:'right',slot:'set'
-                },
+                {title:'位置',align:'center',width:'200',key:'position'},
+                {title:'出库时间',align:'center',width:'200',key:''},
+                {title:'运输开始时间',align:'center',width:'200',key:''},
+                {title:'实际结束时间',align:'center',width:'200',key:''},
+                {title:'实际运输时间',align:'center',width:'200'},
+                {title:'操作',align:'center',width:'150',fixed:'right',slot:'set'},
             ],
             tableData:[],
             pageIndex:1,
@@ -144,11 +141,11 @@ export default {
             if(!row||row.length<1){return this.$Message.error('请至少选择一项')}
             params = Array.isArray(row) ? row.join(',') : row.orders_procedure_id
             this.confirmDelete({
-                title:'确认入库',
-                content:'确认入库？',
+                title:'确认完成么',
+                content:'确认完成？',
                 type:'primary',
                 then:()=>{
-                    this.axios.post('/api/orders_in',{orders_procedure_id:params})
+                    this.axios.post('/api/orders_dispatch_confirm',{orders_procedure_id:params})
                     .then(res=>{
                         if(res.code == 200){
                             this.$Message.success(res.msg);
@@ -161,24 +158,6 @@ export default {
                 }
             })
         },
-        outStock(row){
-            if(!row||row.length<1){return this.$Message.error('您未选择或者未确认出库')}
-            this.info.order_in_no = Array.isArray(row) ? this.selects_out.join(',') : row.order_in_no
-            this.showStock = true;
-            this.info.order_in_no = row.order_in_no
-        },
-        confirmOutStock(){
-            if(this.time.length>0){
-                this.info.start_time = new Date(this.time[0]).toLocaleDateString().replace(/\//g,"-")
-                this.info.end_time = new Date(this.time[1]).toLocaleDateString().replace(/\//g,"-")
-            }
-            this.axios.post('/api/orders_in',this.info).then(res=>{
-                if(res.code == 200){
-                    this.$Message.success(res.msg)
-                    setTimeout(()=>this.back(),500)
-                }
-            })
-        }
     }
 }
 </script>
