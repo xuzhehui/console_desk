@@ -13,11 +13,9 @@
         :pageIndex='pageIndex'
         :total='total'
         >
-            
             <template slot='set' slot-scope='{row}'>
                 <a @click="goPage(row)">查看详情</a>
             </template>
-
         </FullPage>
     </div>
 </template>
@@ -80,7 +78,9 @@ export default {
                     render:(h,params)=>h('span',{},this.func.replaceDate(params.row.end_time*1))
                 },
                 {title:'业务员',align:'center',key:'nickname',width:'150'},
-                {title:'订单状态',align:'center',key:'state',width:'150',},
+                {title:'订单状态',align:'center',key:'state',width:'150',
+                     render:(h,params)=>h('span',{},params.row.sub_state==0 ? '未指派' : (params.row.sub_state == 1 ? '可以派工' : (params.row.sub_state == 2 ? '已派工' : '已完成')))
+                },
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'100',fixed:'right'},
             ],
             tableData:[{order_no:'123'}],

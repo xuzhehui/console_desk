@@ -72,10 +72,19 @@ export default {
                         },params.row.order_type == 1 ? '工装' : '家装')
                     }
                 },
-                {title:'测量开始时间',align:'center',key:'measure_start_time',width:'200'},
-                {title:'测量结束时间',align:'center',key:'measure_end_time',width:'200'},
-                {title:'实际完成时间',align:'center',key:'plan_start_time',width:'200'},
-                {title:'订单状态',align:'center',key:'show_sub_state',width:'100'},
+                {title:'测量开始时间',align:'center',key:'measure_start_time',width:'200',
+                    render:(h,params)=>h('span',{},this.func.replaceDate(params.row.measure_start_time*1))
+                },
+                {title:'测量结束时间',align:'center',key:'measure_end_time',width:'200',
+                    render:(h,params)=>h('span',{},this.func.replaceDate(params.row.measure_end_time*1))
+                },
+                {title:'实际完成时间',align:'center',key:'plan_start_time',width:'200',
+                    render:(h,params)=>h('span',{},this.func.replaceDate(params.row.plan_start_time*1))
+                },
+                {title:'订单状态',align:'center',key:'show_sub_state',width:'100',
+                    render:(h,params)=>h('span',{}, params.row.sub_state == 0 ? '测量未审核' : ( params.row.sub_state == 1 ? '测量审核' : 
+                    ( params.row.sub_state == 2 ? '测量通过' : (params.row.sub_state == 3 ? '生产审核中' : (params.row.sub_state == 4 ? '生产通过' : '到生产计划')))))
+                },
                 {title:'备注',align:'center',key:'remark',width:'200'},
                 {title:'操作',align:'center',slot:'set',width:'200',fixed:'right'},
             ],
@@ -105,13 +114,6 @@ export default {
             this.loading = true;
             this.axios('/api/order_measure_list',{params:row}).then(res=>{
                 this.loading = false;
-                if(!res.data.data){return this.$Message.error('列表数据返回格式不正确')}
-                res.data.data.map(v=>{
-                    v.show_type = v.type == 1 ? '业务订单' : '代理商订单';
-                    v.show_sub_state = v.sub_state == 0 ? '测量未审核' : (v.sub_state == 1 ? '测量审核' : 
-                    (v.sub_state == 2 ? '测量通过' : (v.sub_state == 3 ? '生产审核中' : (v.sub_state == 4 ? '生产通过' : '到生产计划'))))
-                    v.state == 2 ? v.show_sub_state = '审批驳回' : v.show_sub_state
-                })
                 this.tableData = res.data.data;
                 this.total = res.data.total;
             })

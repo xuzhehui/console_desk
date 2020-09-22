@@ -18,8 +18,8 @@
             </div>
             
             <template slot='set' slot-scope='{row}'>
-                <a @click="confirmOutStock(row,1)" class="map-margin">确认出库</a>
-                <a @click="confirmOutStock(row,2)" class="map-margin">确认运输</a>
+                <a @click="confirmOutStock(row,1)"  v-if="!row.transport_no" class="map-margin">确认出库</a>
+                <a @click="confirmOutStock(row,2)" v-if="row.transport_no" class="map-margin">确认运输</a>
                 <a class="map-margin" @click="goPage(row)">详情</a>
             </template>
         </FullPage>
@@ -59,7 +59,7 @@ export default {
             ],
             tableData:[],
             pageIndex:1,
-            total:100,
+            total:0,
             proxyObj:{},
             loading:false,
         }
@@ -74,7 +74,8 @@ export default {
             this.axios('/api/orders_out_list',{params:row}).then(res=>{
                 this.loading = false;
                 if(res.code == 200){
-                    this.tableData = res.data.data
+                    this.tableData = res.data.data;
+                    this.total = res.data.total;
                 }
             })
         },
@@ -89,14 +90,17 @@ export default {
             this.getData(this.proxyObj)
         },
         confirmOutStock(row,type){//type 1出库  2运输
-            let post_url = type == 1 ? '/api/orders_out_confirm' : '/api/orders_transport_complete'
+            let params = {};
+            let post_url = type == 1 ? '/api/orders_transport' : '/api/orders_transport_confirm';
+            params.transport_no = row.transport_no||row.order_no;
             this.confirmDelete({
-                title:'确认出库',
-                content:'确认出库么？',
+                title:type == 1 ? '确认出库' : '确认运输',
+                content:type == 1 ? '确认出库么？' : '确认运输么？',
                 type:'primary',
                 then:e=>{
-                    this.axios.post(post_url,{transport_no:row.transport_no}).then(res=>{
+                    this.axios.post(post_url,params).then(res=>{
                         if(res.code == 200){
+                            this.$Message.success(res.msg)
                             this.getData(this.proxyObj)
                         }
                     })

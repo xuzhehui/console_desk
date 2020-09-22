@@ -30,6 +30,18 @@ const routerMap = [
         component: resolve => require(['@/views/Finance/salaryDetails'], resolve)
     },
     {
+        path:'/cms/finance/production',
+        name:'ProductionCharts',//财务-->生产产值表
+        meta:{index:2,NoPadding:true},
+        component: resolve => require(['@/views/Finance/productionCharts/index'], resolve)
+    },
+    {
+        path:'/cms/finance/production/details',
+        name:'ProductionChartsDetsil',//财务-->生产产值表-->产值表详情
+        meta:{index:2,NoPadding:true},
+        component: resolve => require(['@/views/Finance/productionCharts/details'], resolve)
+    },
+    {
         path:'/cms/personnelmanagement/role',
         name:'PersonnelManagementRole',//人员管理-->角色管理
         meta:{index:4},

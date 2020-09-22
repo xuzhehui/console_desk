@@ -20,14 +20,14 @@
                 <Button v-if="$route.query.type == 4" @click="confirmSuccess(selects)" type="success" ghost style="margin-right:10px;" >批量入库</Button>
                 <Button v-if="$route.query.type == 4" type="warning" ghost @click="outStock(selects_out)">批量出库</Button>
                 <Button v-if="$route.query.type == 2" @click="outShip(selects,1)" type="success" ghost style="margin-right:10px;" >批量确认出库</Button>
-                <Button v-if="$route.query.type == 2" @click="outShip(selects,2)" type="success" ghost style="margin-right:10px;" >批量运输</Button>
+                <Button v-if="$route.query.type == 2" @click="outShip(selects_out,2)" type="success" ghost style="margin-right:10px;" >批量运输</Button>
                 
             </div>
             <template slot-scope="{ row }" slot="set">
                 <a v-if="$route.query.type == 4&&!row.order_in_no" class="map-margin" @click="confirmSuccess(row)">确认入库</a>
                 <a v-if="$route.query.type == 4&&row.order_in_no" class="map-margin" @click="outStock(row)">出库</a>
-                <a v-if="$route.query.type == 2" class="map-margin" @click="outShip(row,1)">确认出库</a>
-                <a v-if="$route.query.type == 2" class="map-margin" @click="outShip(row,2)">运输</a>
+                <a v-if="$route.query.type == 2&&!row.transport_no" class="map-margin" @click="outShip(row,1)">确认出库</a>
+                <a v-if="$route.query.type == 2&&row.transport_no" class="map-margin" @click="outShip(row,2)">运输</a>
             </template>
 
             <Modal class-name="vertical-center-modal" width='400' title='确认出库' v-model="showStock" @on-ok="confirmOutStock">
@@ -140,7 +140,11 @@ export default {
         selectTable(row){
             let result = [],outResult = [];
             if(this.$route.query.type == 2){
-                row.map(v=>v.transport_no ? result.push(v.transport_no) : '')
+                row.map(v=>{
+                    v.transport_no ? result.push(v.transport_no) : ''
+                    v.order_in_no ? outResult.push(v.order_in_no) : ''
+                })
+
             }else{
                 row.map(v=>{
                     v.orders_procedure_id ? result.push(v.orders_procedure_id) : ''
@@ -197,14 +201,17 @@ export default {
         outShip(row,type){//type 1出库  2运输
             if(!row||row.length<1){return this.$Message.error('请至少选择一项')}
             let transport_no = Array.isArray(row) ? row.join(',') : row.transport_no;
-            let post_url = type == 1 ? '/api/orders_out_confirm' : '/api/orders_transport_complete';
+            let post_url = type == 1 ? '/api/orders_transport' : '/api/orders_transport_confirm';
+            let params = {};
+            params.transport_no = transport_no
             this.confirmDelete({
                 title:type == 1 ? '确认出库' : '确认运输',
                 content:type == 1 ? '确认出库么？' : '确认运输么',
                 type:'primary',
                 then:e=>{
-                    this.axios.post(post_url,{transport_no:row.transport_no}).then(res=>{
+                    this.axios.post(post_url,params).then(res=>{
                         if(res.code == 200){
+                            this.$Message.success(res.msg)
                             this.getData(this.proxyObj)
                         }
                     })

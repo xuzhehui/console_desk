@@ -8,6 +8,8 @@ import ViewUI from 'view-design';
 import 'view-design/dist/styles/iview.css';
 import untilFn from './untils/until'
 import IconFont from './assets/iconfont/iconfont.js'
+import echarts from 'echarts'
+
 import VCharts from 'v-charts'
 
 import ConfirmDelete from './components/confirm-delete/index.js'
@@ -34,6 +36,7 @@ Vue.prototype.axios = axios
 Vue.prototype.func = untilFn
 
 Vue.config.productionTip = false
+Vue.prototype.$echarts = echarts
 Vue.prototype.$Message.config({//全局提示演示关闭时间
   duration: 3
 });

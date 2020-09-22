@@ -8,7 +8,7 @@
 
             <div class="router-map">
                 <Crumbs :crumbs="crumbs" />
-                <transition :name="transitionName"><router-view :class="['router-style',$route.query.title == '首页' ? 'router-style-home' : 'router-style-page']"/></transition>
+                <transition :name="transitionName"><router-view :class="['router-style',$route.query.title == '首页'||$route.name=='ProductionCharts' ? 'router-style-home' : 'router-style-page']"/></transition>
             </div>
         </div>
     </div>
