@@ -66,7 +66,7 @@ export default {
                 this.loading = false;
                 if(res.code == 200){
                     this.tableData = res.data;
-                    this.total = res.data.total;
+                    this.total = res.data.total||0;
                 }  
             })
         },

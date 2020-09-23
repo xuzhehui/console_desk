@@ -38,7 +38,30 @@ export default{
         }
         uniques = uniques;
         return uniques;
-    }
+    },
+    throttle(func,wait){
+        let timer = null;
+        let fn = function(){
+          if(!timer){
+            let args = Array.from(arguments);
+            timer = setTimeout(()=>{
+              func.apply(this,args);
+              timer = null
+            },wait)
+          }
+        }
+        return fn
+    },
+    shake(func,t){
+        let fn = function(){
+          let args = Array.from(arguments);
+          clearTimeout(func.id)
+          func.id = setTimeout(()=>{
+            func.apply(this,args)
+          },t)
+        }
+        return fn
+      }
     
     
 }

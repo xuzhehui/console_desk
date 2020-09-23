@@ -3,12 +3,12 @@
         <div class="header-charts">
             <div class="header-pie">
                 <Toptitle style="height:10px;font-size:10px;margin:0;padding:15px 10px;border-radius:5px;" title='部件生产总量'/>
-                <div class="pre-c-item" id='pre-c'></div>
+                <div style="width:100%;" class="pre-c-item" id='pre-c'></div>
             </div>
 
             <div class="header-line">
                 <Toptitle style="height:10px;font-size:10px;margin:0;padding:15px 10px;border-radius:5px;" title='生产金额'/>
-                <div class="line-c" id='line-c'></div>
+                <div style="width:100%;" class="line-c" id='line-c'></div>
             </div>  
         </div>
 
@@ -22,7 +22,7 @@
                 </template>
             </Table>
         </div>
-        <Footer></Footer>
+        <Footer :pageIndex='pageIndex' :pageSize='pageSize' :total='total' @changePage='changePage' @changeSize='changeSize'></Footer>
     </div>
 </template>
 
@@ -37,6 +37,10 @@ export default {
         return {
             loading:false,
             produces:[],
+            pageIndex:1,
+            total:0,
+            pageSize:10,
+            proxyObj:{},
             list:[
                 {title:'日期范围',start_server:'start_time',end_server:'end_time',start_value:'',end_value:'',isDate:true,start_placeholder:'开始日期',end_placeholder:'结束日期'},
                 {title:'部件价格',name:'Input',serverName:'price',value:'',placeholder:'请输入部件价格'}
@@ -51,8 +55,11 @@ export default {
             ],
             tableData:[{title:'213'},{title:'213'},{title:'213'},{title:'213'},{title:'213'}],
             pieResult:[],
+            PieChart:null,
+            LineChart:null,
             drawPie(){
                 let PieChart = this.$echarts.init(document.getElementById('pre-c'))
+                this.PieChart = PieChart;
                 PieChart.setOption({
                     backgroundColor: '#fff',
                     tooltip: {
@@ -80,13 +87,14 @@ export default {
                             data:this.pieResult,
                         }
                     ]
-                });
+                })
             },
             lineResult:[],
             lineData_lastMonth:[],
             lineData_nowMonth:[],
             drawLine(){
                 let LineChart = this.$echarts.init(document.getElementById('line-c'))
+                this.LineChart = LineChart;
                 LineChart.setOption({
                     backgroundColor: '#fff',
                     tooltip: {
@@ -127,7 +135,8 @@ export default {
 
         },
         init(row){
-            console.log(row)
+            row.page_size = this.pageSize;
+            row.page_index = this.pageIndex;
             this.getData(row)
         },
         getData(row){
@@ -142,52 +151,56 @@ export default {
                     id:row.id||''
                 }
             })
+        },
+        changePage(e){
+            this.pageIndex = e;
+            this.proxyObj.page_index = e;
+            this.getData(this.proxyObj)
+        },
+        changeSize(e){
+            this.pageSize = e;
+            this.proxyObj.page_size = this.pageSize;
+            this.getData(this.proxyObj)
+        },
+        getPieInfo(){
+            this.axios('/api/around_detail').then(res=>{
+                res.data.around.map(v=>{
+                    v.value = v.count
+                    v.name = v.parts_title
+                })
+                this.$nextTick(()=>{
+                    this.pieResult = res.data.around;
+                    this.drawPie()
+                })
+                
+            })
+        },
+        getLineInfo(){
+            this.axios('/api/line_chart').then(res=>{
+                if(res.code == 200){
+                    let data = res.data[0],result = [],line_last_month=[],line_now_month=[];
+                    this.produces = res.data[1];
+                    
+                    data.map(v=>{
+                        result.push(v.time)
+                        line_last_month.push(v.last_price)
+                        line_now_month.push(v.price)
+                    })
+                    this.lineResult = result;//重绘折线表x轴
+                    this.lineData_lastMonth = line_last_month;
+                    this.lineData_nowMonth = line_now_month;
+                    this.drawLine()
+                }
+            })
         }
     },
-    created(){
-        this.axios('/api/around_detail').then(res=>{
-            res.data.around.map(v=>{
-                v.value = v.count
-                v.name = v.parts_title
-            })
-            this.$nextTick(()=>{
-                this.pieResult = res.data.around;
-                
-            })
-            
-        })
-    },
     mounted(){
-        this.axios('/api/around_detail').then(res=>{
-            res.data.around.map(v=>{
-                v.value = v.count
-                v.name = v.parts_title
-            })
-            this.$nextTick(()=>{
-                this.pieResult = res.data.around;
-                this.drawPie()
-            })
-            
+        this.getPieInfo();
+        this.getLineInfo()  
+        addEventListener('resize',e=>{
+            this.PieChart.resize()
+            this.LineChart.resize()
         })
-
-        this.axios('/api/line_chart').then(res=>{
-            if(res.code == 200){
-                let data = res.data[0],result = [],line_last_month=[],line_now_month=[];
-                this.produces = res.data[1];
-                
-                data.map(v=>{
-                    result.push(v.time)
-                    line_last_month.push(v.last_price)
-                    line_now_month.push(v.price)
-                })
-                this.lineResult = result;//重绘折线表x轴
-                this.lineData_lastMonth = line_last_month;
-                this.lineData_nowMonth = line_now_month;
-                this.drawLine()
-            }
-        })
-        
-        
     }
 }
 </script>

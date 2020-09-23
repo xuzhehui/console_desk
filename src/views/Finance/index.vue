@@ -65,7 +65,7 @@ export default {
             this.axios('/api/finance_total',{params:row}).then(res=>{
                 this.loading = false;
                 this.tableData = res.data
-                this.total = res.data.total;
+                this.total = res.data.total||0;
             })
         },
         changePage(e){

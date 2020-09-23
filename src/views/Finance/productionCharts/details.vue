@@ -59,12 +59,13 @@ export default {
         init(row){
             row.page_index = this.pageIndex;
             row.page_size = this.pageSize;
+            row.id = this.$route.query.id;
             this.proxyObj = row;
             this.getData(row)
         },
         getData(row){
             this.loading = true;
-            this.axios('/api/finance_total_product_detail',{params:row}).then(res=>{
+            this.axios('/api/out_put_value_detail',{params:row}).then(res=>{
                 this.loading = false;
                 this.tableData = res.data.data;
                 this.total = res.data.total;
