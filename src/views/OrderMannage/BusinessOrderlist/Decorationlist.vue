@@ -72,7 +72,7 @@ export default {
                 {title:'楼层',align:'center',key:'layer'},
                 {title:'房间号',align:'center',key:'number_detail'},
                 {title:'单价',align:'center',key:'price'},
-                {title:'预估房间工期',align:'center',key:'predict_time',width:'200'},
+                {title:'预估房间工期',align:'center',key:this.$route.query.type == 'business' ? 'time' : 'predict_time',width:'200'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'250'},
             ],
 

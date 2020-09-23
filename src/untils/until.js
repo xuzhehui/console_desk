@@ -1,10 +1,10 @@
 export default{
-    isType(obj){
+    isType(obj){//类型判断
         var regexp = /\s(\w+)\]/;
         var result =  regexp.exec(Object.prototype.toString.call(obj))[1];
         return result;
     },
-    replaceDate(str){
+    replaceDate(str){//时间戳转换
         str = str.toString().length == 10 ? str*1000 : str
         let now = str ? new Date(str) : new Date(),
         y = now.getFullYear(),
@@ -12,22 +12,17 @@ export default{
         d = now.getDate();
         return y + "-" + (m < 10 ? "0" + m : m) + "-" + (d < 10 ? "0" + d : d) + " " + now.toTimeString().substr(0, 8);
     }, 
-    objtoArray(obj){
-        let result = Object.values(obj);
-        result.map(v=> Object.prototype.toString.call(v.sub) === '[object Object]' ? v.sub = this.deepObjToArray(v.sub) : '' )
-        return result
-    },
 
-    deteleObject(obj) {
-        var uniques = [];
-        var stringify = {};
-        for (var i = 0; i < obj.length; i++) {
-            var keys = Object.keys(obj[i]);
+    uniquesObjs(obj) {//去除统一数组中相同的对象
+        let uniques = [];
+        let stringify = {};
+        for (let i = 0; i < obj.length; i++) {
+            let keys = Object.keys(obj[i]);
             keys.sort(function(a, b) {
                 return (Number(a) - Number(b));
             });
-            var str = '';
-            for (var j = 0; j < keys.length; j++) {
+            let str = '';
+            for (let j = 0; j < keys.length; j++) {
                 str += JSON.stringify(keys[j]);
                 str += JSON.stringify(obj[i][keys[j]]);
             }
@@ -39,7 +34,7 @@ export default{
         uniques = uniques;
         return uniques;
     },
-    throttle(func,wait){
+    throttle(func,wait){//节流
         let timer = null;
         let fn = function(){
           if(!timer){
@@ -52,7 +47,7 @@ export default{
         }
         return fn
     },
-    shake(func,t){
+    shake(func,t){//防抖
         let fn = function(){
           let args = Array.from(arguments);
           clearTimeout(func.id)
@@ -62,6 +57,4 @@ export default{
         }
         return fn
       }
-    
-    
 }

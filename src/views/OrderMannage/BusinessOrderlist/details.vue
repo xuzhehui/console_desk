@@ -36,8 +36,30 @@ export default {
                 {title:'产品类型',align:'center',key:'type',fixed:'left',width:'100',key:'basics_title'},
                 {title:'产品名称',align:'center',key:'product_title',},
                 {title:'产品型号',align:'center',key:'model',},
-                {title:'测量数据',align:'center'},
+                {title:'测量数据',align:'center',key:'measure'},
                 {title:'位置',align:'center',key:'address',key:'position'},
+                {title:'图号',align:'center',key:'address',key:'url_number',
+                    
+                },
+                {title:'图纸',align:'center',key:'address',key:'url',
+                    render:(h,params)=>{
+                        return h('a',{
+                            attrs:{
+                                href:this.$store.state.ip+params.row.url,
+                                target:'_blank'
+                            }
+                        },
+                            [
+                                h('img',{
+                                    attrs:{
+                                        src:this.$store.state.ip+params.row.url,
+                                        style:'max-width:30px;max-height:30px;position:relative;top:3px;'
+                                    }
+                                })
+                            ]
+                        )
+                    }
+                },
                 {title:'预估产品工期',align:'center',key:'predict_working'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'100'},
             ],
@@ -77,7 +99,6 @@ export default {
                 path:'/cms/productionorderlist/deliverylist/partsdetails',
                 query:{
                     order_product_id:row.order_product_id,
-                    type:this.$route.query.type
                 }
             })
         },

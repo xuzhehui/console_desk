@@ -27,11 +27,11 @@ table-edit-set{margin-right:10px;color:#3764FF;cursor:pointer}
 }
 .icon{width: 1em;height: 1em;vertical-align: -0.15em;fill: currentColor;overflow: hidden;}
 .page-edit{overflow: hidden;overflow-y: auto;position:relative;top:20px;height:85%;padding-bottom: 20px;;}
-.ivu-form-item{margin-bottom:11px!important;}
+.ivu-form-item{margin-bottom:15px!important;}
 
 .map-margin{margin:0 5px;}
 .table-set{display:flex;justify-content:space-around;align-items:center;}
-.ivu-form-item-error-tip{font-size:12px!important;padding:0!important}
+.ivu-form-item-error-tip{font-size:12px!important;padding:2px!important}
 .ivu-table{::-webkit-scrollbar-thumb {background: #d8d8d8;border-radius: 0px;height:5px;}}
 .ivu-table-fixed-header{
   .ivu-table-cell-with-selection{&::after{content: '全选';}}

@@ -12,28 +12,17 @@ import echarts from 'echarts'
 
 import VCharts from 'v-charts'
 
-import ConfirmDelete from './components/confirm-delete/index.js'
-import SelectProcessRouter from './components/selectProcessRoute/index.js'
-import DownMeasurement from './components/DownMeasurement/index.js'
-import DownProduction from './components/DownProduction/index.js'
-import DispatchOrder from './components/DispatchOrder/index.js'
-
 Vue.use(ViewUI)
 
 Vue.use(IconFont)
 
 Vue.use(VCharts)
-Vue.use(components)
 
-Vue.use(ConfirmDelete)//删除--确认
-Vue.use(SelectProcessRouter)//工艺路线
-Vue.use(DownMeasurement)//下测量
-Vue.use(DownProduction)//下生产---下生产计划
-Vue.use(DispatchOrder)//派工单
+Vue.use(components)
 
 Vue.prototype.axios = axios
 
-Vue.prototype.func = untilFn
+Vue.prototype.func = untilFn//全局引入自定义函数库
 
 Vue.config.productionTip = false
 Vue.prototype.$echarts = echarts

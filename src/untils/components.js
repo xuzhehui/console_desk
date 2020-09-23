@@ -10,6 +10,12 @@ import Tables from '../components/table-column/index'
 import ProductTables from '../components/table-column/productField'
 import ColumnDropTree from '../components/drowDown/index'
 
+import ConfirmDelete from '../components/confirm-delete/index.js'
+import SelectProcessRouter from '../components/selectProcessRoute/index.js'
+import DownMeasurement from '../components/DownMeasurement/index.js'
+import DownProduction from '../components/DownProduction/index.js'
+import DispatchOrder from '../components/DispatchOrder/index.js'
+
 export default (Vue)=>{
   Vue.component("Topsearch", Topsearch)
   Vue.component('Toptitle', Toptitle)  
@@ -20,4 +26,9 @@ export default (Vue)=>{
   Vue.component('ProductTables', ProductTables)
   Vue.component('ColumnDropTree',ColumnDropTree)
   Vue.use(Loading)
+  Vue.use(ConfirmDelete)//删除--确认
+  Vue.use(SelectProcessRouter)//工艺路线
+  Vue.use(DownMeasurement)//下测量
+  Vue.use(DownProduction)//下生产---下生产计划
+  Vue.use(DispatchOrder)//派工单
 }

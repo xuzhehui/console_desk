@@ -54,7 +54,9 @@ export default {
                 {title:'出库时间',align:'center',key:'unit',width:'150'},
                 {title:'客户',align:'center',key:'warning_number',width:'150'},
                 {title:'手机号',align:'center',key:'mobile',width:'150'},
-                {title:'订单状态',align:'center',key:'long',width:'150'},
+                {title:'订单状态',align:'center',key:'long',width:'150',
+                    render:(h,params)=>h('span',{},params.row.sub_state==0 ? '未指派' : (params.row.sub_state == 1 ? '可以派工' : (params.row.sub_state == 2 ? '已派工' : '已完成')))
+                },
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'220'},
             ],
             tableData:[],

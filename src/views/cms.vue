@@ -22,7 +22,7 @@ import {mapState,mapMutations,mapActions} from 'vuex'
 export default {
     data(){
         return {
-            transitionName:'slide-left'
+            transitionName:'slide-left',
         }
     },
     watch:{
