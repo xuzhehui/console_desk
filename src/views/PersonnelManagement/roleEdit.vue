@@ -145,7 +145,6 @@ export default {
             this.menu_ids.splice(index,1);
         },
         changeCheck(evt,row){
-            console.log(row)
             if(evt){
                 row.state = 1;
                 row.show_state = true;

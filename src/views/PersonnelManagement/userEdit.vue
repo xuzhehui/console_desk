@@ -142,7 +142,6 @@ export default {
     methods:{
         getData(id){
             this.axios('/api/user',{params:{id:id}}).then(res=>{
-                console.log(res)
                 if(!res.data.measure_users){
                     res.data.measure_users = []
                 }

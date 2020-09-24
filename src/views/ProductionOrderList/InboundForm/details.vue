@@ -78,7 +78,7 @@ export default {
                 {title:'房号',align:'center',width:'100',key:'number_detail'},
                 {title:'产品名称',align:'center',width:'200',key:'product_title'},
                 {title:'部件',align:'center',width:'200',key:'part_title'},
-                this.$route.query.type == 4 ? {title:'包装码',align:'center',width:'200',key:'order_in_no'} : {title:'运输单号',align:'center',width:'200',key:''},
+                this.$route.query.type == 4 ? {title:'包装码',align:'center',width:'200',key:'order_in_no'} : {title:'运输单号',align:'center',width:'200',key:'transport_no'},
                 {title:'单位',align:'center',width:'100',key:'company'},
                 {title:'状态',align:'center',width:'200',key:'',
                     render:(h,params)=>h('span',{},params.row.sub_state==0 ? '未指派' : (params.row.sub_state == 1 ? '可以派工' : (params.row.sub_state == 2 ? '已派工' : '已完成')))
@@ -153,8 +153,6 @@ export default {
             }
             this.selects = result||[];
             this.selects_out = outResult||[]
-            console.log(this.selects)
-            
         },
         confirmSuccess(row){
             let params = '';
@@ -179,13 +177,11 @@ export default {
             })
         },
         outStock(row){
-            console.log(row.join(','))
             if(!row||row.length<1){return this.$Message.error('您未选择或者未确认出库')}
             this.info.order_in_no = Array.isArray(row) ? row.join(',') : row.order_in_no
             this.showStock = true;
         },
         confirmOutStock(){
-            console.log(this.info)
             if(this.time.length>0){
                 this.info.start_time = new Date(this.time[0]).toLocaleDateString().replace(/\//g,"-")
                 this.info.end_time = new Date(this.time[1]).toLocaleDateString().replace(/\//g,"-")
@@ -217,7 +213,6 @@ export default {
                     })
                 },
                 cancel:e=>{
-                    console.log(e)
                 }
             })
         },

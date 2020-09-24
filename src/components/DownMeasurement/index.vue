@@ -1,22 +1,22 @@
 <template>
     <div>
-        <Modal @on-visible-change="visibleModal" class-name="vertical-center-modal" title='下测量' v-model="show" @on-ok="lowerMeter(postInfo)">
-            <Form inline :label-width="100">
-                <FormItem label="测量人员">
-                    <Select v-model="postInfo.user_id" style="width:186px;">
+        <Modal width='350' @on-visible-change="visibleModal" class-name="vertical-center-modal" title='下测量' v-model="show">
+            <Form inline :label-width="100" ref='forms' :model="postInfo" :rules='rules'>
+                <FormItem label="测量人员" prop='user_id'>
+                    <Select v-model="postInfo.user_id" style="width:208px;">
                         <Option v-for="item of users" :key="item.id" :label="item.nickname" :value="item.id"></Option>
                     </Select>
                 </FormItem>
 
                 <FormItem label="选择时间">
-                    <div style="display:flex;">
-                        <DatePicker v-model="postInfo.start_time" type="date" placeholder="开始时间"></DatePicker>
-                         -
-                        <DatePicker v-model="postInfo.end_time" type="date" placeholder="结束时间"></DatePicker>
-                    </div>
-                             
+                        <DatePicker v-model="time" clearable type="daterange" split-panels placeholder="请选择日期"></DatePicker>
                 </FormItem>
             </Form>
+
+            <div slot="footer" class="modal-footer">
+                <Button @click="closeModal">取消</Button>
+                <Button @click="handleSubmit('forms')" type='primary'>确认</Button>
+            </div>
         </Modal>
     </div>
 </template>
@@ -24,9 +24,15 @@
 export default {
     data(){
         return {
-            postInfo:{},
+            postInfo:{
+                user_id:'',
+            },
             users:[],
             show:false,
+            time:[],
+            rules:{
+                user_id:[{required: true,message:'请选择人员',}]
+            }
         }
     },
     created(){
@@ -34,13 +40,17 @@ export default {
     },
     methods:{
         lowerMeter(postData){
-            try{
-                postData.start_time = new Date(postData.start_time).toLocaleDateString().replace(/\//g,"-")
-                postData.end_time = new Date(postData.end_time).toLocaleDateString().replace(/\//g,"-")
-            }catch(e){}
-            this.axios.post('/api/orders_set_measure',postData).then(res=>{
+            if(!this.time[0]){
+                return this.$Message.error('请选择起始时间')
+            }
+            if(this.time.length>0){
+                postData.start_time = new Date(this.time[0]).toLocaleDateString().replace(/\//g,"-")
+                postData.end_time = new Date(this.time[1]).toLocaleDateString().replace(/\//g,"-")
+            }
+            this.axios.post('/api/orders_set_measure',this.postInfo).then(res=>{
                 if(res.code == 200){
                     this.$Message.success(res.msg)
+                    this.show = false;
                     this.$emit('then')
                 }
             })
@@ -49,6 +59,17 @@ export default {
             if(!e){
                 this.$emit('cancel')
             }
+        },
+        closeModal(e){
+            this.show =false;
+            this.$emit('cancel')
+        },
+        handleSubmit(name) {
+            this.$refs[name].validate((valid) => {
+                if(valid){
+                    this.lowerMeter(this.postInfo)
+                }
+            })
         },
     }
 }

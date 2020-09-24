@@ -81,7 +81,6 @@ export default {
     },
     mounted(){
         this.title = this.$route.query.title
-        console.log(this.$route)
         if(this.$route.query.id){
             this.proxyObj.id = this.$route.query.id;
             this.list[0].title = `${this.title}名称`;

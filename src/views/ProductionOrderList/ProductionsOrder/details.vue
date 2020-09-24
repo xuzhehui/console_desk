@@ -90,7 +90,6 @@ export default {
         },
         getData(row){
             this.axios('/api/orders_product_parts_list',{params:row}).then(res=>{
-                console.log(res)
                 this.logList = res.data.detail;
                 this.tableData = res.data.list;
                 res.data.top.map(v=>{v.width=200,this.tableColums.splice(1,0,v)})

@@ -69,7 +69,6 @@ export default {
             })
         },
         postData(data){
-            console.log(data)
             this.axios.post('/api/orders_dispatch_confirm',data).then(res=>{
                 if(res.code == 200){
                     this.$Message.success(res.msg);
@@ -81,7 +80,6 @@ export default {
         finish(row){
             if(!row||row.length<1){return this.$Message.warning('请至少选择一项')}
             let str = Array.isArray(row) ? row.join(',') : row.id
-            console.log(str)
             this.confirmDelete({
                 content:'是否手动操作此订单生产完成',
                 title:'生产完成',

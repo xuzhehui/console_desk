@@ -132,7 +132,6 @@ export default {
             })
         },
         uploadSuccess(e){
-            console.log(e.data)
             this.info.avatar = e.data.url;
         },
         replace_password(name){

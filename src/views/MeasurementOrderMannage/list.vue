@@ -24,20 +24,6 @@
                     <a style="margin:0 5px" @click="openModal(row)">下生产</a>
                 </div>
             </template>
-
-            <div>
-                <Modal class-name="vertical-center-modal" title='下生产' v-model="showPlan" @on-ok="sendPlanInfo">
-                    <Form>
-                        <FormItem label="选择时间">
-                            <div style="display:flex;">
-                                <DatePicker v-model="planInfo.start_time" type="date" placeholder="开始时间"></DatePicker>
-                                -
-                                <DatePicker v-model="planInfo.end_time" type="date" placeholder="结束时间"></DatePicker>
-                            </div>
-                        </FormItem>
-                    </Form>
-                </Modal>
-            </div>
         </FullPage>
     </div>
 </template>
@@ -93,7 +79,6 @@ export default {
             total:0,
             proxyObj:{},
             pageSize:10,
-            showPlan:false,
             planInfo:{
                 order_no:null,
                 start_time:'',
@@ -131,7 +116,6 @@ export default {
         goPage(n,row){
             let oa_order_no = row ? row.oa_order_no : '';
             this.$router.push({
-                // path:'/cms/measurementordermannage/Decorationlist',
                 path:'/cms/ordermannage/businessorderlist/decorationlist',
                 query:{
                     oa_order_no:oa_order_no,
@@ -149,20 +133,14 @@ export default {
         },
         openModal(row){
             this.planInfo.order_no = row.order_no;
-            this.showPlan = true;
-        },
-        sendPlanInfo(){
-            try{
-                this.planInfo.start_time = new Date(this.planInfo.start_time).toLocaleDateString().replace(/\//g,"-")
-                this.planInfo.end_time = new Date(this.planInfo.end_time).toLocaleDateString().replace(/\//g,"-")
-            }catch(e){
-            }
-            this.axios.post('/api/order_oa_people',this.planInfo).then(res=>{
-                if(res.code == 200){
-                    this.$Message.success(res.msg)
-                }
+            this.downProduction({
+                title:'下生产',
+                type:2,
+                params:this.planInfo,
+                then:(e)=>{this.getData(this.proxyObj)},
+                cancel:(e)=>{},
             })
-        }
+        },
     }
 }
 </script>

@@ -48,13 +48,11 @@ export default {
   },
   watch: {
     parent (val) {
-      console.log(parent)
     }
   },
   created () {
   },
   mounted () {
-      console.log(this.parent)
   }
 }
 </script>

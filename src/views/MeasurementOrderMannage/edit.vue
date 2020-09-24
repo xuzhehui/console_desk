@@ -16,11 +16,11 @@
             <div>
                 <Table  @on-selection-change='selectTable'  :width="tableWidth" class="overflow-table" border stripe :columns="tableColums" :data="tableData">
 
-                    <div slot-scope="{index }" v-for="(item,_key) in tableTop" :key="_key" :slot="item.slot">
+                    <div slot-scope="{index}" v-for="(item,_key) in tableTop" :key="_key" :slot="item.slot">
                         <Input v-model="tableData[index][item.key]" :placeholder="'请输入'+item.title"></Input> 
                     </div>
 
-                    <template slot-scope="{index }" slot="img_number">
+                    <template slot-scope="{index}" slot="img_number">
                         <Input :disabled='type == 3 ? true : false' v-model="tableData[index].url_number" placeholder="请输入图号"/>
                     </template>
                     <template slot-scope="{row,index}" slot="up-load">
@@ -34,18 +34,6 @@
                 </Table>
             </div>
         </div>
-
-        <Modal class-name="vertical-center-modal" title='下生产' v-model="showPlan" @on-ok="sendPlanInfo">
-            <Form>
-                <FormItem label="选择时间">
-                    <div style="display:flex;">
-                        <DatePicker v-model="planInfo.start_time" type="date" placeholder="开始时间"></DatePicker>
-                        -
-                        <DatePicker v-model="planInfo.end_time" type="date" placeholder="结束时间"></DatePicker>
-                    </div>
-                </FormItem>
-            </Form>
-        </Modal>
     </div>
 </template>
 
@@ -59,7 +47,7 @@ export default {
             logList:[{title:'系统单号',value:'10998765'}],
             tableColums:[
                 {type:'selection',width:100,align:'center',fixed:'left'},
-                {title:'产品名称',align:'center',key:'product_title',fixed:'left',width:'200'},
+                {title:'产品名称',align:'center',key:'product_title',width:'200'},
                 {title:'产品型号',align:'center',key:'model',width:'150'},
                 {title:'单位',align:'center',key:'unit',width:'130'},
                 {title:'图号',align:'center',width:'130',slot:'img_number',},
@@ -74,7 +62,6 @@ export default {
             logList:[],
             headers:{'Authorization':localStorage.getItem('token')},
             currentIndex:0,
-            showPlan:false,
             planInfo:{
                 order_product_id:'',
             },
@@ -126,7 +113,6 @@ export default {
                 })
                 result.push(obj)
             })
-            console.log(result)
             let postInfo = JSON.stringify(result)
             this.axios.post('/api/orders_save_measure',{data:postInfo}).then(res=>{
                 if(res.code == 200){
@@ -139,7 +125,6 @@ export default {
                 this.tableData = res.data.list;
                 this.logList = res.data.detail
                 this.tableTop = res.data.top;
-                console.log(this.tableTop)
                 res.data.top.map(v=>{
                     v.width=200;
                     v.slot=v.key;
@@ -161,19 +146,6 @@ export default {
             this.currentIndex = n;
         },
         changePage(e){},
-        sendPlanInfo(){
-            try{
-                this.planInfo.start_time = new Date(this.planInfo.start_time).toLocaleDateString().replace(/\//g,"-")
-                this.planInfo.end_time = new Date(this.planInfo.end_time).toLocaleDateString().replace(/\//g,"-")
-            }catch(e){
-
-            }
-            this.axios.post('/api/order_oa_people',this.planInfo).then(res=>{
-                if(res.code == 200){
-                    this.$Message.success(res.msg)
-                }
-            })
-        },
         openModal(){
             if(!this.select||this.select.length<1){return this.$Message.error('请至少选择一项')}
             this.planInfo.order_product_id = this.select.join(',')

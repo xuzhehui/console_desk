@@ -144,7 +144,6 @@ export default {
             this.getData(this.proxyObj);
         },
         addItems(obj,type,edit){
-            console.log(type)
             this.showModal = true;
             this.showType = type
             if(edit==1){

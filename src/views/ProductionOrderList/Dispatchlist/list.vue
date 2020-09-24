@@ -42,8 +42,12 @@ export default {
                 {title:'订单类型',align:'center',key:'type',width:'150'},
                 {title:'紧急程度',align:'center',key:'warning_state',width:'150'},
                 {title:'小区名称',align:'center',key:'residential_name',width:'200'},
-                {title:'派工开始时间',align:'center',key:'start_time',width:'200'},
-                {title:'派工结束时间',align:'center',key:'end_time',width:'200'},
+                {title:'派工开始时间',align:'center',key:'start_time',width:'200',
+                    render:(h,params)=>h('span',{},this.func.replaceDate(params.row.start_time*1))
+                },
+                {title:'派工结束时间',align:'center',key:'end_time',width:'200',
+                    render:(h,params)=>h('span',{},this.func.replaceDate(params.row.end_time*1))
+                },
                 {title:'派工人员',align:'center',key:'nickname',width:'200'},
                 {title:'预估工期',align:'center',key:'predict_time',width:'200'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'240'},

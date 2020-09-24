@@ -17,46 +17,17 @@
             </div>
 
             <div slot='navButton'>
-                <Button @click="setTableColums" type="primary" ghost icon='ios-cog'>表头设置</Button>
+                <Button type="primary" ghost icon='ios-cog'>表头设置</Button>
             </div>
             
-            <template slot='set' slot-scope='row'>
+            <template slot='set' slot-scope='{row}'>
                 <div>
                     <a style="margin:0 5px">原材料预算</a>
                     <a style="margin:0 5px">打印二维码</a>
-                    <a style="margin:0 5px" @click="goDetial(row.row)">详情</a>
-                    <a style="margin:0 5px" @click="openModal(row.row)">下生产</a>
+                    <a style="margin:0 5px" @click="goDetial(row)">详情</a>
+                    <a style="margin:0 5px" @click="openModal(row)">下生产计划</a>
                 </div>
             </template>
-
-            <div>
-                <Modal :width='1064' class-name="vertical-center-modal" v-model="showTableColums" title='设置表头'>
-                    <Form>
-                        <FormItem label='订单信息:'>
-                            <div style="width:100%;display:flex;">
-                                <CheckboxGroup style="width:100%">
-                                    <Checkbox label="香蕉"></Checkbox>
-                                    <Checkbox label="苹果"></Checkbox>
-                                    <Checkbox label="西瓜"></Checkbox>
-                                    <Checkbox label="香蕉"></Checkbox>
-                                </CheckboxGroup>
-                            </div>
-                        </FormItem>
-                    </Form>
-                </Modal>
-
-                <Modal class-name="vertical-center-modal" title='下生产计划' v-model="showPlan" @on-ok="sendPlanInfo">
-                    <Form>
-                        <FormItem label="选择时间">
-                            <div style="display:flex;">
-                                <DatePicker v-model="planInfo.start_time" type="date" placeholder="开始时间"></DatePicker>
-                                -
-                                <DatePicker v-model="planInfo.end_time" type="date" placeholder="结束时间"></DatePicker>
-                            </div>
-                        </FormItem>
-                    </Form>
-                </Modal>
-            </div>
         </FullPage>
     </div>
 </template>
@@ -105,20 +76,17 @@ export default {
                         )
                     }
                 },
-                // {title:'发货日期',align:'center',key:'show_predict_time',width:'200'},
                 {title:'下单日期',align:'center',key:'show_crt_time',width:'200'},
                 {title:'测量人员',align:'center',key:'show_measure_start_time',width:'200'},
                 {title:'测量开始日期',align:'center',key:'show_measure_start_time',width:'200'},
                 {title:'测量结束日期',align:'center',key:'show_measure_start_time',width:'200'},
                 {title:'实际测量时间',align:'center',key:'show_measure_time',width:'200'},
-                {title:'操作',align:'center',slot:'set',fixed:'right',width:'300'},
+                {title:'操作',align:'center',slot:'set',fixed:'right',width:'320'},
             ],
             tableData:[],
             pageIndex:1,
             total:0,
             pageSize:10,
-            showTableColums:false,
-            showPlan:false,
             planInfo:{
                 order_no:null,
                 start_time:'',
@@ -157,13 +125,9 @@ export default {
             })
             this.tableData.push({order_no:'123'})
         },
-        setTableColums(){//设置表头
-            this.showTableColums = true;
-        },
         goDetial(row){
             this.$router.push({
                 path:'/cms/productionorderlist/productionsorder/Decorationlist',
-                // path:'/cms/ordermannage/businessorderlist/decorationlist',
                 query:{
                     order_no:row.order_no,
                     type:'produce'
@@ -172,20 +136,14 @@ export default {
         },
         openModal(row){
             this.planInfo.order_no = row.order_no;
-            this.showPlan = true;
-        },
-        sendPlanInfo(){
-            try{
-                this.planInfo.start_time = new Date(this.planInfo.start_time).toLocaleDateString().replace(/\//g,"-")
-                this.planInfo.end_time = new Date(this.planInfo.end_time).toLocaleDateString().replace(/\//g,"-")
-            }catch(e){}
-            this.axios.post('/api/orders_plan',this.planInfo).then(res=>{
-                if(res.code == 200){
-                    this.$Message.success(res.msg)
-                    this.getData()
-                }
+            this.downProduction({
+                title:'下生产计划',
+                type:1,
+                params:this.planInfo,
+                then:(e)=>{this.getData(this.proxyObj)},
+                cancel:(e)=>{},
             })
-        }
+        },
     }
 }
 </script>

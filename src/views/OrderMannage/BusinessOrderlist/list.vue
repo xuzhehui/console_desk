@@ -20,7 +20,7 @@
             </div>
 
             <div slot='navButton' style="display:flex;">
-                <Button @click="setTableColums" type="primary" style="margin-right:10px;" ghost icon='ios-cog'>表头设置</Button>
+                <Button type="primary" style="margin-right:10px;" ghost icon='ios-cog'>表头设置</Button>
                 <Button @click="addOrder(1)" type="primary" ghost icon='ios-cog'>新增订单</Button>
             </div>
             
@@ -32,23 +32,6 @@
                     <a style="margin:0 5px" @click="delItems(row)">删除</a>
                 </div>
             </template>
-
-            <div>
-                <Modal :width='1064' class-name="vertical-center-modal" v-model="showTableColums" title='设置表头'>
-                    <Form>
-                        <FormItem label='订单信息:'>
-                            <div style="width:100%;display:flex;">
-                                <CheckboxGroup style="width:100%">
-                                    <Checkbox label="香蕉"></Checkbox>
-                                    <Checkbox label="苹果"></Checkbox>
-                                    <Checkbox label="西瓜"></Checkbox>
-                                    <Checkbox label="香蕉"></Checkbox>
-                                </CheckboxGroup>
-                            </div>
-                        </FormItem>
-                    </Form>
-                </Modal>
-            </div>
         </FullPage>
     </div>
 </template>
@@ -108,7 +91,7 @@ export default {
                 {title:'订单交付日期',align:'center',key:'show_end_time',width:'180'},
                 {title:'完成进度',align:'center',key:'complete_rate',width:'180',
                     render(h,params){
-                        return h('span',{},params.row.complete_rate*100+'%')
+                        return h('span',{},parseInt(params.row.complete_rate*100)+'%')
                     },
                 },
                 {title:'预估交付日期',align:'center',key:'show_predict_time',width:'200'},
@@ -118,7 +101,6 @@ export default {
             pageIndex:1,
             total:0,
             pageSize:10,
-            showTableColums:false,
             show_lower:false,
             postInfo:{//下测量数据
                 order_no:'',
@@ -168,9 +150,6 @@ export default {
             this.proxyObj.page_size = this.pageSize;
             this.getData(this.proxyObj)
         },
-        setTableColums(){//设置表头
-            this.showTableColums = true;
-        },
         addOrder(n,row){
             let id = row ? row.id : '';
             this.$router.push({
@@ -199,7 +178,7 @@ export default {
                     this.selectIds = [];
                     this.postInfo = {}
                 },
-                cancel:()=>{console.log(this.postInfo = {})}
+                cancel:()=>{this.postInfo = {}}
             })
         },
         selectTable(e){

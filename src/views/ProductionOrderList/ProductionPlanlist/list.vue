@@ -101,7 +101,7 @@ export default {
                     render:(h,params)=>h('span',{},this.func.replaceDate(params.row.plan_end_time))
                 },
                 {title:'完成进度',align:'center',key:'complete_rate',width:'100',
-                    render:(h,params)=>h('span',{},params.row.complete_rate*100+'%') 
+                    render:(h,params)=>h('span',{},parseInt(params.row.complete_rate*100)+'%') 
                 },
                 {title:'预估交付日期',align:'center',key:'predict_time',width:'200'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'150'},

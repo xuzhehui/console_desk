@@ -50,7 +50,6 @@ export default {
   },
   watch: {
     parent (val) {
-    //   console.log(parent)
     }
   },
   created () {

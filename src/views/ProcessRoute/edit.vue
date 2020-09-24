@@ -144,9 +144,7 @@ export default {
         back(){
             this.$router.go(-1)
         },
-        getChangeLists(e){
-            // console.log(e)
-        },
+        getChangeLists(e){},
         postData(){
             this.info.op = this.type == 1 ? 'add' : 'edit'
             let data = JSON.parse(JSON.stringify(this.info))
@@ -197,7 +195,6 @@ export default {
                         })
                     }
                 })
-                console.log(this.info.list)
             })
         },
         getParts(){
@@ -234,9 +231,7 @@ export default {
                 }
             })
         },
-        changeRadio(e){
-            console.log(e)
-        },
+        changeRadio(e){},
         setRadioChange(parent,child){
             parent.cld.map(v=>v.show = false)
             if(parent.select == child.id){

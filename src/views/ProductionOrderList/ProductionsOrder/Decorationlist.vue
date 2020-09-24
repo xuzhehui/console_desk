@@ -26,38 +26,9 @@
                 <div class="table-set">
                     <a >更改芯片</a>
                     <a @click="openModal(row)">下生产计划</a>
-                    <a>下载图纸</a>
+                    <a @click="downImg($store.state.ip+row.url,row.product_title)" >下载图纸</a>
                 </div>
             </template>
-
-            <div>
-                <Modal :width='1064' class-name="vertical-center-modal" v-model="showTableColums" title='设置表头'>
-                    <Form>
-                        <FormItem label='订单信息:'>
-                            <div style="width:100%;display:flex;">
-                                <CheckboxGroup style="width:100%">
-                                    <Checkbox label="香蕉"></Checkbox>
-                                    <Checkbox label="苹果"></Checkbox>
-                                    <Checkbox label="西瓜"></Checkbox>
-                                    <Checkbox label="香蕉"></Checkbox>
-                                </CheckboxGroup>
-                            </div>
-                        </FormItem>
-                    </Form>
-                </Modal>
-
-                <Modal class-name="vertical-center-modal" title='下生产计划' v-model="showPlan" @on-ok="sendPlanInfo" @on-visible-change='vivibleModal'>
-                    <Form>
-                        <FormItem label="选择时间">
-                            <div style="display:flex;">
-                                <DatePicker v-model="planInfo.start_time" type="date" placeholder="开始时间"></DatePicker>
-                                -
-                                <DatePicker v-model="planInfo.end_time" type="date" placeholder="结束时间"></DatePicker>
-                            </div>
-                        </FormItem>
-                    </Form>
-                </Modal>
-            </div>
         </FullPage>
     </div>
 </template>
@@ -98,7 +69,6 @@ export default {
             logList:[],
             classInfo:{},
             proxyObj:{},
-            showTableColums:false,
             showPlan:false,
             planInfo:{
                 order_product_id:null,
@@ -127,8 +97,6 @@ export default {
                 this.tableData = res.data.list;
                 this.total = res.data.total
             })
-            this.tableData.push({order_no:'222222'})
-            this.tableData.push({order_no:'222222'})
         },
         goDetail(row){
             this.$router.push({
@@ -153,7 +121,6 @@ export default {
             this.$router.go(-1)
         },
         openModal(row){
-            console.log(row)
             if(Array.isArray(row)){//批量下生产操作
                 if(row.length<1){return this.$Message.warning('请至少选择一项')}
                 let result = [];
@@ -162,17 +129,12 @@ export default {
             }else{//单个下生产
                 this.planInfo.order_product_id = row.order_product_id;
             }
-            this.showPlan = true;
-        },
-        sendPlanInfo(){
-            try{
-                this.planInfo.start_time = new Date(this.planInfo.start_time).toLocaleDateString().replace(/\//g,"-")
-                this.planInfo.end_time = new Date(this.planInfo.end_time).toLocaleDateString().replace(/\//g,"-")
-            }catch(e){}
-            this.axios.post('/api/orders_plan',this.planInfo).then(res=>{
-                if(res.code == 200){
-                    this.$Message.success(res.msg)
-                }
+            this.downProduction({
+                title:'下生产计划',
+                type:1,
+                params:this.planInfo,
+                then:(e)=>{},
+                cancel:(e)=>{},
             })
         },
         selectTable(e){
@@ -186,6 +148,29 @@ export default {
                     end_time:''
                 }
             }
+        },
+        downImg(url,filename){                 
+            let img = new Image();
+            img.onload=e=>{
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;   
+                if(canvas.getContext){
+                    let context = canvas.getContext('2d')
+                    context.drawImage(img,0,0,img.width,img.height)//绘制图纸
+                    let downUrl = canvas.toDataURL('image/png')
+                    let link = document.createElement('a');
+                    link.href = downUrl;
+                    link.style.display = 'none';
+                    link.download = filename||'图纸.png'; // 文件名称
+                    document.body.appendChild(link);
+                    link.click();
+                    URL.revokeObjectURL(link.href); //释放URL对象
+                    document.body.removeChild(link);
+                }
+            }; 
+            img.src = url
+            img.crossOrigin = "anonymous"
         }
     }
 }

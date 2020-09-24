@@ -98,10 +98,8 @@ export default {
             let result = [];
             e.forEach(v=>result.push(v.house_id));
             this.selects = result;
-            console.log(this.selects)
         },
         setZoro(row){
-            console.log(row)
         },
         batchDispatchOrder(){
             if(!this.selects||this.selects.length<1){return this.$Message.error('请至少选择一项')}

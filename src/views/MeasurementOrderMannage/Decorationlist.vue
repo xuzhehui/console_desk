@@ -113,7 +113,6 @@ export default {
 
         },
         goPage(row){
-            console.log(row)
             this.$router.push({
                 path:'/cms/measurementordermannage/edit',
                 query:{

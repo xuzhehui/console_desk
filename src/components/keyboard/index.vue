@@ -48,23 +48,15 @@ export default {
     watch:{
         rightData(e){
             let result = []
-            e.map(v=>{
-                // let str = `${v.title}(${v.e_title})`
-                result.push(v)
-            })
+            e.map(v=>result.push(v))
             this.key_list_right = result;
             this.key_list_right =  this.spliceGroup(this.key_list_right,4)
-            console.log(this.key_list_right)
             this.$forceUpdate()
         }
     },
     computed:{
     },
-    created(){
-        this.axios('/api/basics_measure_index').then(res=>{
-            console.log(res)
-        })
-    },
+    created(){},
     mounted(){
         this.key_list_right =  this.spliceGroup(this.key_list_right,4)
     },

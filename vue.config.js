@@ -1,8 +1,10 @@
+
 module.exports = {
     publicPath:'./',
     outputDir:'dist',
     assetsDir:'static',
     indexPath:'index.html',
+    productionSourceMap:process.env.NODE_ENV === 'development',
     devServer: {
         proxy: {
           '/proxy': {

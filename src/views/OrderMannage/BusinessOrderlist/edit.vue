@@ -439,7 +439,6 @@ export default {
                 modalData.product_type = res.data.detail.product_type||''
                 modalData.unit = res.data.detail.unit||''
                 modalData.model = res.data.detail.model || ''
-                console.log(this.Top)
                 if(res.code == 200){
                     if(!ext){
                         if(row){modalData.title = row.label||''}

@@ -75,7 +75,6 @@ export default {
                             },
                             on:{
                                 'click':(e)=>{
-                                    console.log(params)
                                     let obj = {
                                         order_no:_this.order_no,
                                         product_id:params.row.product_id,
@@ -84,7 +83,7 @@ export default {
                                     _this.selectProcessRouter({
                                         params:obj,
                                         then(data){
-                                            console.log(data)
+                                            
                                         }
                                     })
                                     

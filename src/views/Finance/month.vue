@@ -57,7 +57,6 @@ export default {
             row.page_size = this.pageSize;
             row.month = this.$route.query.title;
             this.proxyObj = row;
-            console.log(row)
             this.getData(row)
         },
         getData(row){
