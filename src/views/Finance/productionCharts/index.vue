@@ -72,6 +72,7 @@ export default {
                         top: '35%',
                         bottom: 20,
                     },
+                    color:[ '#3764FF', '#62CC5C', '#FFDF1B', '#FF5017', '#03C0DD', '#FFDF1B', 'purple' ],
                     series : [
                         {
                             type: 'pie',
@@ -116,13 +117,19 @@ export default {
                             name:'本月',
                             data:this.lineData_nowMonth,
                             type: 'line',
-                            smooth: true
+                            smooth: true,
+                            itemStyle:{
+                                color:'#4096FF'
+                            }
                         },
                         {
                             name:'上月',
                             data:this.lineData_lastMonth,
                             type: 'line',
-                            smooth: true
+                            smooth: true,
+                            itemStyle:{
+                                color:'#FFB040'
+                            }
                         }
                     ]
                 })

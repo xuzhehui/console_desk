@@ -64,7 +64,11 @@ export default {
             salaryData:{
                 rows:[],
                 data:[],
-            }
+            },
+            dataCompare:null,
+            barOutput:null,
+            pieOutput:null,
+            dataSalary:null,
         }
     },
     created(){
@@ -88,6 +92,12 @@ export default {
     },
 
     mounted(){
+       addEventListener('resize',e=>{
+            this.barOutput.resize()
+            this.pieOutput.resize()
+            this.dataCompare.resize()
+            this.dataSalary.resize()
+        })
     },
     methods:{
         getPieData(){//产值趋势
@@ -127,6 +137,7 @@ export default {
         },
         drawBarOutPut(){//产值趋势
             let barOutput = this.$echarts.init(document.getElementById('bar-output'))
+            this.barOutput = barOutput;
             let options={
                 xAxis:{
                     type:'category',
@@ -162,6 +173,7 @@ export default {
         },
         drawPie(){//销售额占比
             let pieOutput = this.$echarts.init(document.getElementById('pie-output'))
+            this.pieOutput = pieOutput;
             let options={
                 tooltip:{
                     trigger:'item',
@@ -223,6 +235,7 @@ export default {
         },
         drawDataCompare(){
             let dataCompare = this.$echarts.init(document.getElementById('data-compare'))
+            this.dataCompare = dataCompare;
             let options = {
                 xAxis:{
                     type:'category',
@@ -249,6 +262,7 @@ export default {
         },
         drawsalary(){
             let dataSalary = this.$echarts.init(document.getElementById('data-salary'))
+            this.dataSalary = dataSalary
             let options = {
                 xAxis:{
                     type:'category',

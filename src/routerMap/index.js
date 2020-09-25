@@ -6,10 +6,10 @@ const routerMap = [
         component: resolve => require(['@/views/Home/index'], resolve)
     },
     {
-        path:'/cms/notice/menote',
-        name:'Menote',//首页
+        path:'/cms/notice/index',
+        name:'Notice',//基础设置-->消息通知内容
         meta:{index:3},
-        component: resolve => require(['@/views/Notice/Menote'], resolve)
+        component: resolve => require(['@/views/Notice/index'], resolve)
     },
     {
         path:'/cms/personnelmanagement/user',
