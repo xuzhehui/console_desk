@@ -2,30 +2,44 @@
     <div class="home">
         <div class="charts">
             <div class="left-charts">
-                <Toptitle style="height:10px;font-size:10px;margin:0;padding:15px 10px;border-radius:5px;" title='产值趋势'/>
+                <!-- 产值趋势图 -->
+                <Toptitle style="height:10px;font-size:10px;margin:0;padding:15px 10px;border-radius:5px;" title='产值趋势'>
+                    <DatePicker type='month' size='small' style="width:100px;" split-panels placeholder="开始月份"></DatePicker>
+                    --
+                    <DatePicker type='month' size='small' style="width:100px;" split-panels placeholder="结束月份"></DatePicker>
+                </Toptitle>
                 <div class="bar-output" id='bar-output'></div>
             </div>
             <div class="right-charts">
-                <Toptitle style="height:10px;font-size:10px;margin:0;padding:15px 10px;border-radius:5px;" title='人员工资统计'/>
-                <!-- <div class="bar-output" id='pie-output'></div> -->
+                <!-- 人员工资统计图 -->
+                <Toptitle style="height:10px;font-size:10px;margin:0;padding:15px 10px;border-radius:5px;" title='人员工资统计'>
+                    <DatePicker size='small' type='month' style="width:100px;" split-panels placeholder="开始月份"></DatePicker>
+                    --
+                    <DatePicker type='month' size='small' style="width:100px;" split-panels placeholder="结束月份"></DatePicker>
+                </Toptitle>
                 <div class="bar-output" id='data-salary'></div>
             </div>
         </div>
 
         <div class="charts">
             <div class="pie-charst">
-                <Toptitle style="height:10px;font-size:10px;margin:0;padding:15px 10px;border-radius:5px;" title='销售额占比'/>
+                <!-- 销售额占比 -->
+                <Toptitle style="height:10px;font-size:10px;margin:0;padding:15px 10px;border-radius:5px;" title='销售额占比'>
+                    <DatePicker size='small' type="daterange" split-panels placeholder="请选择时间"></DatePicker>
+                </Toptitle>
                 <div class="bar-output" id='pie-output'></div>
             </div>
             <div class="left-charts-other">
-                <Toptitle style="height:10px;font-size:10px;margin:0;padding:15px 10px;border-radius:5px;" title='原始数据对比'/>
+                <!-- 原始数据对比图 -->
+                <Toptitle style="height:10px;font-size:10px;margin:0;padding:15px 10px;border-radius:5px;" title='原始数据对比'>
+                    <DatePicker size='small' type="daterange" split-panels placeholder="请选择时间"></DatePicker>
+                </Toptitle>
                 <div class="bar-output" id='data-compare'></div>
             </div>
             <div class="right-notice">
                 <Toptitle style="height:10px;font-size:10px;margin:0;padding:15px 10px;border-radius:5px;" title='通知公告'/>
-                <!-- <div class="bar-output" id='data-salary'></div> -->
                 <div class="notice-content">
-                    <div class="item">
+                    <div class="item" @click="goNotice">
                         <div class="item-text">订单ID005将在2020年8月11日交付</div>
                         <div class="item-time">122小时前</div>
                     </div>
@@ -92,7 +106,8 @@ export default {
     },
 
     mounted(){
-       addEventListener('resize',e=>{
+        this.axios('/api/notice_list').then(res=>console.log(res))
+        addEventListener('resize',e=>{
             this.barOutput.resize()
             this.pieOutput.resize()
             this.dataCompare.resize()
@@ -286,6 +301,11 @@ export default {
                 ]
             }
             dataSalary.setOption(options)
+        },
+        goNotice(row){
+            this.$router.push({
+                path:'/cms/notice/menote'
+            })
         }
     }
 }

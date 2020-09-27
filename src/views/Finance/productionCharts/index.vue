@@ -47,8 +47,8 @@ export default {
             ],
             tableColums:[
                 {title:'部件',align:'center',key:'parts_title'},
-                {title:'开始时间',align:'center'},
-                {title:'结束时间',align:'center'},
+                // {title:'开始时间',align:'center'},
+                // {title:'结束时间',align:'center'},
                 {title:'部件价格',align:'center',key:'price'},
                 {title:'总价',align:'center',key:'price'},
                 {title:'操作',align:'center',slot:'set'},

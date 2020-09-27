@@ -6,6 +6,34 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "17467052",
+      "name": "下生产",
+      "font_class": "xiashengchan",
+      "unicode": "e637",
+      "unicode_decimal": 58935
+    },
+    {
+      "icon_id": "17467050",
+      "name": "下测量",
+      "font_class": "xiaceliang",
+      "unicode": "e636",
+      "unicode_decimal": 58934
+    },
+    {
+      "icon_id": "17467046",
+      "name": "警示",
+      "font_class": "jingshi",
+      "unicode": "e634",
+      "unicode_decimal": 58932
+    },
+    {
+      "icon_id": "17467040",
+      "name": "注意",
+      "font_class": "zhuyi",
+      "unicode": "e633",
+      "unicode_decimal": 58931
+    },
+    {
       "icon_id": "16955680",
       "name": "日历",
       "font_class": "rili",

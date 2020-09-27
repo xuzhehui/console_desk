@@ -21,7 +21,7 @@
                 <slot name='text-list'></slot>
             </div>
 
-            <Table max-height='450' :width="tableWidth" :loading='loading' @on-selection-change='selectTable'   stripe border :columns="tableColums" :data="tableData">
+            <Table v-if="showTable" max-height='450' :width="tableWidth" :loading='loading' @on-selection-change='selectTable'   stripe border :columns="tableColums" :data="tableData">
                 <template slot-scope="{ row }" slot="set">
                     <slot name='set' :row='row'></slot>
                 </template>
@@ -77,6 +77,10 @@ export default {
         showbtn:{
             type:Boolean,
             default:true
+        },
+        showTable:{
+            type:Boolean,
+            default:true,
         }
 
 
