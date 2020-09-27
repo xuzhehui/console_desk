@@ -32,7 +32,7 @@
             <Modal class-name='vertical-center-modal' :title='showType == 1 ? "新增内容" : "编辑内容"' v-model="show" @on-visible-change='changeModal'>
                 <Form :label-width="80" ref='forms' :model="postInfo" :rules='rules'>
                     <FormItem label='通知分类' prop='type'>
-                        <Input v-model="postInfo.type" placeholder="请输入通知分类"/>
+                        <Input v-model="postInfo.title" placeholder="请输入通知分类"/>
                     </FormItem>
 
                     <FormItem label='通知内容' prop='content'>
@@ -58,7 +58,7 @@ export default {
             ],
             tableColums:[
                 {title:'ID',align:'center',key:'id',width:'100'},
-                {title:'通知分类',align:'center',key:'type'},
+                {title:'通知分类',align:'center',key:'title'},
                 {title:'通知内容',align:'center',key:'content'},
                 {title:'操作',align:'center',slot:'set',width:'150'},
             ],
@@ -89,10 +89,10 @@ export default {
         },
         getData(row){
             this.loading = true;
-            this.axios('/api/basics_measure_index',{params:row}).then(res=>{
+            this.axios('/api/notice_index',{params:row}).then(res=>{
                 this.loading = false;
-                this.tableData = res.data.data;
-                this.total = res.data.total;
+                this.tableData = res.data;
+                this.total = res.data.total||0;
             })
         },
         changePage(e){
