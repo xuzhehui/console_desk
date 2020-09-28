@@ -32,7 +32,13 @@
             <Modal class-name='vertical-center-modal' :title='showType == 1 ? "新增内容" : "编辑内容"' v-model="show" @on-visible-change='changeModal'>
                 <Form :label-width="80" ref='forms' :model="postInfo" :rules='rules'>
                     <FormItem label='通知分类' prop='type'>
-                        <Input v-model="postInfo.title" placeholder="请输入通知分类"/>
+                        <!-- <Input v-model="postInfo.title" placeholder="请输入通知分类"/> -->
+                        <Select v-model="postInfo.type">
+                            <Option :value='1'>测量</Option>
+                            <Option :value='2'>生产</Option>
+                            <Option :value='3'>物料警告</Option>
+                            <Option :value='4'>订单过期</Option>
+                        </Select>
                     </FormItem>
 
                     <FormItem label='通知内容' prop='content'>
@@ -74,7 +80,7 @@ export default {
                 content:'',
             },
             rules:{
-                type:[{required: true,message:'请输入通知分类',trigger:'blur'}],
+                type:[{required: true,message:'请选择通知分类'}],
                 content:[{required: true,message:'请输入通知内容',trigger:'blur'}]
             },
             showType:1,
@@ -91,7 +97,7 @@ export default {
             this.loading = true;
             this.axios('/api/notice_index',{params:row}).then(res=>{
                 this.loading = false;
-                this.tableData = res.data;
+                this.tableData = res.data||res.data.data;
                 this.total = res.data.total||0;
             })
         },
@@ -114,10 +120,11 @@ export default {
             })
         },
         postData(){
-            this.axios.post('').then(res=>{
+            this.axios.post('/api/save_notice',this.postInfo).then(res=>{
                 if(res.code == 200){
                     this.$Message.success(res.msg||'操作成功');
                     this.show = false;
+                    this.getData(this.proxyObj)
                 }
             })
         },
@@ -131,8 +138,11 @@ export default {
         openModal(row,type){
             this.showType = type;
             if(row){
-                this.postInfo = row;
+                this.postInfo.type = row.type;
+                this.postInfo.content = row.content;
+                this.postInfo.op = 'edit'
             }
+            this.postInfo.op = 'add'
             this.show = true;
         },
         changeModal(e){

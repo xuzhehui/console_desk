@@ -13,13 +13,15 @@
         >   
             <div slot='titleButton'>
                 <Button @click="back" style="margin-right:10px;">返回</Button>
-                <Button type="primary" style="margin-right:10px;" ghost>打印派工单</Button>
-                <Button @click="finish(selectIds)" type="success" ghost>批量完成</Button>
+                <Button type="primary" style="margin-right:10px;" ghost>批量打印派工单</Button>
+                <Button @click="finish(selectIds,2)" type="error" style="margin-right:10px;" ghost>批量驳回</Button>
+                <Button @click="finish(selectIds,1)" type="success"  ghost>批量完成</Button>
             </div>
 
             <template slot='set' slot-scope='{row}'>
                 <div>
-                   <a style="color:#32C800" @click="finish(row)">完成</a>
+                   <a class="map-margin" style="color:#32C800" @click="finish(row,1)">完成</a>
+                   <a class="map-margin" style="color:#ed4014" @click="finish(row,2)">驳回</a>
                 </div>
             </template>
         </FullPage>
@@ -54,7 +56,7 @@ export default {
         }
     },
     mounted(){
-        this.getData({order_no:this.$route.query.order_no})
+        this.getData(this.$route.query)
     },
     methods:{
         back(){
@@ -68,16 +70,17 @@ export default {
                 }
             })
         },
-        postData(data){
-            this.axios.post('/api/orders_dispatch_confirm',data).then(res=>{
+        postData(data,type){
+            let url = type == 1 ? '/api/orders_dispatch_confirm' : '/api/orders_plan_cancer'
+            this.axios.post(url,data).then(res=>{
                 if(res.code == 200){
                     this.$Message.success(res.msg);
-
+                    this.getData(this.$route.query)
                 }
             })
         },
         changePage(e){},
-        finish(row){
+        finish(row,type){
             if(!row||row.length<1){return this.$Message.warning('请至少选择一项')}
             let str = Array.isArray(row) ? row.join(',') : row.id
             this.confirmDelete({
@@ -85,7 +88,7 @@ export default {
                 title:'生产完成',
                 type:'primary',
                 then:()=>{
-                    this.postData({id:str})
+                    this.postData({id:str},type)
                 },
                 cancel:()=>{}
             })

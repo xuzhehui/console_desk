@@ -1,7 +1,7 @@
 <template>
     <div>
         <FullPage 
-        :title='$route.query.title+"工资详情"'
+        :title='$route.query.name+"工资详情"'
         :list='list' 
         @init='init' 
         :loading='loading'
@@ -42,16 +42,18 @@ export default {
             ],
             tableColums:[
                 {title:'订单号',align:'center',key:'order_no'},
-                {title:'工序',align:'center',key:'procedure'},
-                {title:'产品名称',align:'center',key:'product'},
-                {title:'图号(元)',align:'center',key:'number_url'},
+                {title:'工序',align:'center',key:'procedure_name'},
+                {title:'产品名称',align:'center',key:'product_name'},
+                // {title:'图号(元)',align:'center',key:'number_url'},
                 {title:'工价',align:'center',key:'price'},
-                {title:'天/计件',align:'center',key:'type'},
-                {title:'时间',align:'center',key:'time'},
+                {title:'天/计件',align:'center',key:'type',
+                    render:(h,params)=>h('span',{},params.row.type == 0 ? '天' : '件')
+                },
+                {title:'时间',align:'center',key:'time',
+                    render:(h,params)=>h('span',{},this.func.replaceDate(params.row.time*1))
+                },
             ],
-            tableData:[
-                {order_no:'1027689',produce:'木工',product_title:'产品1',number_url:'bs-28',price:'128',type:'按件',time:'2019-8-29'}
-            ],
+            tableData:[],
             pageIndex:1,
             total:0,
             pageSize:10,
@@ -65,7 +67,7 @@ export default {
             row.page_size = this.pageSize;
             row.start_time = this.checkData(row.start_time)
             row.end_time = this.checkData(row.end_time)
-            row.name = this.$route.query.title;
+            Object.assign(row,this.$route.query)
             this.proxyObj = row;
             this.getData(row)
         },

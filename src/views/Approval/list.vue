@@ -29,7 +29,7 @@ export default {
         return {
             list:[
                 {title:'订单号',name:'Input',value:'',serverName:'order_no',placeholder:'请输入订单号'},
-                {title:'审批状态',name:'Select',placeholder:'请选择',value:'',
+                {title:'审批状态',name:'Select',placeholder:'请选择',value:'',serverName:'state',
                     option:[
                         {label:'待审批',value:0},
                         {label:'同意',value:1},
@@ -49,7 +49,9 @@ export default {
             tableColums:[
                 {title:'订单编号',align:'center',key:'order_no',fixed:'left',width:'180'},
                 {title:'订单流水号',align:'center',key:'oa_order_no',width:'200'},
-                {title:'订单类型',align:'center',key:'show_order_type',width:'100'},
+                {title:'订单类型',align:'center',key:'show_order_type',width:'100',
+                    render:(h,params)=>h('span',{},params.row.order_type == 1 ? '工装' : '家装')
+                },
                 {title:'客户',align:'center',key:'client_name',width:'120'},
                 {title:'手机号',align:'center',key:'mobile',width:'150'},
                 {title:'审批类型',align:'center',width:'100',
@@ -64,12 +66,16 @@ export default {
                             style:{
                                 color:params.row.state == 0 ? '#FFA141' : (params.row.state == 1 ? '#32C800' : '#FF5E5C')
                             }
-                        },params.row.show_state)
+                        },params.row.state == 0 ? '待审批' : (params.row.state == 1 ? '同意' : (params.row.state == 2 ? '驳回' :'取消')))
                     }
                 },
                 {title:'创建人员',align:'center',key:'nickname',width:'100'},
-                {title:'审批开始时间',align:'center',key:'show_crt_time',width:'180'},
-                {title:'审批结束时间',align:'center',key:'show_upd_time',width:'180'},
+                {title:'审批开始时间',align:'center',key:'show_crt_time',width:'180',
+                    render:(h,params)=>h('span',{},this.func.replaceDate(params.row.crt_time*1))
+                },
+                {title:'审批结束时间',align:'center',key:'show_upd_time',width:'180',
+                    render:(h,params)=>h('span',{},this.func.replaceDate(params.row.upd_time*1))
+                },
                 {title:'备注',align:'center',key:'remark',width:'200'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'180'},
             ],
@@ -92,12 +98,6 @@ export default {
             this.loading = true;
             this.axios('/api/order_oa_list',{params:row}).then(res=>{
                 this.loading = false;
-                res.data.data.map(v=>{
-                    v.show_state = v.state == 0 ? '待审批' : (v.state == 1 ? '同意' : (v.state == 2 ? '驳回' :'取消'))
-                    v.show_order_type = v.order_type == 1 ? '工装' : '家装'
-                    v.show_crt_time = this.func.replaceDate(v.crt_time*1)
-                    v.show_upd_time = this.func.replaceDate(v.upt_time*1)
-                })
                 this.tableData = res.data.data;
                 this.total = res.data.total;
             })
@@ -109,7 +109,6 @@ export default {
         },
         goPage(row){
             row.order_type == 1 ? this.$router.push({
-                // path:'/cms/approval/frock',
                 path:'/cms/ordermannage/businessorderlist/decorationlist',
                 query:{
                     oa_order_no:row.oa_order_no,

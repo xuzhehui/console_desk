@@ -39,7 +39,6 @@ export default {
             tableColums:[
                 {title:'月份',align:'center',key:'month'},
                 {title:'人名',align:'center',key:'name'},
-                {title:'数量',align:'center',key:'number'},
                 {title:'应发金额(元)',align:'center',key:'price'},
                 {title:'操作',align:'center',slot:'set'},
             ],
@@ -83,7 +82,8 @@ export default {
             this.$router.push({
                 path:'/cms/finance/salary',
                 query:{
-                   title:row.name,
+                   name:row.name,
+                   month:this.$route.query.title
                 }
             })
         },

@@ -4,18 +4,14 @@
             <div class="left-charts">
                 <!-- 产值趋势图 -->
                 <Toptitle style="height:10px;font-size:10px;margin:0;padding:15px 10px;border-radius:5px;" title='产值趋势'>
-                    <DatePicker type='month' size='small' style="width:100px;" split-panels placeholder="开始月份"></DatePicker>
-                    --
-                    <DatePicker type='month' size='small' style="width:100px;" split-panels placeholder="结束月份"></DatePicker>
+                    <DatePicker type='month' size='small'  split-panels placeholder="选择月份"></DatePicker>
                 </Toptitle>
                 <div class="bar-output" id='bar-output'></div>
             </div>
             <div class="right-charts">
                 <!-- 人员工资统计图 -->
                 <Toptitle style="height:10px;font-size:10px;margin:0;padding:15px 10px;border-radius:5px;" title='人员工资统计'>
-                    <DatePicker size='small' type='month' style="width:100px;" split-panels placeholder="开始月份"></DatePicker>
-                    --
-                    <DatePicker type='month' size='small' style="width:100px;" split-panels placeholder="结束月份"></DatePicker>
+                    <DatePicker size='small' type='month'  split-panels placeholder="选择月份"></DatePicker>
                 </Toptitle>
                 <div class="bar-output" id='data-salary'></div>
             </div>
@@ -39,16 +35,8 @@
             <div class="right-notice">
                 <Toptitle style="height:10px;font-size:10px;margin:0;padding:15px 10px;border-radius:5px;" title='通知公告'/>
                 <div class="notice-content">
-                    <div class="item" @click="goNotice">
-                        <div class="item-text">订单ID005将在2020年8月11日交付</div>
-                        <div class="item-time">122小时前</div>
-                    </div>
-                    <div class="item">
-                        <div class="item-text">订单ID005将在2020年8月11日交付</div>
-                        <div class="item-time">122小时前</div>
-                    </div>
-                    <div class="item">
-                        <div class="item-text">订单ID005将在2020年8月11日交付</div>
+                    <div class="item" @click="goNotice" v-for="item of noticeList" :key="item.id">
+                        <div class="item-text">{{item.content}}</div>
                         <div class="item-time">122小时前</div>
                     </div>
                 </div>
@@ -83,30 +71,18 @@ export default {
             barOutput:null,
             pieOutput:null,
             dataSalary:null,
+            noticeList:[],
         }
     },
     created(){
         this.getBarOutPue()//原始数据对比
-
-        this.axios('/api/stat_product').then(res=>{
-            let result = [];
-            res.data.map(v=>{
-                v.name = v.title;
-                v.value = v.price;
-                result.push(v.title)
-            })
-            this.pieOutputData.rows = result;
-            this.pieOutputData.data = res.data;
-            this.$nextTick(()=>{
-                this.drawPie()
-            })
-            
-        })
-        this.getPieData()
+        this.getMoneyData()//人员工资列表
+        this.getPieData()//销售额占比
+        this.getProteomicsData()
     },
 
     mounted(){
-        this.axios('/api/notice_list').then(res=>console.log(res))
+        this.axios('/api/notice_list',{params:{page_size:10,}}).then(res=>this.noticeList = res.data.data)
         addEventListener('resize',e=>{
             this.barOutput.resize()
             this.pieOutput.resize()
@@ -115,7 +91,12 @@ export default {
         })
     },
     methods:{
-        getPieData(){//产值趋势
+        getProteomicsData(row){
+            this.axios('/api/line_chart',{params:row}).then(res=>{
+                console.log(res)
+            })
+        },
+        getMoneyData(){//人员工资统计数据
             this.axios('/api/finance_total_detail',{params:{month:'2020-09'}}).then(res=>{
                 if(res.code == 200){
                     let result = [];
@@ -129,8 +110,8 @@ export default {
                 }
             })
         },
-        getBarOutPue(){
-            this.axios('/api/stat_procedure').then(res=>{//绘制柱状图
+        getBarOutPue(){//原始数据对比数据
+            this.axios('/api/stat_procedure').then(res=>{
                 if(res.code == 200){
                     console.log(res)
                     let rows = [],columns = [];
@@ -140,14 +121,25 @@ export default {
                     })
                     this.barOutputData.rows = rows;
                     this.barOutputData.columns = columns;
-                    this.$nextTick(()=>{
-                        this.drawBarOutPut();
-
-                        this.drawDataCompare();
-
-                        this.drawsalary()
-                    })
+                    this.$nextTick(()=>this.drawDataCompare())
                 }
+            })
+        },
+
+        getPieData(){//销售额占比
+            this.axios('/api/stat_product').then(res=>{
+                let result = [];
+                res.data.map(v=>{
+                    v.name = v.title;
+                    v.value = v.price;
+                    result.push(v.title)
+                })
+                this.pieOutputData.rows = result;
+                this.pieOutputData.data = res.data;
+                this.$nextTick(()=>{
+                    this.drawPie()
+                })
+                
             })
         },
         drawBarOutPut(){//产值趋势
@@ -248,7 +240,7 @@ export default {
             }
             pieOutput.setOption(options)
         },
-        drawDataCompare(){
+        drawDataCompare(){//原始数据表
             let dataCompare = this.$echarts.init(document.getElementById('data-compare'))
             this.dataCompare = dataCompare;
             let options = {
@@ -275,7 +267,7 @@ export default {
             }
             dataCompare.setOption(options)
         },
-        drawsalary(){
+        drawsalary(){//人员工资表
             let dataSalary = this.$echarts.init(document.getElementById('data-salary'))
             this.dataSalary = dataSalary
             let options = {
