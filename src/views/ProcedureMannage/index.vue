@@ -13,9 +13,11 @@
         :pageIndex='pageIndex'
         :total='total'
         >
-            <div slot='titleButton'>
-                <Button type="success" ghost icon='md-exit' style="margin-right:10px;">批量导入</Button>
-                <Button type="warning" ghost icon='md-return-left'>批量导出</Button>
+            <div slot='titleButton' style="display:flex">
+                <Upload name='your_file' :show-upload-list='false' :headers='headers' :on-error='uploadError' :on-success='uploadSuccess' :action="$store.state.ip+'/api/procedure_index_import'">
+                    <Button type="success" ghost icon='md-exit' style="margin-right:10px;">批量导入</Button>
+                </Upload>
+                <Button @click="exportData" type="warning" ghost icon='md-return-left'>批量导出</Button>
             </div>
             <div slot='navButton'>
                 <Button type="primary" ghost icon='md-add' @click="goPage(1)">新增工序</Button>
@@ -64,6 +66,7 @@ export default {
             proxyObj:{},
             id:null,
             loading:false,
+            headers:{'Authorization':localStorage.getItem('token')},
         }
     },
     watch:{
@@ -128,6 +131,21 @@ export default {
                 }
             })
         },
+        exportData(){
+            let url = this.$store.state.ip+'/api/procedure_index_export'+this.func.objToParams(this.proxyObj)
+            location.href=url
+        },
+        uploadSuccess(res){
+            if(res.code == 200){
+                this.$Message.success(res||'上传成功')
+            }else{
+                this.$Message.warning(res||'上传失败')
+            }
+            this.getData(this.proxyObj)
+        },
+        uploadError(err){
+            this.$Message.error(err.msg||'上传失败')
+        }
     }
 }
 </script>

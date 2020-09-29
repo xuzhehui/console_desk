@@ -14,7 +14,7 @@
         :total='total'
         >
             <div slot='titleButton'>
-                <Button type="warning" ghost >批量导出</Button>
+                <Button @click="exportData(proxyObj)" type="warning" ghost >批量导出</Button>
             </div>
             
             <template slot='set' slot-scope='{row}'>
@@ -24,8 +24,6 @@
                     </svg>
                 </div>
             </template>
-            
-        
         </FullPage>
     </div>
 </template>
@@ -92,6 +90,10 @@ export default {
             let [year,month] = str;
             month = month<10 ? '0'+month : month;
             return `${year}-${month}`
+        },
+        exportData(row){
+            let url = this.$store.state.ip+'/api/finance_total_export'+this.func.objToParams(this.proxyObj)
+            location.href=url
         }
     }
 }

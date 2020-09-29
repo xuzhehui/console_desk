@@ -56,5 +56,13 @@ export default{
           },t)
         }
         return fn
+    },
+    objToParams(obj){
+      let result = ''
+      for(let i in obj){
+        result+=`&${i}=${obj[i]}`
       }
+      result = '?'+result.substr(1,result.length-1)
+      return result
+    }
 }

@@ -15,7 +15,7 @@
         >
             <div slot='titleButton'>
                 <Button @click="back" type='primary' ghost style="margin-right:10px;" >返回</Button>
-                <Button type="warning" ghost >批量导出</Button>
+                <Button @click="exportData" type="warning" ghost >批量导出</Button>
             </div>
             
             <template slot='set' slot-scope='{row}'>
@@ -88,6 +88,10 @@ export default {
             })
         },
         back(){this.$router.go(-1)},
+        exportData(){
+            let url = this.$store.state.ip+'/api/finance_total_detail_export'+this.func.objToParams(this.proxyObj)
+            location.href=url
+        }
     }
 }
 </script>

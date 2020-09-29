@@ -20,8 +20,8 @@
 
                 <Divider type="vertical" style="margin-right:20px;" />
 
-                <Badge  style="margin-right:20px;" :count="88">
-                    <Icon type="ios-notifications-outline" size="26"></Icon>
+                <Badge  style="margin-right:20px;cursor:pointer" :count="88">
+                    <Icon @click="goNotice" type="ios-notifications-outline" size="26"></Icon>
                 </Badge>
 
                 <Icon size='26' type="ios-cloud-download-outline" />
@@ -153,6 +153,11 @@ export default {
         },
         dropClick(name){
             name == 2 ? this.loginOut() : (name == 1 ? this.openPasswordModal() : (name == 3 ? this.openUserInfoModal() : ''));
+        },
+        goNotice(){
+            this.$router.push({
+                path:'/cms/notice/menote'
+            })
         }
     },
 }

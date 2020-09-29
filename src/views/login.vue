@@ -119,7 +119,7 @@ export default {
         }
         .info-text{font-size: 90px;font-family: 'YouSheBiaoTiHei';color: #3764FF;line-height:120px;letter-spacing: 2px;font-weight:bold;}
         .log-text{color:#666666;font-size:18px;padding-top:10px;font-family:'PingFangSC-Regular, PingFang SC';}
-        .b-an{padding-top:200px;}
+        .b-an{padding-top:100px;}
     }
 }
 </style>

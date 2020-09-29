@@ -4,14 +4,14 @@
             <div class="left-charts">
                 <!-- 产值趋势图 -->
                 <Toptitle style="height:10px;font-size:10px;margin:0;padding:15px 10px;border-radius:5px;" title='产值趋势'>
-                    <DatePicker type='month' size='small'  split-panels placeholder="选择月份"></DatePicker>
+                    <DatePicker @on-change="changeDate($event,1)" v-model="ProteomicTime" type='month' size='small'  split-panels placeholder="选择月份"></DatePicker>
                 </Toptitle>
                 <div class="bar-output" id='bar-output'></div>
             </div>
             <div class="right-charts">
                 <!-- 人员工资统计图 -->
                 <Toptitle style="height:10px;font-size:10px;margin:0;padding:15px 10px;border-radius:5px;" title='人员工资统计'>
-                    <DatePicker size='small' type='month'  split-panels placeholder="选择月份"></DatePicker>
+                    <DatePicker @on-change="changeDate($event,2)" v-model="salaryTime" size='small' type='month'  split-panels placeholder="选择月份"></DatePicker>
                 </Toptitle>
                 <div class="bar-output" id='data-salary'></div>
             </div>
@@ -55,6 +55,11 @@ require('echarts/lib/component/title');
 export default {
     data(){
         return {
+            ProteomicsData:{//产值趋势图表
+                rows:[],
+                columns:[],
+            },
+            ProteomicTime:'',
             barOutputData:{
                 rows:[],
                 columns:[],
@@ -67,6 +72,7 @@ export default {
                 rows:[],
                 data:[],
             },
+            salaryTime:'',
             dataCompare:null,
             barOutput:null,
             pieOutput:null,
@@ -93,11 +99,20 @@ export default {
     methods:{
         getProteomicsData(row){
             this.axios('/api/line_chart',{params:row}).then(res=>{
-                console.log(res)
+                if(res.code == 200){
+                    let result=[],columns=[];
+                    res.data[0].map(v=>{
+                        result.push(v.time)
+                        columns.push(v.price)
+                    })
+                    this.ProteomicsData.rows = result;
+                    this.ProteomicsData.columns = columns
+                    this.$nextTick(e=>this.drawBarOutPut())
+                }
             })
         },
-        getMoneyData(){//人员工资统计数据
-            this.axios('/api/finance_total_detail',{params:{month:'2020-09'}}).then(res=>{
+        getMoneyData(row){//人员工资统计数据
+            this.axios('/api/finance_total_detail',{params:{month:row}}).then(res=>{
                 if(res.code == 200){
                     let result = [];
                     res.data.map(v=>{
@@ -148,7 +163,7 @@ export default {
             let options={
                 xAxis:{
                     type:'category',
-                    data:this.barOutputData.rows
+                    data:this.ProteomicsData.rows
                 },
                 yAxis:{
                     type:'value'
@@ -159,10 +174,10 @@ export default {
                 tooltip:{
                     trigger:'axis'
                 },
-                barWidth:20,
+                barWidth:10,
                 series:[
                     {
-                        data:this.barOutputData.columns,
+                        data:this.ProteomicsData.columns,
                         type:'bar',
                         name:'柱状图',
                         itemStyle:{
@@ -170,7 +185,7 @@ export default {
                         }
                     },
                     {
-                        data:this.barOutputData.columns,
+                        data:this.ProteomicsData.columns,
                         type:'line',
                         name:'折线图'
                     }
@@ -298,6 +313,15 @@ export default {
             this.$router.push({
                 path:'/cms/notice/menote'
             })
+        },
+        changeDate(e,type){
+            if(type == 1){
+                this.ProteomicTime = e
+                this.getProteomicsData({month:this.ProteomicTime})
+            }else{
+                this.salaryTime = e
+                this.getMoneyData(this.salaryTime)
+            }
         }
     }
 }

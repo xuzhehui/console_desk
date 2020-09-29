@@ -15,7 +15,7 @@
         >
             <div slot='titleButton'>
                 <Button @click="back" type='primary' ghost style="margin-right:10px;" >返回</Button>
-                <Button type="warning" ghost >批量导出</Button>
+                <Button @click="exportData" type="warning" ghost >批量导出</Button>
             </div>
             
             <template slot='set' slot-scope='{row}'>
@@ -96,6 +96,10 @@ export default {
             let [year,month] = str;
             month = month<10 ? '0'+month : month;
             return `${year}-${month}`
+        },
+        exportData(){
+            let url = this.$store.state.ip+'/api/finance_total_product_detail_export'+this.func.objToParams(this.proxyObj)
+            location.href=url
         }
     }
 }
