@@ -47,10 +47,10 @@ export default {
                 {title:'部件名称',name:'Input',value:'',serverName:'title',placeholder:'请输入部件名称'},
             ],
             tableColums:[
-                {title:'ID',align:'center',key:'id'},
-                {title:'部件分类名称',align:'center',key:'p_title'},
-                {title:'部件名称',align:'center',key:'title'},
-                {title:'单位',align:'center',key:'company'},
+                {title:'ID',align:'center',key:'id',minWidth:100},
+                {title:'部件分类名称',align:'center',key:'p_title',minWidth:100},
+                {title:'部件名称',align:'center',key:'title',minWidth:100},
+                {title:'单位',align:'center',key:'company',minWidth:100},
                 {title:'操作',align:'center',slot:'set',width:'150'},
             ],
             tableData:[],
@@ -116,9 +116,9 @@ export default {
         },
         uploadSuccess(res){
             if(res.code == 200){
-                this.$Message.success(res||'上传成功')
+                this.$Message.success(res.msg||'上传成功')
             }else{
-                this.$Message.warning(res||'上传失败')
+                this.$Message.warning(res.msg||'上传失败')
             }
             this.getData(this.proxyObj)
         },

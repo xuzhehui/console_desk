@@ -306,6 +306,12 @@ const routerMap = [
         component: resolve => require(['@/views/OrderMannage/BusinessOrderlist/edit'], resolve)
     },
     {
+        path:'/cms/ordermannage/businessorderlist/agentorder',
+        name:'AgentOrder',//订单管理-->业务订单列表-->代理商新增编辑订单
+        meta:{index:4},
+        component: resolve => require(['@/views/OrderMannage/BusinessOrderlist/agentOrder'], resolve)
+    },
+    {
         path:'/cms/approval/list',
         name:'Approvallist',//审批-->审批列表
         meta:{index:4},

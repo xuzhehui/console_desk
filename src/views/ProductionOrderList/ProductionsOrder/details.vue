@@ -54,7 +54,7 @@ export default {
             order_no:null,
             tableColums:[
                 {title:'部件',align:'center',key:'part_title',fixed:'left',width:'150'},
-                {title:'工艺路线',align:'center',width:'200',
+                {title:'工艺路线',align:'center',minWidth:200,
                     render(h,params){
                         return h('a',{
                             props:{
@@ -63,11 +63,11 @@ export default {
                         },'编辑工艺路线')
                     }
                 },
-                {title:'指导报价 (元)',align:'center',width:'200',key:'price'},
-                {title:'测量数据',align:'center',width:'200',key:'measure_data'},
-                {title:'图号',align:'center',width:'200',key:'url_number'},
-                {title:'图纸',align:'center',width:'200',key:'url'},
-                {title:'预估工期',align:'center',width:'200',key:'predict_time'},
+                {title:'指导报价 (元)',align:'center',minWidth:200,key:'price'},
+                {title:'测量数据',align:'center',minWidth:200,key:'measure_data'},
+                {title:'图号',align:'center',minWidth:200,key:'url_number'},
+                {title:'图纸',align:'center',minWidth:200,key:'url'},
+                {title:'预估工期',align:'center',minWidth:200,key:'predict_time'},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'120'},
             ],
             tableData:[{type:'123'}],

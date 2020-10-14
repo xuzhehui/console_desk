@@ -45,8 +45,8 @@ export default {
                 {title:'商品名称',name:'Input',value:'',serverName:'title',placeholder:'请输入物料分类名称'},
             ],
             tableColums:[
-                {title:'ID',align:'center',key:'id'},
-                {title:'图片',align:'center',key:'img_url',
+                {title:'ID',align:'center',key:'id',fixed:'left',width:'100'},
+                {title:'图片',align:'center',key:'img_url',minWidth:100,
                     render: (h, params) => {
                         return h('img', {
                             attrs:{
@@ -59,9 +59,9 @@ export default {
                         })
                     }
                 },
-                {title:'商品名称',align:'center',key:'title'},
-                {title:'通用商品价格',align:'center',key:'price'},
-                {title:'操作',align:'center',slot:'set',width:'150'},
+                {title:'商品名称',align:'center',key:'title',minWidth:100},
+                {title:'通用商品价格',align:'center',key:'price',minWidth:100},
+                {title:'操作',align:'center',slot:'set',width:'150',fixed:'right'},
             ],
             tableData:[],
             pageIndex:1,

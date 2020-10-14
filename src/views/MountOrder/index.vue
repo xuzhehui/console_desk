@@ -47,20 +47,20 @@ export default {
             ],
             tableColums:[
                 {title:'订单编号',align:'center',key:'order_no',fixed:'left',width:'200'},
-                {title:'订单类型',align:'center',key:'type',width:'150',
+                {title:'订单类型',align:'center',key:'type',minWidth:150,
                     render:(h,params)=>h('span',{},params.row.type == 1 ? '工装' : '家装')
                 },
-                {title:'客户',align:'center',key:'client_name',width:'150'},
-                {title:'手机号',align:'center',key:'mobile',width:'150'},
-                {title:'地址',align:'center',key:'address',width:'150'},
-                {title:'小区',align:'center',key:'residential_name',width:'200'},
-                {title:'出库时间',align:'center',key:'predict_time',width:'200',
+                {title:'客户',align:'center',key:'client_name',minWidth:150},
+                {title:'手机号',align:'center',key:'mobile',minWidth:150},
+                {title:'地址',align:'center',key:'address',minWidth:150},
+                {title:'小区',align:'center',key:'residential_name',minWidth:200},
+                {title:'出库时间',align:'center',key:'predict_time',minWidth:200,
                     render:(h,params)=>h('span',{},this.func.replaceDate(params.row.transport_start_time))
                 },
-                {title:'运输时间',align:'center',key:'crt_time',width:'200',
+                {title:'运输时间',align:'center',key:'crt_time',minWidth:200,
                     render:(h,params)=>h('span',{},this.func.replaceDate(params.row.transport_end_time))
                 },
-                {title:'收到确认',align:'center',key:'sub_state',width:'150',
+                {title:'收到确认',align:'center',key:'sub_state',minWidth:150,
                     render(h,params){
                         return h('a',{
                             on:{

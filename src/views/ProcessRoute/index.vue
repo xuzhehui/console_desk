@@ -73,9 +73,9 @@ export default {
                     }else{
                         if(i == res.data.top.length-1){
                             v.fixed = 'right'
-                            // v.width = '150'
+                            v.width = '150'
                         }else{
-                            // v.width='200'
+                            v.minWidth=100
                         }
                     }
 
@@ -125,9 +125,9 @@ export default {
         },
         uploadSuccess(res){
             if(res.code == 200){
-                this.$Message.success(res||'上传成功')
+                this.$Message.success(res.msg||'上传成功')
             }else{
-                this.$Message.warning(res||'上传失败')
+                this.$Message.warning(res.msg||'上传失败')
             }
             this.getData(this.proxyObj)
         },

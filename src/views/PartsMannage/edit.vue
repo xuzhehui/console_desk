@@ -48,7 +48,7 @@
             <Table stripe border :columns="tableColums" :data="tableData">
                 <template slot-scope="{index}" slot="title">
                     <div>
-                        <Select label-in-value @on-change="changeSe($event,index)" v-model="tableData[index].id">
+                        <Select label-in-value @on-change="changeSe($event,index)" v-model="tableData[index].material_id">
                             <Option :data-unit='item.unit' :tag='item.high' v-for="item of zeroParts" :key="item.id" :value='item.id' :label="item.title"></Option>
                         </Select>
                     </div>
@@ -115,15 +115,15 @@ export default {
             partList:[],
             partsData:[],
             tableColums:[
-                {title:'零部件名称',align:'center',key:'title',slot:'title',},
-                {title:'数量',align:'center',key:'number',slot:'number'},
-                {title:'单位',align:'center',key:'company',slot:'company'},
-                {title:'长',align:'center',key:'long',slot:'long'},
-                {title:'宽',align:'center',key:'wide',slot:'wide'},
-                {title:'厚',align:'center',key:'thick',slot:'thick'},
-                {title:'工艺要求',align:'center',key:'requirement',slot:'requirement'},
-                {title:'标签',align:'center',key:'label',slot:'label'},
-                {title:'操作',align:'center',slot:'set'},
+                {title:'零部件名称',align:'center',key:'title',slot:'title',minWidth:100},
+                {title:'数量',align:'center',key:'number',slot:'number',minWidth:100},
+                {title:'单位',align:'center',key:'company',slot:'company',minWidth:100},
+                {title:'长',align:'center',key:'long',slot:'long',minWidth:100},
+                {title:'宽',align:'center',key:'wide',slot:'wide',minWidth:100},
+                {title:'厚',align:'center',key:'thick',slot:'thick',minWidth:100},
+                {title:'工艺要求',align:'center',key:'requirement',slot:'requirement',minWidth:100},
+                {title:'标签',align:'center',key:'label',slot:'label',minWidth:100},
+                {title:'操作',align:'center',slot:'set',minWidth:100},
             ],
             tableData:[],
             rules:{
@@ -181,6 +181,7 @@ export default {
             })
         },
         postData(){
+            if(!this.info.bp_id){return this.$Message.warning('请关联产品')}
             let postInfo = JSON.parse(JSON.stringify(this.info)),sendData = {top:{}};
             sendData.op = this.type == 1 ? 'add' : 'edit';
             for(let i in postInfo){
@@ -198,6 +199,9 @@ export default {
             this.axios('/api/parts_detail',{params:{id:id}}).then(res=>{
                 this.info = res.data;
                 this.tableData = res.data.detail;
+                if(this.info.product){
+                    this.nowSelectObj = this.info.product
+                }
                 this.$route.params.info ? this.tableData.push(this.$route.params.info) : ''
             })
         },
@@ -250,6 +254,7 @@ export default {
         handleClick(e){
            let data = JSON.parse(e)
            this.nowSelectObj = data
+           console.log(data)
            this.info.bp_id = this.nowSelectObj.id;
            this.axios('/api/basics_product_list',{params:{id:this.info.bp_id}}).then(res=>{
                this.measureList = res.data[0].measure

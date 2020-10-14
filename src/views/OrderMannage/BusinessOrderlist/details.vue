@@ -30,18 +30,17 @@ export default {
     data(){
         return {
             house_id:this.$route.query.house_id,
-            // type:this.$route.query.type,
             logList:[],
             tableColums:[
-                {title:'产品类型',align:'center',key:'type',fixed:'left',width:'100',key:'basics_title'},
-                {title:'产品名称',align:'center',key:'product_title',},
-                {title:'产品型号',align:'center',key:'model',},
-                {title:'测量数据',align:'center',key:'measure'},
-                {title:'位置',align:'center',key:'address',key:'position'},
-                {title:'图号',align:'center',key:'address',key:'url_number',
+                {title:'产品类型',align:'center',key:'type',fixed:'left',minWidth:100,key:'basics_title'},
+                {title:'产品名称',align:'center',key:'product_title',minWidth:100},
+                {title:'产品型号',align:'center',key:'model',minWidth:100},
+                {title:'测量数据',align:'center',key:'measure',minWidth:100},
+                {title:'位置',align:'center',key:'address',key:'position',minWidth:100},
+                {title:'图号',align:'center',key:'address',key:'url_number',minWidth:100
                     
                 },
-                {title:'图纸',align:'center',key:'address',key:'url',
+                {title:'图纸',align:'center',key:'address',key:'url',minWidth:100,
                     render:(h,params)=>{
                         return h('a',{
                             attrs:{
@@ -60,8 +59,8 @@ export default {
                         )
                     }
                 },
-                {title:'预估产品工期',align:'center',key:'predict_working'},
-                {title:'操作',align:'center',slot:'set',fixed:'right',width:'100'},
+                {title:'预估产品工期',align:'center',key:'predict_working',minWidth:100},
+                {title:'操作',align:'center',slot:'set',fixed:'right',minWidth:100},
             ],
             tableData:[],
             pageIndex:1,

@@ -59,12 +59,12 @@ export default {
             ],
             tableColums:[
                 {title:'订单编号',align:'center',key:'order_no',fixed:'left',width:'200'},
-                {title:'生产订单编号',align:'center',key:'oa_order_no',width:'200'},
-                {title:'小区',align:'center',key:'residential_name',width:'200'},
-                {title:'地址',align:'center',key:'address',width:'200'},
-                {title:'客户姓名',align:'center',key:'client_name',width:'200'},
-                {title:'手机号',align:'center',key:'mobile',width:'200'},
-                {title:'紧急程度',align:'center',key:'warning_state',width:'100',
+                {title:'生产订单编号',align:'center',key:'oa_order_no',minWidth:200},
+                {title:'小区',align:'center',key:'residential_name',minWidth:200},
+                {title:'地址',align:'center',key:'address',minWidth:200},
+                {title:'客户姓名',align:'center',key:'client_name',minWidth:200},
+                {title:'手机号',align:'center',key:'mobile',minWidth:200},
+                {title:'紧急程度',align:'center',key:'warning_state',minWidth:100,
                     render(h,params){
                         return h('span',{
                             props:{},
@@ -76,11 +76,11 @@ export default {
                         )
                     }
                 },
-                {title:'下单日期',align:'center',key:'show_crt_time',width:'200'},
-                {title:'测量人员',align:'center',key:'show_measure_start_time',width:'200'},
-                {title:'测量开始日期',align:'center',key:'show_measure_start_time',width:'200'},
-                {title:'测量结束日期',align:'center',key:'show_measure_start_time',width:'200'},
-                {title:'实际测量时间',align:'center',key:'show_measure_time',width:'200'},
+                {title:'下单日期',align:'center',key:'show_crt_time',minWidth:200},
+                {title:'测量人员',align:'center',key:'show_measure_start_time',minWidth:200},
+                {title:'测量开始日期',align:'center',key:'show_measure_start_time',minWidth:200},
+                {title:'测量结束日期',align:'center',key:'show_measure_start_time',minWidth:200},
+                {title:'实际测量时间',align:'center',key:'show_measure_time',minWidth:200},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'320'},
             ],
             tableData:[],

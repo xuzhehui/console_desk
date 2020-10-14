@@ -37,10 +37,10 @@ export default {
             ],
             tableColums:[
                 {title:'订单编号',align:'center',key:'order_no',fixed:'left',width:'200'},
-                {title:'订单类型',align:'center',key:'type_name',
+                {title:'订单类型',align:'center',key:'type_name',minWidth:100,
                     render:(h,params)=>h('span',{},params.row.type == 1 ? '工装' : '家装')
                 },
-                {title:'紧急程度',align:'center',key:'show_warning_state',
+                {title:'紧急程度',align:'center',key:'show_warning_state',minWidth:100,
                     render(h,params){
                         return h('span',{
                             props:{},
@@ -50,11 +50,11 @@ export default {
                         },params.row.warning_state == 0 ? '不急' : (params.row.warning_state == 1 ? '比较急' : (params.row.warning_state == 2 ? '紧急' : '非常急')))
                     }
                 },
-                {title:'小区名称',align:'center',key:'residential_name',},
-                {title:'出库时间',align:'center',key:'unit'},
-                {title:'客户',align:'center',key:'warning_number',},
-                {title:'手机号',align:'center',key:'mobile',},
-                {title:'订单状态',align:'center',key:'long',
+                {title:'小区名称',align:'center',key:'residential_name',minWidth:200},
+                {title:'出库时间',align:'center',key:'unit',minWidth:100},
+                {title:'客户',align:'center',key:'warning_number',minWidth:150},
+                {title:'手机号',align:'center',key:'mobile',minWidth:150},
+                {title:'订单状态',align:'center',key:'long',minWidth:100,
                     render:(h,params)=>h('span',{},params.row.sub_state==0 ? '未指派' : (params.row.sub_state == 1 ? '可以派工' : (params.row.sub_state == 2 ? '已派工' : '已完成')))
                 },
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'150'},

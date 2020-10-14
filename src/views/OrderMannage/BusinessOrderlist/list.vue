@@ -71,12 +71,12 @@ export default {
                 },
             ],
             tableColums:[
-                {type:'selection',align:'center',width:'100',fixed:'left'},
-                {title:'订单编号',align:'center',key:'order_no',width:'200'},
-                {title:'订单类型',align:'center',key:'show_type',width:'100'},
-                {title:'订单状态',align:'center',key:'state',width:'150',},
-                {title:'业务员',align:'center',key:'salesman',width:'150'},
-                {title:'紧急程度',align:'center',key:'show_warning_state',width:'100',
+                {type:'selection',align:'center',minWidth:100,fixed:'left'},
+                {title:'订单编号',align:'center',key:'order_no',minWidth:200},
+                {title:'订单类型',align:'center',key:'show_type',minWidth:100},
+                {title:'订单状态',align:'center',key:'state',minWidth:150,},
+                {title:'业务员',align:'center',key:'salesman',minWidth:150},
+                {title:'紧急程度',align:'center',key:'show_warning_state',minWidth:100,
                     render(h,params){
                         return h('span',{
                             props:{},
@@ -86,16 +86,16 @@ export default {
                         },params.row.warning_state == 0 ? '不急' : (params.row.warning_state == 1 ? '比较急' : (params.row.warning_state == 2 ? '紧急' : '非常急')))
                     }
                 },
-                {title:'小区',align:'center',key:'residential_name',width:'200'},
-                {title:'订单开始日期',align:'center',key:'show_start_time',width:'180'},
-                {title:'订单交付日期',align:'center',key:'show_end_time',width:'180'},
-                {title:'完成进度',align:'center',key:'complete_rate',width:'180',
+                {title:'小区',align:'center',key:'residential_name',minWidth:200},
+                {title:'订单开始日期',align:'center',key:'show_start_time',minWidth:180},
+                {title:'订单交付日期',align:'center',key:'show_end_time',minWidth:180},
+                {title:'完成进度',align:'center',key:'complete_rate',minWidth:180,
                     render(h,params){
                         return h('span',{},parseInt(params.row.complete_rate*100)+'%')
                     },
                 },
-                {title:'预估交付日期',align:'center',key:'show_predict_time',width:'200'},
-                {title:'操作',align:'center',slot:'set',fixed:'right',width:'220',fixed:'right'},
+                {title:'预估交付日期',align:'center',key:'show_predict_time',minWidth:200},
+                {title:'操作',align:'center',slot:'set',fixed:'right',minWidth:220,fixed:'right'},
             ],
             tableData:[],
             pageIndex:1,
@@ -152,8 +152,9 @@ export default {
         },
         addOrder(n,row){
             let id = row ? row.id : '';
+            console.log(this.$store.state.userInfo)
             this.$router.push({
-                path:'/cms/ordermannage/businessorderlist/edit',
+                path:this.$store.state.userInfo.is_agent == 1 ? '/cms/ordermannage/businessorderlist/agentorder' : '/cms/ordermannage/businessorderlist/edit',
                 query:{
                     type:n,
                     id:id

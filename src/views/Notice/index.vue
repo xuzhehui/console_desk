@@ -64,8 +64,8 @@ export default {
             ],
             tableColums:[
                 {title:'ID',align:'center',key:'id',width:'100'},
-                {title:'通知分类',align:'center',key:'title'},
-                {title:'通知内容',align:'center',key:'content'},
+                {title:'通知分类',align:'center',key:'title',minWidth:100},
+                {title:'通知内容',align:'center',key:'content',minWidth:100},
                 {title:'操作',align:'center',slot:'set',width:'150'},
             ],
             tableData:[{id:1}],

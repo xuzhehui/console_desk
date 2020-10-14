@@ -48,13 +48,13 @@ export default {
                 {title:'工序名称',name:'Input',value:'',serverName:'title',placeholder:'请输入工序名称'},
             ],
             tableColums:[
-                {title:'ID',align:'center',key:'id',width:'100'},
-                {title:'工序类型',align:'center',key:'p_title'},
-                {title:'工序名称',align:'center',key:'title'},
-                {title:'工时',align:'center',key:'time'},
-                {title:'工价',align:'center',key:'wages'},
-                {title:'产能',align:'center',key:'capacity'},
-                {title:'操作',align:'center',slot:'set',width:'150'},
+                {title:'ID',align:'center',key:'id',width:'100',fixed:'left'},
+                {title:'工序类型',align:'center',key:'p_title',minWidth:100},
+                {title:'工序名称',align:'center',key:'title',minWidth:100},
+                {title:'工时',align:'center',key:'time',minWidth:100},
+                {title:'工价',align:'center',key:'wages',minWidth:100},
+                {title:'产能',align:'center',key:'capacity',minWidth:100},
+                {title:'操作',align:'center',slot:'set',width:'150',fixed:'right'},
             ],
             tableData:[],
             pageIndex:1,
@@ -137,9 +137,9 @@ export default {
         },
         uploadSuccess(res){
             if(res.code == 200){
-                this.$Message.success(res||'上传成功')
+                this.$Message.success(res.msg||'上传成功')
             }else{
-                this.$Message.warning(res||'上传失败')
+                this.$Message.warning(res.msg||'上传失败')
             }
             this.getData(this.proxyObj)
         },

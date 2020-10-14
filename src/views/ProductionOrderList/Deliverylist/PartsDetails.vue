@@ -29,9 +29,9 @@ export default {
             order_no:null,
             tableColums:[
                 {title:'部件',align:'center',key:'part_title',fixed:'left',width:'200'},
-                {title:'工艺路线',align:'center',key:'route_title',width:'200',},
-                {title:'指导报价(元)',align:'center',key:'price',width:'200'},
-                {title:'单位',align:'center',key:'company',width:'200'},
+                {title:'工艺路线',align:'center',key:'route_title',minWidth:100},
+                {title:'指导报价(元)',align:'center',key:'price',minWidth:100},
+                {title:'单位',align:'center',key:'company',minWidth:100},
                 {title:'预估工期',align:'center',key:'predict_time',fixed:'right',width:'150'},
             ],
             list:[

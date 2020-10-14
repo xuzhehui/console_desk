@@ -48,18 +48,18 @@ export default {
             ],
             tableColums:[
                 {title:'订单编号',align:'center',key:'order_no',fixed:'left',width:'180'},
-                {title:'订单流水号',align:'center',key:'oa_order_no',width:'200'},
-                {title:'订单类型',align:'center',key:'show_order_type',width:'100',
+                {title:'订单流水号',align:'center',key:'oa_order_no',minWidth:200},
+                {title:'订单类型',align:'center',key:'show_order_type',minWidth:100,
                     render:(h,params)=>h('span',{},params.row.order_type == 1 ? '工装' : '家装')
                 },
-                {title:'客户',align:'center',key:'client_name',width:'120'},
-                {title:'手机号',align:'center',key:'mobile',width:'150'},
-                {title:'审批类型',align:'center',width:'100',
+                {title:'客户',align:'center',key:'client_name',minWidth:100},
+                {title:'手机号',align:'center',key:'mobile',minWidth:150},
+                {title:'审批类型',align:'center',minWidth:100,
                     render(h,params){
                         return h('span',{},params.row.type == 1 ? '测量' : '生产')
                     }
                 },
-                {title:'审批状态',align:'center',key:'show_state',width:'100',
+                {title:'审批状态',align:'center',key:'show_state',minWidth:100,
                     render(h,params){
                         return h('span',{
                             props:{},
@@ -69,14 +69,14 @@ export default {
                         },params.row.state == 0 ? '待审批' : (params.row.state == 1 ? '同意' : (params.row.state == 2 ? '驳回' :'取消')))
                     }
                 },
-                {title:'创建人员',align:'center',key:'nickname',width:'100'},
-                {title:'审批开始时间',align:'center',key:'show_crt_time',width:'180',
+                {title:'创建人员',align:'center',key:'nickname',minWidth:100},
+                {title:'审批开始时间',align:'center',key:'show_crt_time',minWidth:100,
                     render:(h,params)=>h('span',{},this.func.replaceDate(params.row.crt_time*1))
                 },
-                {title:'审批结束时间',align:'center',key:'show_upd_time',width:'180',
+                {title:'审批结束时间',align:'center',key:'show_upd_time',minWidth:180,
                     render:(h,params)=>h('span',{},this.func.replaceDate(params.row.upd_time*1))
                 },
-                {title:'备注',align:'center',key:'remark',width:'200'},
+                {title:'备注',align:'center',key:'remark',minWidth:200},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'180'},
             ],
             tableData:[],

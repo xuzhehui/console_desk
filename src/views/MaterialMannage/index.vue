@@ -13,6 +13,13 @@
         :pageIndex='pageIndex'
         :total='total'
         >
+
+            <div slot='titleButton' style="display:flex;">
+                <Upload name='your_file' :show-upload-list='false' :headers='headers' :on-error='uploadError' :on-success='uploadSuccess' :action="$store.state.ip+'/api/material_import'">
+                    <Button type="success" ghost icon='md-exit' style="margin-right:10px;">批量导入</Button>
+                </Upload>
+                <Button @click="exportData" type="warning" ghost icon='md-return-left'>批量导出</Button>
+            </div>
             <div slot='navButton'>
                 <Button @click="goDetial(1)" type="primary" ghost icon='md-add'>新增物料</Button>
             </div>
@@ -45,17 +52,17 @@ export default {
             ],
             tableColums:[
                 {title:'ID',align:'center',key:'id',fixed:'left',width:'100'},
-                {title:'材料分类名称',align:'center',key:'m_title',width:'150'},
-                {title:'物料名称',align:'center',key:'title',width:'150'},
-                {title:'库存',align:'center',key:'stock',width:'150'},
-                {title:'单位',align:'center',key:'unit',width:'100'},
-                {title:'预警值',align:'center',key:'warning_number',width:'100'},
-                {title:'单价(元)',align:'center',key:'price',width:'120'},
-                {title:'长',align:'center',key:'long',width:'100'},
-                {title:'宽',align:'center',key:'width',width:'100'},
-                {title:'厚',align:'center',key:'high',width:'100'},
-                {title:'损耗',align:'center',key:'scale',width:'200'},
-                {title:'描述',align:'center',key:'remark',width:'200'},
+                {title:'材料分类名称',align:'center',key:'m_title',minWidth:150},
+                {title:'物料名称',align:'center',key:'title',minWidth:150},
+                {title:'库存',align:'center',key:'stock',minWidth:150},
+                {title:'单位',align:'center',key:'unit',minWidth:100},
+                {title:'预警值',align:'center',key:'warning_number',minWidth:100},
+                {title:'单价(元)',align:'center',key:'price',minWidth:120},
+                {title:'长',align:'center',key:'long',minWidth:100},
+                {title:'宽',align:'center',key:'width',minWidth:100},
+                {title:'厚',align:'center',key:'high',minWidth:100},
+                {title:'损耗',align:'center',key:'scale',minWidth:200},
+                {title:'描述',align:'center',key:'remark',minWidth:200},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'150'},
             ],
             tableData:[],
@@ -64,6 +71,7 @@ export default {
             pageSize:10,
             loading:false,
             proxyObj:{},
+            headers:{'Authorization':localStorage.getItem('token')},
         }
     },
     watch:{
@@ -124,6 +132,21 @@ export default {
                 }
             })
         },
+        exportData(){
+            let url = this.$store.state.ip+'/api/material_export'+this.func.objToParams(this.proxyObj)
+            location.href=url
+        },
+        uploadSuccess(res){
+            if(res.code == 200){
+                this.$Message.success(res.msg||'上传成功')
+            }else{
+                this.$Message.warning(res.msg||'上传失败')
+            }
+            this.getData(this.proxyObj)
+        },
+        uploadError(err){
+            this.$Message.error(err||'上传失败')
+        }
     }
 }
 </script>
