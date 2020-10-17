@@ -26,6 +26,20 @@
             <FormItem label="手机号" prop='mobile'>
                 <Input type="number" v-model="info.mobile"  placeholder="请输入手机号"/>
             </FormItem>
+            <FormItem label="手持设备">
+                <i-switch v-model="info.is_mobile">
+                    <span slot="open">是</span>
+                    <span slot="close">否</span>
+                </i-switch>
+            </FormItem>
+            <FormItem label="手持设备" v-if="info.is_mobile">
+                <CheckboxGroup style="width:100%;display:flex;" v-model="info.power">
+                    <Checkbox label="1">生产</Checkbox>
+                    <Checkbox label="2">运输</Checkbox>
+                    <Checkbox label="3">安装</Checkbox>
+                    <Checkbox label="4">包装</Checkbox>
+                </CheckboxGroup>
+            </FormItem>
         </Form>
 
         <div style="padding-top:10px;">
@@ -117,6 +131,8 @@ export default {
                 measure_users:[],
                 produce_users:[],
                 password:'',
+                is_mobile:false,
+                power:[],
             },
             rules:{
                 account:[{validator:validateChina, trigger: 'blur'}],
@@ -157,6 +173,8 @@ export default {
             let op = this.type == 1 ? 'add' : 'edit';
             this.info.op = op;
             let postInfo = JSON.parse(JSON.stringify(this.info));
+            postInfo.is_mobile = postInfo.is_mobile ? 1 : 0;
+            postInfo.power = postInfo.power ? postInfo.power.join(',') : ''
             postInfo.measure_users = JSON.stringify(postInfo.measure_users)
             postInfo.produce_users = JSON.stringify(postInfo.produce_users)
             this.axios.post('/api/user',postInfo).then(res=>{

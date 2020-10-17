@@ -70,10 +70,10 @@ export default {
                     }
                 },
                 {title:'创建人员',align:'center',key:'nickname',minWidth:100},
-                {title:'审批开始时间',align:'center',key:'show_crt_time',minWidth:100,
+                {title:'审批开始时间',align:'center',key:'show_crt_time',minWidth:200,
                     render:(h,params)=>h('span',{},this.func.replaceDate(params.row.crt_time*1))
                 },
-                {title:'审批结束时间',align:'center',key:'show_upd_time',minWidth:180,
+                {title:'审批结束时间',align:'center',key:'show_upd_time',minWidth:200,
                     render:(h,params)=>h('span',{},this.func.replaceDate(params.row.upd_time*1))
                 },
                 {title:'备注',align:'center',key:'remark',minWidth:200},

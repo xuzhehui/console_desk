@@ -21,7 +21,7 @@
                 <slot name='text-list'></slot>
             </div>
 
-            <Table v-if="showTable" max-height='800' :width="tableWidth" :loading='loading' @on-selection-change='selectTable'   stripe border :columns="tableColums" :data="tableData">
+            <Table ref='table' v-if="showTable" :max-height='tableHeight' :width="tableWidth" :loading='loading' @on-selection-change='selectTable'   stripe border :columns="tableColums" :data="tableData">
                 <template slot-scope="{ row }" slot="set">
                     <slot name='set' :row='row'></slot>
                 </template>
@@ -88,11 +88,23 @@ export default {
     data(){
         return {
             tableWidth:null,
+            tableHeight:null,
         }
     },
-    created(){this.tableWidth = window.innerWidth-300;},
+    created(){
+        this.tableWidth = window.innerWidth-300;
+        this.$nextTick(()=>{
+            console.log(this.$refs.table.$el.offsetTop)
+            this.tableHeight = window.innerHeight - this.$refs.table.$el.offsetTop - 320
+        })
+        
+    },
     mounted(){
-        window.addEventListener('resize',(e)=>{this.tableWidth = e.target.innerWidth - 300;this.$forceUpdate()})
+        window.addEventListener('resize',(e)=>{
+            this.tableWidth = e.target.innerWidth - 300;
+            this.tableHeight = e.target.innerHeight - this.$refs.table.$el.offsetTop - 320;
+            this.$forceUpdate()
+        })
     },
     
     methods:{

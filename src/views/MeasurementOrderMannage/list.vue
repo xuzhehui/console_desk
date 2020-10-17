@@ -13,12 +13,15 @@
         :pageIndex='pageIndex'
         :total='total'
         >   
-            <div slot="titleButton">
+            <div slot='titleButton' style="display:flex;">
+                <Upload name='your_file' :show-upload-list='false' :headers='headers' :on-error='uploadError' :on-success='uploadSuccess' :action="$store.state.ip+'/api/measure_orders_import'">
+                    <Button type="success" ghost icon='md-exit' style="margin-right:10px;">批量导入</Button>
+                </Upload>
+                <Button @click="exportData" type="warning" ghost icon='md-return-left' style="margin-right:10px;">批量导出</Button>
                 <Button type="primary" ghost>批量确认</Button>
             </div>
             <template slot='set' slot-scope='{row}'>
                 <div>
-                    <!-- <a @click="approvalDetails(row)" style="margin:0 5px">审批流程</a> -->
                     <a style="margin:0 5px" @click="goPage(2,row)">编辑</a>
                     <a style="margin:0 5px" @click="goPage(3,row)">查看</a>
                     <a style="margin:0 5px" @click="openModal(row)">下生产</a>
@@ -85,6 +88,7 @@ export default {
                 end_time:''
             },
             loading:false,
+            headers:{'Authorization':localStorage.getItem('token')},
         }
     },
     methods:{
@@ -141,6 +145,21 @@ export default {
                 cancel:(e)=>{},
             })
         },
+        exportData(){
+            let url = this.$store.state.ip+'/api/measure_orders_export'+this.func.objToParams(this.proxyObj)
+            location.href=url
+        },
+        uploadSuccess(res){
+            if(res.code == 200){
+                this.$Message.success(res.msg||'上传成功')
+            }else{
+                this.$Message.warning(res.msg||'上传失败')
+            }
+            this.getData(this.proxyObj)
+        },
+        uploadError(err){
+            this.$Message.error(err.msg||'上传失败')
+        }
     }
 }
 </script>
