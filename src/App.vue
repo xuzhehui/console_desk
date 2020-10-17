@@ -36,5 +36,6 @@ table-edit-set{margin-right:10px;color:#3764FF;cursor:pointer}
 .ivu-table-fixed-header{
   .ivu-table-cell-with-selection{&::after{content: '全选';}}
 }
+ul li{list-style: none;;}
 
 </style>

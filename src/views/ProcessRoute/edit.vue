@@ -29,9 +29,6 @@
                 <span>{{item.name||item.title}}(单选)：</span>
                 <div class="radio-g">
                     <div @click="setRadioChange(item,_item)" :class="['radio-us',_item.show ? 'radio-us-foc' : '']" v-for='_item of item.cld' :key="_item.id">{{_item.title}}</div>
-                    <!-- <RadioGroup @on-change="changeRadio" v-model="item.select" type="button">
-                        <Radio v-for='_item of item.cld' :key="_item.id" :label="_item.id">{{_item.title}}</Radio>
-                    </RadioGroup> -->
                 </div>
             </div>
 

@@ -199,12 +199,49 @@
                         </FormItem>
 
                     </Form>
-                    <Table stripe border :columns="item.parts_top" :data="item.parts">
+                    <!-- <Table stripe border :columns="item.parts_top" :data="item.parts">
                         <template slot='set' slot-scope='{row,index}'>
                             <div>
                                 <Select :disabled='productType == 3 ? true : false' v-model="row.route_id" @on-change="changeSelect($event,item,row,index)">
                                     <Option v-for="_item of row.child" :key="_item.id" :value='_item.id' :label="_item.title"></Option>
                                 </Select>
+                            </div>
+                        </template>
+                    </Table> -->
+                    <Table stripe border :columns="parts_Columns" :data="item.parts">
+                        <template slot='ProcessCombination' slot-scope="{row,index}">
+                            <div>
+                                <ul>
+                                    <li class="column-li" v-for="column of row.route_list" :key="column.id">
+                                        <span>{{column.title}}</span>
+                                        <Button @click="get_router_Date(column,row)" size='small' type="primary">确认</Button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </template>
+                        <template slot='Costum' slot-scope="{row,index}">
+                            <div>
+                                <ul>
+                                    <li class="column-li" v-for="column of row.custom_route" :key="column.id">
+                                        <span>{{column.title}}</span>
+                                        <!-- <Button @click="get_router_Date(column,row)" size='small' type="primary">确认</Button> -->
+                                    </li>
+                                </ul>
+                            </div>
+                        </template>
+                        <template slot='set' slot-scope='{row,index}'>
+                            <div>
+                                <Poptip placement="left-start" @on-popper-hide='popperHide'>
+                                    <Button type='primary' size='small'>自定义工艺属性</Button>
+                                    <div slot="content">
+                                        <div class="hierarchy" v-for="item of coumstList" :key="item.id">
+                                            <span>{{item.name||item.title}}(单选)：</span>
+                                            <div class="radio-g">
+                                                <div @click="setRadioChange(item,_item)" :class="['radio-us',_item.show ? 'radio-us-foc' : '']" v-for='_item of item.cld' :key="_item.id">{{_item.title}}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Poptip>
                             </div>
                         </template>
                     </Table>
@@ -241,6 +278,7 @@ export default {
             id:this.$route.query.id,
             modalArray:[],
             productList:[],
+            coumstList:[],
             tableWidth:null,
             currentIndex:null,
             proxyObj:{},
@@ -259,6 +297,15 @@ export default {
                 {title:'原材料预估费用',align:'center',key:'num_price'},
             ],
             Top:[],
+            parts_Columns:[
+                {title:'部件',key:'title',align:'center'},
+                {title:'工艺组合名称',key:'title',align:'center',slot:'ProcessCombination',minWidth:100},
+                {title:'自定义组合名称',key:'',align:'center',slot:'Costum',minWidth:100},
+                {title:'指导报价',key:'price',align:'center'},
+                {title:'测量数据',key:'',align:'center'},
+                {title:'预估工期',key:'maber_time',align:'center'},
+                {title:'操作',key:'title',align:'center',slot:'set'},
+            ],
             originalData:[],
             tableColumns:[
                 {title:'产品类型',align:'center',key:'product_type',minWidth:100,fixed:'left'},
@@ -344,6 +391,7 @@ export default {
         this.tableWidth = window.innerWidth-300;
         this.getUsers()
         this.type = this.$route.query.type
+        this.getCoumstList()
         
     },
     destroyed(){
@@ -448,76 +496,12 @@ export default {
                         })
                         modalData.parts = res.data.intermediate.parts
                     }
-                    res.data.intermediate.parts_top.map(v=>{
-                        if(v.state){
-                            let render = function(h,params){
-                                const rows = params.row;
-                                const columns = params.column;
-                                let key = columns.key;
-                                return h('Select',{
-                                    
-                                    props:{
-                                        value:rows[key] ? rows[key].attr_id : '',
-                                        filterable:true, 
-                                        clearable:true,
-                                    },
-                                    on:{
-                                        'on-change':(event) => {
-                                            let columnsData = modalData.parts[params.index]
-                                            columnsData[key].attr_id = event;
-                                            let sendParams = {
-                                                part_id:columnsData.id,
-                                                ids:[],
-                                            };
-                                            for(let i in columnsData){
-                                                if(_this.func.isType(columnsData[i])==='Object'){
-                                                    columnsData[i].attr_id ? sendParams.ids.push(columnsData[i].attr_id) : ''
-                                                } 
-                                            }
-                                            sendParams.ids = sendParams.ids.join(',')
-                                            _this.axios('/api/get_route',{params:sendParams}).then(res=>{
-                                                if(res.code == 200){
-                                                    Object.assign(columnsData,res.data)
-                                                    _this.$forceUpdate()
-                                                }
-                                            })
-                                         }
-                                    },
-                                },
-                                rows[key]&&rows[key].child.length>0 ? rows[key].child.map((item) =>{
-                                      return h('Option', {
-                                          props: {
-                                              value: item.id,
-                                              label: item.title
-                                          }
-                                      })
-                                  }) : ''
-                                )
-                            }
-                            v.render = render
-                        }
-                    })
-                    this.partTableColumns = modalData.parts_top;
                     this.$forceUpdate()
                 }
             })
         },
         addParts(row){
-            this.modalArray.push({
-                // product_id:null,
-                // price:'',
-                // real_price:null,
-                // long:'',
-                // width:'',
-                // high:'',
-                // type:null,
-                // unit:'',
-                // img:'',
-                // limit_time:null,
-                // model:'',
-                // product_type:'',
-                // parts:[]
-            })
+            this.modalArray.push({})
         },
         changeSelect(e,item,row,n){
             this.axios('/api/parts_routes_detail',{params:{product_id:item.product_id,route_id:e}}).then(res=>{
@@ -595,6 +579,48 @@ export default {
         getUsers(){
             this.axios('/api/user').then(res=>this.users = res.data.data)
         },
+        get_router_Date(row,father){
+            this.axios('/api/get_route_select',{params:{router_id:row.id}})
+            .then(res=>{
+                if(res.code == 200){
+                    Object.assign(father,res.data)
+                }
+            })
+        },
+        getCoumstList(){
+            this.axios('/api/bpp_list').then(res=>{
+                res.data.map(v=>{
+                    if(v.select){
+                        v.cld.map(z=>{
+                            v.select.map(k=>{
+                                z.show = k == z.id ? true : false
+                            })
+                        })
+                    }else{
+                        v.cld.map(v=>v.show = false)
+                    }
+                })
+                this.coumstList = res.data;
+            })
+        },
+        setRadioChange(parent,child){
+            parent.cld.map(v=>v.show = false)
+            if(parent.select == child.id){
+                child.show = false;
+                parent.select = '';
+            }else{
+                parent.select = child.id;
+                child.show = true;
+            }
+            
+            this.$forceUpdate()
+        },
+        computedMeasuring(obj){
+            console.log(obj)
+        },
+        popperHide(e){
+            console.log(this.coumstList)
+        }
                                     
     }
 }
@@ -615,4 +641,11 @@ export default {
 .items-table{width:100%;overflow-x: scroll;}
 /deep/ .ivu-table-wrapper{overflow:visible;color:red;}//穿透iview
 .original-part{padding-top:20px;}
+.column-li{display: flex;justify-content: space-between;align-items: center;padding: 2px 5px;}
+.hierarchy{
+    .radio-g{padding:10px 0;display:flex;
+        .radio-us{background: #F4F5F7;;padding:5px 20px;margin-right:18px;color:#999999;border-radius:15px;border:1px solid #DEDEDE;cursor:pointer;}
+        .radio-us-foc{color:#3764FF;background:#fff;border:1px solid #3764FF;}
+    }
+}
 </style>
