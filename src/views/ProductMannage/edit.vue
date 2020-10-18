@@ -40,10 +40,37 @@
                 <FormItem label="产品名称" prop='title'>
                     <Input v-model="info.title" style="width:300px" placeholder="请输入产品名称"></Input>
                 </FormItem>
+                <FormItem label="图号" prop='title'>
+                    <Input v-model="info.url_number" style="width:300px" placeholder="请输入图号"></Input>
+                </FormItem>
+                <FormItem label="图纸" prop='title'>
+                    <Upload :show-upload-list='false' :headers='headers' :on-success='uploadSuccess' :action="$store.state.ip+'/api/upload_pic'">
+                        <div class="upload-avatar">
+                            <Icon v-if="!info.url" size='30' type="ios-cloud-upload-outline" />
+                            <img style="max-width:30px;max-height:30px;" v-if="info.url" :src="$store.state.ip+info.url" alt="图纸">
+                        </div>
+                    </Upload>
+                </FormItem>
+                <FormItem label="是否加锁">
+                    <div style="display:flex;min-width:300px;">
+                        <RadioGroup v-model="info.lucy_type">
+                            <Radio :label="1">是</Radio>
+                            <Radio :label="0">否</Radio>
+                        </RadioGroup>
+
+                        <Select v-model="info.luck" v-if="info.lucy_type == 1" style="width:150px;">
+                            <Option v-for="item of lucks" :key="item.id" :value='item.id'>{{item.title }}</Option>
+                        </Select>
+                    </div>
+                    
+                </FormItem>
+
+                <FormItem>
+                    
+                </FormItem>
             </Form>
 
             <div class="custom">
-
                 <span class="custom-title">产品自定义属性
                     <Button style="margin:10px;margin-left:20px;" size='small' type="primary" @click="addCustom" ghost>
                         新增自定义属性
@@ -149,6 +176,7 @@ export default {
             customInfo:{},//自定义属性对象
             productFiled:[],
             measureList:[],//基础测量展示字段(仅展示)
+            lucks:[],
             tableColums:[
                 {title:'部件名称',align:'center',key:'title',slot:'title'},
                 {title:'长(L)',align:'center',key:'formula_l',slot:'formula_l'},
@@ -166,6 +194,8 @@ export default {
                 img:[],//图片列表
                 part:[],//部件,
                 remark:[],//自定义属性列表
+                lock:0,
+                lucy_type:0,
                 id:'',
             },
             rules:{
@@ -188,12 +218,15 @@ export default {
                 formula_w:'',
                 formula_h:'',
                 ratio:'',
+                url:'',
+                url_number:'',
             },
             // coustom:[],
             parts:[],
             showKey:false,
             attrindex:null,
             attrName:'',
+            headers:{'Authorization':localStorage.getItem('token')},
         }
     },
     mounted(){
@@ -206,6 +239,7 @@ export default {
         }
         this.getProductFiledData();
         this.changeProduct(this.$route.query.back_id)
+        this.getLocks()
         // this.getMeasureList()
     },
     components:{
@@ -240,7 +274,6 @@ export default {
                     id:this.$route.query.back_id ? this.$route.query.back_id : '',
                     title:this.$route.query.title||this.$route.query.title||''
                 }
-                
             })
         },
         goPage(n,row){
@@ -326,6 +359,17 @@ export default {
                 }
             });
             this.getPartsData(e)
+        },
+        uploadSuccess(e){
+            console.log(e)
+        },
+        getLocks(){
+            this.axios('/api/basics_lock_index').then(res=>{
+                if(res.code == 200){
+                    this.lucks = res.data.data;
+                    console.log(this.lucks)
+                }
+            })
         }
     }
 }
