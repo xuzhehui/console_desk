@@ -318,6 +318,12 @@ const routerMap = [
         component: resolve => require(['@/views/Approval/list'], resolve)
     },
     {
+        path:'/cms/approval/agentorders',
+        name:'ApprovaAgentOrder',//审批-->代理商列表
+        meta:{index:4},
+        component: resolve => require(['@/views/Approval/agentOrders'], resolve)
+    },
+    {
         path:'/cms/approval/examine',
         name:'ApprovalExamine',//审批-->审批详情
         meta:{index:4},

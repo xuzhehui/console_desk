@@ -146,35 +146,31 @@
             </div>
             <!-- 原材料 -->
             <div class="original-part">
-                <Table border :span-method="handleSpan" :columns="originalTableColumns" :data="originalData">
-
-                </Table>
+                <Table border :span-method="handleSpan" :columns="originalTableColumns" :data="originalData"></Table>
             </div>
-        </div>
-
-        
+        </div>       
         <!-- 选择产品弹层 -->
         <Modal :width="1200" class-name="vertical-center-modal" title="选择产品" v-model="showProduct" @on-ok="tapProduct">
             <div class="modal-scroll">
                 <div class="modal-items" v-for="(item,idx) in modalArray" :key="idx">
-                    <Form inline >
-                        <FormItem label="选择产品">
+                    <Form inline :model="item" :rules="productRules" ref='productModel'>
+                        <FormItem label="选择产品" prop='product_id'>
                             <Select filterable clearable label-in-value size='small' :disabled='productType == 3 ? true : false' v-model="item.product_id" @on-change='changeProduct($event,idx)' style="width:186px;">
                                 <Option v-for="item of productList" :tag='item.img_url' :key="item.id" :label="item.title" :value='item.id'></Option>
                             </Select>
                         </FormItem>
 
-                        <FormItem label="议价(元)">
+                        <FormItem label="议价(元)" prop='real_price'>
                             <Input type="number" size='small' :disabled='productType == 3 ? true : false' v-model="item.real_price" placeholder="请输入议价"></Input>
                         </FormItem>
                         <FormItem label="计量单位">
                             <Input size='small' disabled v-model="item.unit" placeholder="请输入计量单位"></Input>
                         </FormItem>
-                        <FormItem label="位置">
+                        <FormItem label="位置" prop='position'>
                             <Input size='small' :disabled='productType == 3 ? true : false' v-model="item.position" placeholder="请输入位置"></Input>
                         </FormItem>
 
-                        <FormItem v-for="(measuring,measuring_key) in item.measuring" :label="measuring.title" :key="measuring_key+11">
+                        <FormItem v-for="(measuring,measuring_key) in item.measuring" :label="measuring.title" :key="measuring_key+11" :prop='measuring.key'>
                             <Input @on-blur="blurMeasur(item)" :disabled='productType == 3 ? true : false' :placeholder="'请输入'+measuring.title" size='small' v-model="item[measuring.key]"/>
                         </FormItem>
 
@@ -191,12 +187,12 @@
 
                     </Form>
                     <Table stripe border :columns="parts_Columns" :data="item.parts">
-                        <template slot='ProcessCombination' slot-scope="{row}">
+                        <template slot='ProcessCombination' slot-scope="{row,index}">
                             <div>
                                 <ul>
                                     <li class="column-li" v-for="column of row.route_list" :key="column.id">
                                         <span>{{column.title}}</span>
-                                        <Button @click="get_router_Date(column,row)" size='small' :type="column.select ? 'success' : 'primary'">{{column.select ? '已选择' : '确认'}}</Button>
+                                        <Button @click="get_router_Date(column,row,idx,index)" size='small' :type="column.select ? 'success' : 'primary'">{{column.select ? '已选择' : '确认'}}</Button>
                                     </li>
                                 </ul>
                             </div>
@@ -208,7 +204,7 @@
                         </template>
                         <template slot='set' slot-scope='{row,index}'>
                             <div>
-                                <Poptip ref='popTip' placement="left-start" @on-popper-hide='popperHide'>
+                                <Poptip :ref='"popTip"+idx+index' placement="left-start" @on-popper-hide='popperHide'>
                                     <Button type='primary' size='small'>自定义工艺属性</Button>
                                     <div slot="content">
                                         <div class="hierarchy" v-for="item of coumstList" :key="item.id">
@@ -218,8 +214,8 @@
                                             </div>
                                         </div>
                                         <div class="pop-footer">
-                                            <Button @click="cancelCoustom(index)" style='margin-right:10px'>取消</Button>
-                                            <Button @click="saveCosutom(row,index,item)" style='margin-left:10px' type='primary'>确定</Button>
+                                            <Button @click="cancelCoustom(index,idx)" style='margin-right:10px'>取消</Button>
+                                            <Button @click="saveCosutom(row,index,item,idx)" style='margin-left:10px' type='primary'>确定</Button>
                                         </div>
                                     </div>
                                 </Poptip>
@@ -235,7 +231,7 @@
             </div>
             <div slot="footer">
                 <Button @click="cancelModal">取消</Button>
-                <Button @click="saveParts" type="primary">确定</Button>
+                <Button @click="handleProductSubmit('productModel')" type="primary">确定</Button>
             </div>   
         </Modal> 
     
@@ -314,6 +310,14 @@ export default {
                 end_time:[{required: true,message:' '}],  
                 renovation_type:[{required: true,message:'请选择订单类型'}]
             },
+            productRules:{
+                L:[{required: true,message:' ',trigger:'blur'}],
+                K:[{required: true,message:' ',trigger:'blur'}],
+                H:[{required: true,message:' ',trigger:'blur'}],
+                position:[{required: true,message:' ',trigger:'blur'}],
+                real_price:[{required: true,message:' ',trigger:'blur'}],
+                product_id:[{required: true,message:' ',}]
+            },
             info:{
                 residential_name:'',//小区名称
                 order_no:'',//订单号
@@ -354,8 +358,7 @@ export default {
                                 url:'',
                                 route_id:'',
                                 limit_time:null,
-                                parts:[{}
-                                ]
+                                parts:[]
                             }
                         ],
                     },
@@ -520,9 +523,18 @@ export default {
         handleSubmit(name) {
             this.$refs[name].validate((valid) => {
                 if(valid){
-                    this.postData()
+                    this.postData()  
                 }
             })
+        },
+        handleProductSubmit(name){
+            for(let i = 0;i<this.$refs[name].length;i++){
+                this.$refs[name][i].validate((valid) => {
+                    if(valid){
+                        this.saveParts()  
+                    }
+                })
+            }
         },
         tapProduct(){
             let str = [];
@@ -555,13 +567,14 @@ export default {
         getUsers(){
             this.axios('/api/user').then(res=>this.users = res.data.data)
         },
-        get_router_Date(row,father){
+        get_router_Date(row,father,idx,index){
             this.axios('/api/get_route_select',{params:{router_id:row.id}})
             .then(res=>{
                 if(res.code == 200){
                     Object.assign(father,res.data)
                     father.route_list.map(v=>v.select = false)
                     row.select = true;
+                    this.modalArray[idx].parts[index] = father;
                     father.custom_route = [];
                     this.$forceUpdate()
                 }
@@ -604,14 +617,17 @@ export default {
             this.coustomArray = []
             this.getCoumstList()
         },
-        saveCosutom(row,index,item){
+        saveCosutom(row,index,item,idx){
+            
             row.route_list.map(v=>v.select=false)
-            item.parts[index].custom_route = JSON.parse(JSON.stringify(this.coustomArray));
-            this.$refs.popTip[index].cancel()
+            row.custom_route = JSON.parse(JSON.stringify(this.coustomArray));
+            this.$refs[('popTip'+idx+index)][0].cancel()
+            this.modalArray[idx].parts[index] = row;
+            this.$forceUpdate()
 
         },
-        cancelCoustom(index){
-            this.$refs.popTip[index].cancel()
+        cancelCoustom(index,idx){
+            this.$refs[('popTip'+idx+index)][0].cancel()
         },
         blurMeasur(row){
             row.parts.map(v=>{
@@ -622,7 +638,7 @@ export default {
             })
         },
         copyProduct(maprows,item){
-            let rows = maprows[item];
+            let rows = JSON.parse(JSON.stringify(maprows[item]));
             maprows.push(rows)
         }
                                     
