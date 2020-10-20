@@ -128,7 +128,6 @@ export default {
         getBarOutPue(){//原始数据对比数据
             this.axios('/api/stat_procedure').then(res=>{
                 if(res.code == 200){
-                    console.log(res)
                     let rows = [],columns = [];
                     res.data.map(v=>{
                         rows.push(v.title)

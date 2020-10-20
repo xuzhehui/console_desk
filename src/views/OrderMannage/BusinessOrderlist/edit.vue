@@ -171,7 +171,7 @@
                         </FormItem>
 
                         <FormItem v-for="(measuring,measuring_key) in item.measuring" :label="measuring.title" :key="measuring_key+11" :prop='measuring.key'>
-                            <Input @on-blur="blurMeasur(item)" :disabled='productType == 3 ? true : false' :placeholder="'请输入'+measuring.title" size='small' v-model="item[measuring.key]"/>
+                            <Input @on-blur="blurMeasur(item,idx)" :disabled='productType == 3 ? true : false' :placeholder="'请输入'+measuring.title" size='small' v-model="item[measuring.key]"/>
                         </FormItem>
 
                         <FormItem v-for="(outh,outh_key) in item.outh" :label="outh.title" :key="outh_key+21">
@@ -260,7 +260,6 @@ export default {
             _proxyObj:{},
             productType:1,
             watchComputed:null,
-            partTableColumns:[],
             users:[],
             coustomArray:[],
             headers:{'Authorization':localStorage.getItem('token')},
@@ -347,9 +346,6 @@ export default {
                                 product_name:'',
                                 price:'',
                                 real_price:'',
-                                long:'',
-                                width:'',
-                                high:'',
                                 type:null,
                                 unit:'',
                                 img:'',
@@ -423,9 +419,6 @@ export default {
                 this.changeProduct(v,0,1)
                 setTimeout(()=>v.parts = row.product[i].parts)
             })
-            if(this.partTableColumns){
-                this.modalArray.map(v=>v.parts_top = this.partTableColumns)
-            } 
         },
         delItems(row,n){
             row.splice(n,1)
@@ -456,32 +449,35 @@ export default {
                         modalData.measuring = res.data.measuring;
                         modalData.outh = res.data.outh;
                         modalData.product_remake = res.data.product_remake;
-                        this.Top = res.data.product_top;
-                    }else{
-                        this.Top = res.data.product_top;
-                    }
-                    modalData.parts_top = res.data.intermediate.parts_top
-                    if(this.func.isType(res.data.intermediate.parts)!='Array'){
-                        return this.$Message.error('parts must be Array got Object')
-                    }
-                    if(!ext){
                         res.data.intermediate.parts.map(v=>{
                             v.maber_time = 0
                             v.price = 0
-                        })
-                        res.data.intermediate.parts.map(v=>{
                             v.measur = 0;
                             v.route_list.map(q=>q.select=false)
                         })
-                        modalData.parts = res.data.intermediate.parts
-                        
+                        modalData.parts = res.data.intermediate.parts  
                     }
+                    this.Top = res.data.product_top;
                     this.$forceUpdate()
                 }
             })
         },
         addParts(row){
-            this.modalArray.push({})
+            this.modalArray.push({
+                product_id:null,
+                product_name:'',
+                price:'',
+                real_price:'',
+                type:null,
+                unit:'',
+                img:'',
+                model:'',
+                url_number:'',
+                url:'',
+                route_id:'',
+                limit_time:null,
+                parts:[]
+            })
         },
         changeSelect(e,item,row,n){
             this.axios('/api/parts_routes_detail',{params:{product_id:item.product_id,route_id:e}}).then(res=>{
@@ -618,7 +614,6 @@ export default {
             this.getCoumstList()
         },
         saveCosutom(row,index,item,idx){
-            
             row.route_list.map(v=>v.select=false)
             row.custom_route = JSON.parse(JSON.stringify(this.coustomArray));
             this.$refs[('popTip'+idx+index)][0].cancel()
@@ -629,12 +624,13 @@ export default {
         cancelCoustom(index,idx){
             this.$refs[('popTip'+idx+index)][0].cancel()
         },
-        blurMeasur(row){
+        blurMeasur(row,idx){
+            const mapReds = Object.values(row.measuring)
+            const result = mapReds.reduce((pre,cur)=>pre.concat(cur.key),[])
             row.parts.map(v=>{
-                let l = v.formula_l.replace('L',row['L']||0),w = v.formula_w.replace('K',row['K']||0),h = v.formula_h.replace('H',row['H'||0]);
-                let str = eval(`${l}*${w}*${h}`)||0
-                v.measur = str;
-                this.$forceUpdate()
+               const asy = result.reduce((pre,cur)=>pre.replace(cur,row[cur]),v.formula)
+               const value = eval(asy)
+               v.measur = value ? value : 0
             })
         },
         copyProduct(maprows,item){

@@ -226,7 +226,6 @@ export default {
             this.$router.go(-1)
         },
         postData(){
-            console.log(this.info)
             let sendData = JSON.parse(JSON.stringify(this.info));
             let op = this.type == 1 ? 'add' : 'edit';
             try{

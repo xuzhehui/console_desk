@@ -45,7 +45,10 @@
                 </div>
                 <span class="footer-log">备注:适用于 ＋(加)  -(减)   ×(乘)  ÷(除)不输入就是不设定公式，支持单项输入)</span>
             </div>
-            <Table stripe border :columns="tableColums" :data="tableData">
+            <Table stripe border :columns="tableColums" :data="tableData" :width="tableWidth">
+                <template slot-scope='{index}' slot='spare_parts'>
+                    <Input placeholder="请输入零部件名称" v-model="tableData[index].spare_parts" />
+                </template>
                 <template slot-scope="{index}" slot="title">
                     <div>
                         <Select label-in-value @on-change="changeSe($event,index)" v-model="tableData[index].material_id">
@@ -57,13 +60,13 @@
                     <Input placeholder="请输入数量" v-model="tableData[index].number"/>
                 </template>
                 <template slot-scope="{index}" slot="company">
-                    <Input placeholder="请输入单位" v-model="tableData[index].company"/>
+                    <Input placeholder="请输入单位" disabled v-model="tableData[index].company"/>
                 </template>
                 <template slot-scope="{index}" slot="long">
-                    <Input @on-focus="openKey(index,'long')"  placeholder="请输入长度" v-model="tableData[index].long"/>
+                    <Input @on-focus="openKey(index,'long')"  placeholder="请输入长" v-model="tableData[index].long"/>
                 </template>
                 <template slot-scope="{index}" slot="wide">
-                    <Input @on-focus="openKey(index,'wide')" placeholder="请输入宽度" v-model="tableData[index].wide"/>
+                    <Input @on-focus="openKey(index,'wide')" placeholder="请输入宽" v-model="tableData[index].wide"/>
                 </template>
                 <template slot-scope="{index}" slot="thick">
                     <Input disabled placeholder="自动生成" v-model="tableData[index].thick"/>
@@ -105,6 +108,7 @@ export default {
         return {
             type:1,
             id:null,
+            tableWidth:null,
             info:{
                 company:'',
                 p_id:'',
@@ -115,15 +119,16 @@ export default {
             partList:[],
             partsData:[],
             tableColums:[
-                {title:'零部件名称',align:'center',key:'title',slot:'title',minWidth:100},
-                {title:'数量',align:'center',key:'number',slot:'number',minWidth:100},
+                {title:'零部件名称',align:'center',key:'spare_parts',slot:'spare_parts',minWidth:150,fixed:'left'},
+                {title:'物料名称',align:'center',key:'title',slot:'title',minWidth:150},
+                {title:'数量',align:'center',key:'number',slot:'number',minWidth:150},
                 {title:'单位',align:'center',key:'company',slot:'company',minWidth:100},
-                {title:'长',align:'center',key:'long',slot:'long',minWidth:100},
-                {title:'宽',align:'center',key:'wide',slot:'wide',minWidth:100},
-                {title:'厚',align:'center',key:'thick',slot:'thick',minWidth:100},
-                {title:'工艺要求',align:'center',key:'requirement',slot:'requirement',minWidth:100},
-                {title:'标签',align:'center',key:'label',slot:'label',minWidth:100},
-                {title:'操作',align:'center',slot:'set',minWidth:100},
+                {title:'长',align:'center',key:'long',slot:'long',minWidth:120},
+                {title:'宽',align:'center',key:'wide',slot:'wide',minWidth:120},
+                {title:'厚',align:'center',key:'thick',slot:'thick',minWidth:120},
+                {title:'工艺要求',align:'center',key:'requirement',slot:'requirement',minWidth:150},
+                {title:'标签',align:'center',key:'label',slot:'label',minWidth:150},
+                {title:'操作',align:'center',slot:'set',minWidth:100,fixed:'right'},
             ],
             tableData:[],
             rules:{
@@ -136,6 +141,7 @@ export default {
                 title:'',
                 number:'',
                 company:'',
+                spare_parts:'',
                 long:'',
                 wide:'',
                 thick:'',
@@ -162,6 +168,8 @@ export default {
             this.getDetails(this.id)
         }
         this.getParts()
+        this.tableWidth = window.innerWidth-300;
+        window.addEventListener('resize',(e)=>this.tableWidth = e.target.innerWidth - 300)
     },
     components:{
         KeyBoard,Downtree
@@ -254,7 +262,6 @@ export default {
         handleClick(e){
            let data = JSON.parse(e)
            this.nowSelectObj = data
-           console.log(data)
            this.info.bp_id = this.nowSelectObj.id;
            this.axios('/api/basics_product_list',{params:{id:this.info.bp_id}}).then(res=>{
                this.measureList = res.data[0].measure

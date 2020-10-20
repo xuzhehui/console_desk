@@ -152,7 +152,6 @@ export default {
         },
         addOrder(n,row){
             let id = row ? row.id : '';
-            console.log(this.$store.state.userInfo)
             this.$router.push({
                 path:this.$store.state.userInfo.is_agent == 1 ? '/cms/ordermannage/businessorderlist/agentorder' : '/cms/ordermannage/businessorderlist/edit',
                 query:{
