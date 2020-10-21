@@ -206,6 +206,9 @@ export default {
         getDetails(id){
             this.axios('/api/parts_detail',{params:{id:id}}).then(res=>{
                 this.info = res.data;
+                this.info.bp_id ? this.axios('/api/basics_product_list',{params:{id:this.info.bp_id}}).then(res=>{
+                    this.measureList = res.data[0].measure
+                }) : ''
                 this.tableData = res.data.detail;
                 if(this.info.product){
                     this.nowSelectObj = this.info.product

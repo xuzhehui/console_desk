@@ -136,7 +136,7 @@
                                     <use xlink:href="#iconxiangqing"></use>
                                 </svg>
 
-                                <svg  @click="delItems(item.product,index)" class="icon icon-nav" style="font-size:20px" color='red' aria-hidden="true">
+                                <svg v-if="index!=0"  @click="delItems(item.product,index)" class="icon icon-nav" style="font-size:20px" color='red' aria-hidden="true">
                                     <use xlink:href="#iconshanchu"></use>
                                 </svg>
                             </div>
@@ -163,6 +163,11 @@
                         <FormItem label="议价(元)" prop='real_price'>
                             <Input type="number" size='small' :disabled='productType == 3 ? true : false' v-model="item.real_price" placeholder="请输入议价"></Input>
                         </FormItem>
+
+                        <FormItem label='产品价格'>
+                            <Input size='small' disabled v-model="item.price" placeholder="自动生成"></Input>
+                        </FormItem>
+                        
                         <FormItem label="计量单位">
                             <Input size='small' disabled v-model="item.unit" placeholder="请输入计量单位"></Input>
                         </FormItem>
@@ -178,7 +183,12 @@
                             <a v-if="outh.key=='img'||outh.key=='url'" target="_blank" :href="$store.state.ip+outh.value">
                                 <img  style="max-width:30px;max-height:30px;top:0px;position:relative;cursor:pointer;"  :src="$store.state.ip+outh.value">
                             </a>
-                            <Input v-if="outh.key!='img'&&outh.key!='url'" disabled placeholder="自动生成" size='small' v-model="outh.value"/>
+                            <Input v-if="outh.key!='img'&&outh.key!='url'&&outh.key!='lock'" disabled placeholder="自动生成" size='small' v-model="outh.value"/>
+
+                            <Select size="small" clearable style="width:186px;" v-if="outh.key=='lock'" v-model="item[outh.key]">
+                                <Option v-for="luck of lock_list" :key='luck.id' :value="luck.id" :label="luck.title"></Option>
+                                <Option :value="0" label="无"></Option>
+                            </Select>
                         </FormItem>
 
                         <FormItem v-for="(remake,remake_key) in item.product_remake" :label="remake.title" :key="remake_key+31">
@@ -224,8 +234,8 @@
                     </Table>
                     <div class="modal-footer-button">
                         <Button @click="copyProduct(modalArray,idx)" type="warning" style="margin-right:10px;" ghost shape="circle">复制产品</Button>
-                        <Button v-if="idx == modalArray.length-1" @click="addParts(item)" type="success" style="margin-right:10px;" ghost shape="circle">添加</Button>
-                        <Button @click="delItems(modalArray,idx)" type="error" ghost shape="circle">删除</Button>
+                        <Button  @click="addParts(item)" type="success" style="margin-right:10px;" ghost shape="circle">添加</Button>
+                        <Button v-if='idx!=0' @click="delItems(modalArray,idx)" type="error" ghost shape="circle">删除</Button>
                     </div>
                 </div>
             </div>
@@ -262,6 +272,7 @@ export default {
             watchComputed:null,
             users:[],
             coustomArray:[],
+            lock_list:[],
             headers:{'Authorization':localStorage.getItem('token')},
             originalTableColumns:[
                 {title:'原材料名称',align:'center',key:'title'},
@@ -278,7 +289,7 @@ export default {
                 {title:'工艺组合名称',key:'title',align:'center',slot:'ProcessCombination',minWidth:100},
                 {title:'自定义组合名称',key:'',align:'center',slot:'Costum',minWidth:100},
                 {title:'指导报价',key:'price',align:'center'},
-                {title:'测量数据',key:'measur',align:'center'},
+                {title:'部件测量数据',key:'measur',align:'center'},
                 {title:'预估工期',key:'maber_time',align:'center'},
                 {title:'操作',key:'title',align:'center',slot:'set'},
             ],
@@ -287,11 +298,10 @@ export default {
                 {title:'产品类型',align:'center',key:'product_type',minWidth:100,fixed:'left'},
                 {title:'产品名称',align:'center',key:'title',minWidth:150},
                 {title:'产品型号',align:'center',key:'model',minWidth:100},
-                {title:'测量数据',align:'center',key:'',minWidth:100},
+                {title:'测量数据',align:'center',key:'measure',minWidth:100},
                 {title:'位置',align:'center',key:'position',minWidth:100},
                 {title:'图纸',align:'center',minWidth:80,key:'url',slot:'url'},
                 {title:'图号',align:'center',key:'url_number',minWidth:150},
-                {title:'指导价格(元)',align:'center',key:'price',minWidth:150},
                 {title:'议价(元)',align:'center',key:'real_price',minWidth:100},
                 {title:'预估工期',align:'center',key:'limit_time',minWidth:200},
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'150'},
@@ -344,6 +354,7 @@ export default {
                             {
                                 product_id:null,
                                 product_name:'',
+                                measure:'',
                                 price:'',
                                 real_price:'',
                                 type:null,
@@ -368,6 +379,7 @@ export default {
         this.getUsers()
         this.type = this.$route.query.type
         this.getCoumstList()  
+        this.getLockList()
     },
     mounted(){
         if(this.id){
@@ -466,7 +478,8 @@ export default {
             this.modalArray.push({
                 product_id:null,
                 product_name:'',
-                price:'',
+                measure:'',
+                price:'0',
                 real_price:'',
                 type:null,
                 unit:'',
@@ -497,13 +510,12 @@ export default {
             let _this = this;
             this.modalArray.map(v=>{//计算预估工期，指导报价
                 let t = 0,p = 0;
-                v.parts.map(k=>{
-                     t += k.maber_time ? k.maber_time : 0
-                     p += k.price ? k.price : 0
-                })
+                v.parts.map(k=>{t += k.maber_time ? k.maber_time : 0})
                 v.limit_time = t
-                v.price = p
+                v.measure = v.measure.reduce((pre,cur)=>pre+=(cur+=v[cur]+'*'),'')
+                v.measure = v.measure.substr(0,v.measure.length-1,'')
             })
+            console.log(this.modalArray)
             this.proxyObj.product = this.modalArray;
             this.Top[0].fixed='left'
             this.proxyObj.product_top = this.Top;
@@ -564,13 +576,15 @@ export default {
             this.axios('/api/user').then(res=>this.users = res.data.data)
         },
         get_router_Date(row,father,idx,index){
-            this.axios('/api/get_route_select',{params:{router_id:row.id}})
+            this.axios('/api/get_route_select',{params:{route_id:row.id}})
             .then(res=>{
                 if(res.code == 200){
                     Object.assign(father,res.data)
                     father.route_list.map(v=>v.select = false)
                     row.select = true;
                     this.modalArray[idx].parts[index] = father;
+                    this.modalArray[idx].price = this.modalArray[idx].parts.reduce((pre,cur)=>pre+(parseInt(cur.price)),0)
+                    this.modalArray[idx].price.toFixed(2)
                     father.custom_route = [];
                     this.$forceUpdate()
                 }
@@ -616,6 +630,8 @@ export default {
         saveCosutom(row,index,item,idx){
             row.route_list.map(v=>v.select=false)
             row.custom_route = JSON.parse(JSON.stringify(this.coustomArray));
+            row.maber_time = 0;
+            row.price = 0;
             this.$refs[('popTip'+idx+index)][0].cancel()
             this.modalArray[idx].parts[index] = row;
             this.$forceUpdate()
@@ -627,15 +643,28 @@ export default {
         blurMeasur(row,idx){
             const mapReds = Object.values(row.measuring)
             const result = mapReds.reduce((pre,cur)=>pre.concat(cur.key),[])
+            this.modalArray[idx].measure = result;
+            this.$forceUpdate()
             row.parts.map(v=>{
-               const asy = result.reduce((pre,cur)=>pre.replace(cur,row[cur]),v.formula)
-               const value = eval(asy)
-               v.measur = value ? value : 0
+               const asy = result.reduce((pre,cur)=>pre.replace(cur,(cur+=(row[cur]||'0'))),v.formula)
+               const lettersReg = /[a-z,A-Z]/g
+               const notLetterReg = /[^a-z,A-Z]/g
+               let valus = asy.split('*')
+               let mapresult = ''
+               valus.map(item=>{
+                   let letters = eval(item.replace(lettersReg,''))
+                   let not_l = item.replace(notLetterReg,'')
+                   mapresult+=`${not_l}${letters}*`
+               })
+               v.measur = mapresult.substr(0,mapresult.length-1,'')
             })
         },
         copyProduct(maprows,item){
             let rows = JSON.parse(JSON.stringify(maprows[item]));
             maprows.push(rows)
+        },
+        getLockList(){
+            this.axios('/api/lock_list').then(res=>this.lock_list = res.data)
         }
                                     
     }
