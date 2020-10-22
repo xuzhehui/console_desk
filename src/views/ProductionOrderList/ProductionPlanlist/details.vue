@@ -7,6 +7,7 @@
         :logList='logList'
         @searchData='init' 
         @changePage='changePage'
+        @changeSize='changeSize'
         @selectTable='selectTable'
         :tableColums='tableColums'
         :tableData='tableData'
@@ -51,17 +52,20 @@ export default {
                 {title:'产品',align:'center',key:'product_title',minWidth:200},
                 {title:'部件',align:'center',key:'part_title',minWidth:200},
                 {title:'部件是否贴标签',align:'center',minWidth:200},
-                {title:'贴标签零部件',align:'center',minWidth:200},
+                {title:'贴标签零部件',align:'center',minWidth:200,
+                    render:(h,params)=>h('span',{},params.tag_num>0 ? '是' : '否')
+                },
                 {title:'工序分类',align:'center',key:'basics_procedure_title',minWidth:200},
                 {title:'工序',align:'center',key:'procedure_title',minWidth:200},
                 {title:'是否完成',align:'center',key:'is_complete',minWidth:200},
                 {title:'测量尺寸',align:'center',minWidth:200,key:'measure'},
                 {title:'单位',align:'center',minWidth:200,key:'unit'},
-                {title:'芯片编号',align:'center',minWidth:200},
+                {title:'芯片编号',align:'center',key:'sub_part',minWidth:200},
                 {title:'操作',align:'center',fixed:'right',width:'200',slot:'set'},
             ],
             tableData:[],
             pageIndex:1,
+            pageSize:10,
             total:100,
             proxyObj:{},
             selects:[],
@@ -76,6 +80,7 @@ export default {
             row.page_size = this.pageSize;
             this.order_no = this.$route.query.order_no;
             Object.assign(row,this.$route.query)
+            this.proxyObj = row
             this.getData(row)
         },
         searchData(row){
@@ -88,12 +93,17 @@ export default {
             this.axios('/api/orders_procedure_list',{params:row}).then(res=>{
                 this.logList = res.data.detail;
                 this.tableData = res.data.list;
+                this.total = res.data.total
             })
         },
         postData(){
 
         },
-        changePage(e){},
+        changePage(e){
+            this.pageIndex = e;
+            this.proxyObj.page_index = e;
+            this.getData(this.proxyObj)
+        },
         selectTable(e){
             let result = [];
             e.forEach(v=>result.push(v.house_id));
@@ -107,7 +117,12 @@ export default {
                 params:{house_id:this.selects.join(',')},
                 then(res){}
             })
-        }
+        },
+        changeSize(e){
+            this.pageSize = e;
+            this.proxyObj.page_size = this.pageSize;
+            this.getData(this.proxyObj)
+        },
     }
 }
 </script>

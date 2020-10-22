@@ -43,7 +43,7 @@ export default {
                 this.planInfo.end_time = new Date(this.forms.time[1]).toLocaleDateString().replace(/\//g,"-")
             }
             let url = this.type == 1 ? '/api/orders_plan' : '/api/order_oa_people'
-            this.axios.post('/api/order_oa_people',this.planInfo).then(res=>{
+            this.axios.post(url,this.planInfo).then(res=>{
                 if(res.code == 200){
                     this.$Message.success(res.msg)
                     this.show = false

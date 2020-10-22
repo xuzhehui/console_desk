@@ -17,6 +17,7 @@
         >
             <div slot='titleButton'>
                 <Button  @click="back" type='primary' ghost  style="margin-right:10px;">返回</Button>
+                <Button type="primary" ghost style="margin-right:10px;" @click="showBatchModal = true">批量绑定芯片</Button>
                 <Button type="primary" ghost style="margin-right:10px;">批量修改工艺路线</Button>
                 <Button type="primary" ghost style="margin-right:10px;" @click='openModal(selects)'>批量下生产计划</Button>
                 <Button type="primary" ghost>批量打印订单</Button>
@@ -24,11 +25,31 @@
             
             <template slot='set' slot-scope='{row}'>
                 <div class="table-set">
-                    <a >更改芯片</a>
+                    <a @click="bingChip(row)">绑定芯片</a>
+                    <a v-if="row.tagnum&&row.part_tag">更换芯片</a>
                     <a @click="openModal(row)">下生产计划</a>
-                    <a @click="downImg($store.state.ip+row.url,row.product_title)" >下载图纸</a>
+                    <a @click="downImg(row.url,row.product_title)">下载图纸</a>
                 </div>
             </template>
+
+            <Modal @on-ok="saveChip" class-name="vertical-center-modal" title='绑定芯片' v-model="showChip" :width='300' @on-visible-change='vivibleModal'>
+                <Form>
+                    <FormItem label='芯片编号'>
+                        <Input v-model="chipInfo.tag" placeholder="请输入芯片编号"></Input>
+                    </FormItem>
+                </Form>
+            </Modal>
+
+            <Modal title="批量绑定" fullscreen v-model="showBatchModal">
+                <div class="batch-content">
+                    <div style="margin-right:10px;width:50%;">
+                        <Table :columns="batchTablePartsColumn"></Table>
+                    </div>
+                    <div style="margin-left:10px">
+                        <Table :columns='batchChipColumns'></Table>
+                    </div>
+                </div>
+            </Modal>
         </FullPage>
     </div>
 </template>
@@ -57,12 +78,20 @@ export default {
                 {title:'产品',align:'center',key:'product_title',minWidth:150},
                 {title:'部件名',align:'center',key:'part_title',minWidth:200},
                 {title:'部件相关',align:'center',key:'properties',minWidth:200},
-                {title:'芯片',align:'center',key:'',minWidth:200},
+                {title:'芯片',align:'center',key:'chip',minWidth:200},
+                {title:'部件是否贴标签',align:'center',minWidth:200,
+                    render:(h,params)=>h('span',{},params.row.label == 1 ? '是' : '否')
+                },
+                {title:'零部件名称',align:'center',key:'sub_label',minWidth:200},
+                {title:'零部件是否贴标签',align:'center',minWidth:200,
+                    render:(h,params)=>h('span',{},params.row.sub_is_tag==1 ? '是' : '否')
+                },
                 {title:'预估房号工期',align:'center',key:'predict_time',minWidth:200},
                 {title:'操作',align:'center',slot:'set',width:'280',fixed:'right'},
             ],
             tableData:[],
             pageIndex:1,
+            pageSize:10,
             total:100,
             showModal:false,
             showType:1,
@@ -78,6 +107,23 @@ export default {
             selects:[],
             order_no:null,
             loading:false,
+            showChip:false,
+            chipInfo:{},
+            showBatchModal:false,
+            batchTablePartsColumn:[
+                {title:'小区名称',key:'',align:'center',fixed:'left',minWidth:200},
+                {title:'房号',key:'',align:'center',minWidth:100},
+                {title:'产品',key:'',align:'center',minWidth:100},
+                {title:'位置',key:'',align:'center',minWidth:100},
+                {title:'部件',key:'',align:'center',minWidth:100},
+                {title:'贴标签零部件',key:'',align:'center',minWidth:200},
+                {title:'零部件是否贴标签',key:'',align:'center',minWidth:200,fixed:'right'},
+            ],
+            batchChipColumns:[
+                {title:'芯片编码',key:'',align:'center',minWidth:200},
+                {title:'扫码时间',key:'',align:'center',minWidth:200},
+                {title:'操作',key:'',align:'center',},
+            ]
         }
     },
     methods:{
@@ -107,7 +153,7 @@ export default {
                 }
             })
         },
-         changePage(e){
+        changePage(e){
             this.pageIndex = e;
             this.proxyObj.page_index = e;
             this.getData(this.proxyObj)
@@ -149,7 +195,8 @@ export default {
                 }
             }
         },
-        downImg(url,filename){                 
+        downImg(url,filename){   
+            if(!url){return this.$Message.error('暂无可下载资源')}              
             let img = new Image();
             img.onload=e=>{
                 const canvas = document.createElement('canvas');
@@ -169,8 +216,27 @@ export default {
                     document.body.removeChild(link);
                 }
             }; 
-            img.src = url
+            img.src = this.$store.state.ip+url
             img.crossOrigin = "anonymous"
+        },
+        bingChip(row){
+            this.showChip = true;
+            this.chipInfo.pr_id = row.pr_id;
+        },
+        saveChip(){
+            this.axios.post('/api/tag_bind',this.chipInfo)
+            .then(res=>{
+                if(res.code == 200){
+                    this.$Message.success(res.msg||'操作成功')
+                    this.getData(this.proxyObj)
+                }
+            })
+        },
+        vivibleModal(e){
+            if(!e){this.chipInfo = {}}
+        },
+        batchChipModal(){
+            
         }
     }
 }
@@ -179,4 +245,5 @@ export default {
 <style lang="scss" scoped>
 .nav{display: flex;justify-content: space-between;align-items: center;}
 .table-set{a{margin:0 5px;}}
+.batch-content{width:100%;display: flex;}
 </style>

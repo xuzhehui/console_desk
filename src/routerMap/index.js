@@ -371,6 +371,12 @@ const routerMap = [
         meta:{index:1},
         component: resolve => require(['@/views/MountOrder/details'], resolve)
     },
+    {
+        path:'/cms/chipmannage/index',  
+        name:'Chip',//芯片列表
+        meta:{index:1},
+        component: resolve => require(['@/views/ChipMannage/index'], resolve)
+    },
 
 ]
 

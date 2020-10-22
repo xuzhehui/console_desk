@@ -185,8 +185,8 @@
                             </a>
                             <Input v-if="outh.key!='img'&&outh.key!='url'&&outh.key!='lock'" disabled placeholder="自动生成" size='small' v-model="outh.value"/>
 
-                            <Select size="small" clearable style="width:186px;" v-if="outh.key=='lock'" v-model="item[outh.key]">
-                                <Option v-for="luck of lock_list" :key='luck.id' :value="luck.id" :label="luck.title"></Option>
+                            <Select label-in-value @on-change="changeLock($event,item,idx)"  size="small" clearable style="width:186px;" v-if="outh.key=='lock'" v-model="item[outh.key]">
+                                <Option v-for="luck of lock_list" :key='luck.id' :tag='luck.price' :value="luck.id" :label="luck.title"></Option>
                                 <Option :value="0" label="无"></Option>
                             </Select>
                         </FormItem>
@@ -506,16 +506,16 @@ export default {
             })
         },
         saveParts(){
-            if(this.modalArray.length<1){return this.$Message.warning('无法保存')}
             let _this = this;
             this.modalArray.map(v=>{//计算预估工期，指导报价
                 let t = 0,p = 0;
                 v.parts.map(k=>{t += k.maber_time ? k.maber_time : 0})
                 v.limit_time = t
-                v.measure = v.measure.reduce((pre,cur)=>pre+=(cur+=v[cur]+'*'),'')
-                v.measure = v.measure.substr(0,v.measure.length-1,'')
+                try{
+                    v.measure = v.measure.reduce((pre,cur)=>pre+=(cur+=v[cur]+'*'),'')
+                    v.measure = v.measure.substr(0,v.measure.length-1,'')
+                }catch(e){}
             })
-            console.log(this.modalArray)
             this.proxyObj.product = this.modalArray;
             this.Top[0].fixed='left'
             this.proxyObj.product_top = this.Top;
@@ -665,6 +665,15 @@ export default {
         },
         getLockList(){
             this.axios('/api/lock_list').then(res=>this.lock_list = res.data)
+        },
+        changeLock(value,row,idx){
+            if(row.old_lock_price){
+                row.price = parseInt(row.price) - row.old_lock_price
+            }
+            row.old_lock_price = parseInt(value.tag||'0');
+            row.price = parseInt(row.price)+parseInt(value.tag||'0')
+            this.modalArray[idx] = row;
+            this.$forceUpdate()
         }
                                     
     }

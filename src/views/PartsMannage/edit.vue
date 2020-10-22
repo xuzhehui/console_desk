@@ -238,6 +238,7 @@ export default {
             let unit = event.target.dataset.unit;
             this.tableData[n].company = unit ? unit : ''
             this.tableData[n].thick = e.tag;
+            this.tableData[n].title = e.title;
         },
         handleSubmit(name) {
             this.$refs[name].validate((valid) => {
