@@ -20,7 +20,9 @@
                     <Input v-model="info.title" placeholder="请输入工序分类名称"></Input>
                 </FormItem>
                 <FormItem label="工时">
-                    <Input v-model="info.time" placeholder="请输入工时"></Input>
+                    <Input v-model="info.time" placeholder="请输入工时">
+                        <span slot='append'>小时</span>
+                    </Input>
                 </FormItem>
                 <FormItem label="产能">
                     <Input v-model="info.capacity" placeholder="请输入产能"></Input>

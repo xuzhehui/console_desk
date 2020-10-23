@@ -74,9 +74,7 @@ export default {
         }
     },
     mounted(){
-        if(this.house_id){
-            this.getData(this.house_id)
-        }
+        this.getData(this.$route.query)
     },
     methods:{
         back(){
@@ -85,9 +83,9 @@ export default {
         postData(){
 
         },
-        getData(house_id){
+        getData(row){
             this.loading = true;
-            this.axios('/api/orders_product_list',{params:{house_id:house_id}}).then(res=>{
+            this.axios('/api/orders_product_list',{params:row}).then(res=>{
                 this.loading = false;
                 this.tableData = res.data.list;
                 this.logList = res.data.detail;

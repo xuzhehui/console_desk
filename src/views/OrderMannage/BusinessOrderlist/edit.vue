@@ -16,15 +16,15 @@
                 </FormItem>
 
                 <FormItem label="订单编号:">
-                    <Input disabled v-model="info.order_no" class="auto-width" placeholder="自动生成"></Input>
+                    <Input disabled v-model="info.order_no" class="auto-width" placeholder="自动生成"/>
                 </FormItem>
 
                 <FormItem label="小区名称:" prop='residential_name'>
-                    <Input v-model="info.residential_name" class="auto-width" placeholder="请输入小区名称"></Input>
+                    <Input v-model="info.residential_name" class="auto-width" placeholder="请输入小区名称"/>
                 </FormItem>
 
                 <FormItem label="客户姓名:" prop='client_name'>
-                    <Input v-model="info.client_name" class="auto-width" placeholder="请输入客户姓名"></Input>
+                    <Input v-model="info.client_name" class="auto-width" placeholder="请输入客户姓名"/>
                 </FormItem>
 
                 <FormItem label="紧急程度:" prop='warning_state'>
@@ -50,11 +50,11 @@
                 </FormItem>
 
                 <FormItem label="详细地址:" prop='address'>
-                    <Input v-model="info.address" class="auto-width" placeholder="请输入小区名称"></Input>
+                    <Input v-model="info.address" class="auto-width" placeholder="请输入小区名称"/>
                 </FormItem>
 
                 <FormItem label="手机号:" prop='mobile'>
-                    <Input v-model="info.mobile" class="auto-width" placeholder="请输入手机号"></Input>
+                    <Input v-model="info.mobile" class="auto-width" placeholder="请输入手机号"/>
                 </FormItem>
                 <FormItem label="开始日期:" prop='start_time'>
                     <DatePicker v-model="info.start_time" type="date" placeholder="开始日期" class="auto-width"></DatePicker>
@@ -65,19 +65,19 @@
                 </FormItem>
 
                 <FormItem label="产品总价:">
-                    <Input disabled v-model="info.predict_price" class="auto-width" placeholder="自动生成"></Input>
+                    <Input disabled v-model="info.predict_price" class="auto-width" placeholder="自动生成"/>
                 </FormItem>
 
                 <FormItem label="预估工期:">
-                    <Input disabled v-model="info.predict_working" class="auto-width" placeholder="自动生成"></Input>
+                    <Input disabled v-model="info.predict_working" class="auto-width" placeholder="自动生成"/>
                 </FormItem>
 
                 <FormItem label="预估交付日期:">
-                    <Input disabled v-model="info.predict_time" class="auto-width" placeholder="自动生成"></Input>
+                    <Input disabled v-model="info.predict_time" class="auto-width" placeholder="自动生成"/>
                 </FormItem>
 
                 <FormItem label="订单备注:">
-                    <Input v-model="info.remark" class="auto-width" placeholder="请输入订单备注"></Input>
+                    <Input v-model="info.remark" class="auto-width" placeholder="请输入订单备注"/>
                 </FormItem>
             </Form>
 
@@ -97,19 +97,23 @@
                 <div class="form-item">
                     <Form inline :label-width="80">
                         <FormItem label="楼幢(楼号)">
-                            <Input v-model="item.house" placeholder="请输入楼幢(楼号)"></Input>
+                            <InputNumber clearable v-if='info.renovation_type == 2' style="width:186px" placeholder="请输入楼幢(楼号)" v-model="item.house"></InputNumber>
+                            <Input v-else  v-model="item.house" placeholder="请输入楼幢(楼号)"/>
                         </FormItem>
 
                         <FormItem label="楼单元">
-                            <Input v-model="item.unit" placeholder="请输入楼单元"></Input>
+                            <InputNumber clearable v-if='info.renovation_type == 2' style="width:186px" placeholder="请输入楼单元" v-model="item.unit"></InputNumber>
+                            <Input v-else v-model="item.unit" placeholder="请输入楼单元"/>
                         </FormItem>
 
                         <FormItem label="楼层">
-                            <Input v-model="item.layer" placeholder="请输入楼层"></Input>
+                            <InputNumber clearable v-if='info.renovation_type == 2' style="width:186px" placeholder="请输入楼层" v-model="item.layer"></InputNumber>
+                            <Input v-else v-model="item.layer" placeholder="请输入楼层"/>
                         </FormItem>
 
                         <FormItem label="房间号">
-                            <Input v-model="item.number" placeholder="请输入房间号"></Input>
+                            <InputNumber clearable v-if='info.renovation_type == 2 ' style="width:186px" placeholder="请输入房间号" v-model="item.number"></InputNumber>
+                            <Input v-else v-model="item.number" placeholder="请输入房间号"/>
                         </FormItem>
 
                         <FormItem label="选择产品">
@@ -161,18 +165,18 @@
                         </FormItem>
 
                         <FormItem label="议价(元)" prop='real_price'>
-                            <Input type="number" size='small' :disabled='productType == 3 ? true : false' v-model="item.real_price" placeholder="请输入议价"></Input>
+                            <Input type="number" size='small' :disabled='productType == 3 ? true : false' v-model="item.real_price" placeholder="请输入议价"/>
                         </FormItem>
 
                         <FormItem label='产品价格'>
-                            <Input size='small' disabled v-model="item.price" placeholder="自动生成"></Input>
+                            <Input size='small' disabled v-model="item.price" placeholder="自动生成"/>
                         </FormItem>
                         
                         <FormItem label="计量单位">
-                            <Input size='small' disabled v-model="item.unit" placeholder="请输入计量单位"></Input>
+                            <Input size='small' disabled v-model="item.unit" placeholder="请输入计量单位"/>
                         </FormItem>
                         <FormItem label="位置" prop='position'>
-                            <Input size='small' :disabled='productType == 3 ? true : false' v-model="item.position" placeholder="请输入位置"></Input>
+                            <Input size='small' :disabled='productType == 3 ? true : false' v-model="item.position" placeholder="请输入位置"/>
                         </FormItem>
 
                         <FormItem v-for="(measuring,measuring_key) in item.measuring" :label="measuring.title" :key="measuring_key+11" :prop='measuring.key'>
@@ -455,6 +459,7 @@ export default {
                 modalData.product_type = res.data.detail.product_type||''
                 modalData.unit = res.data.detail.unit||''
                 modalData.model = res.data.detail.model || ''
+                modalData.price = 0;
                 if(res.code == 200){
                     if(!ext){
                         if(row){modalData.title = row.label||''}
@@ -580,10 +585,11 @@ export default {
             .then(res=>{
                 if(res.code == 200){
                     Object.assign(father,res.data)
+                    if(row.select){return false}
                     father.route_list.map(v=>v.select = false)
                     row.select = true;
                     this.modalArray[idx].parts[index] = father;
-                    this.modalArray[idx].price = this.modalArray[idx].parts.reduce((pre,cur)=>pre+(parseInt(cur.price)),0)
+                    this.modalArray[idx].price = this.modalArray[idx].parts.reduce((pre,cur)=>pre+(parseInt(cur.price)),0)+(this.modalArray[idx].old_lock_price||0)
                     this.modalArray[idx].price.toFixed(2)
                     father.custom_route = [];
                     this.$forceUpdate()
@@ -631,9 +637,11 @@ export default {
             row.route_list.map(v=>v.select=false)
             row.custom_route = JSON.parse(JSON.stringify(this.coustomArray));
             row.maber_time = 0;
+            let removePrice = row.price;
             row.price = 0;
             this.$refs[('popTip'+idx+index)][0].cancel()
             this.modalArray[idx].parts[index] = row;
+            this.modalArray[idx].price = parseInt(this.modalArray[idx].price) - removePrice
             this.$forceUpdate()
 
         },

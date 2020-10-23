@@ -14,7 +14,11 @@
         :pageIndex='pageIndex'
         :total='total'
         >
-            <div slot='titleButton' >
+            <div slot='titleButton' style="display:flex;">
+                <Upload name='your_file' :show-upload-list='false' :headers='headers' :on-error='uploadError' :on-success='uploadSuccess' :action="$store.state.ip+'/api/orders_export'">
+                    <Button type="success" ghost icon='md-exit' style="margin-right:10px;">批量导入</Button>
+                </Upload>
+                <Button @click="exportData" type="warning" ghost style="margin-right:10px;" icon='md-return-left'>批量导出</Button>
                 <Button  type="primary" @click="openLower(selectIds)" style="margin-right:10px;" ghost>批量下测量</Button>
                 <Button  type="primary" ghost>批量打印二维码</Button>
             </div>
@@ -73,7 +77,9 @@ export default {
             tableColums:[
                 {type:'selection',align:'center',minWidth:100,fixed:'left'},
                 {title:'订单编号',align:'center',key:'order_no',minWidth:200},
-                {title:'订单类型',align:'center',key:'show_type',minWidth:100},
+                {title:'订单类型',align:'center',key:'show_type',minWidth:100,
+                    render:(h,params)=>h('span',{},params.row.renovation_type == 1 ? '工装' : '家装')
+                },
                 {title:'订单状态',align:'center',key:'state',minWidth:150,},
                 {title:'业务员',align:'center',key:'salesman',minWidth:150},
                 {title:'紧急程度',align:'center',key:'show_warning_state',minWidth:100,
@@ -87,14 +93,20 @@ export default {
                     }
                 },
                 {title:'小区',align:'center',key:'residential_name',minWidth:200},
-                {title:'订单开始日期',align:'center',key:'show_start_time',minWidth:180},
-                {title:'订单交付日期',align:'center',key:'show_end_time',minWidth:180},
+                {title:'订单开始日期',align:'center',minWidth:180,
+                    render:(h,params)=>h('span',{},this.func.replaceDate(params.row.start_time))
+                },
+                {title:'订单交付日期',align:'center',minWidth:180,
+                    render:(h,params)=>h('span',{},this.func.replaceDate(params.row.end_time))
+                },
                 {title:'完成进度',align:'center',key:'complete_rate',minWidth:180,
                     render(h,params){
                         return h('span',{},parseInt(params.row.complete_rate*100)+'%')
                     },
                 },
-                {title:'预估交付日期',align:'center',key:'show_predict_time',minWidth:200},
+                {title:'预估交付日期',align:'center',minWidth:200,
+                    render:(h,params)=>h('span',{},this.func.replaceDate(params.row.predict_time))
+                },
                 {title:'操作',align:'center',slot:'set',fixed:'right',minWidth:220,fixed:'right'},
             ],
             tableData:[],
@@ -112,6 +124,7 @@ export default {
             selectIds:null,
             loading:false,
             proxyObj:{},
+            headers:{'Authorization':localStorage.getItem('token')},
         }
     },
 
@@ -127,15 +140,6 @@ export default {
             this.axios('/api/order_index',{params:row}).then(res=>{
                 this.loading = false;
                 if(!res.data.data){return this.$Message.error('列表数据返回格式不正确')}
-                res.data.data.map(v=>{
-                    v.show_type = v.type == 1 ? '工装' : '家装'
-                    v.show_state = v.state == 0 ? '未审核' : (v.state == 1 ? '审核中' : (v.state == 2 ? '审核通过' : (v.state == 3 ? '订单生产中' : '完成')))
-                    v.show_sub_state = v.sub_state == 0 ? '测量未审核' : (v.sub_state == 1 ? '测量审核' : 
-                    (v.sub_state == 2 ? '测量通过' : (v.sub_state == 3 ? '生产审核中' : (v.sub_state == 4 ? '生产通过' : '到生产计划'))))
-                    v.show_start_time = this.func.replaceDate(v.start_time)
-                    v.show_end_time = this.func.replaceDate(v.end_time)
-                    v.show_predict_time = this.func.replaceDate(v.predict_time)
-                })
                 this.tableData = res.data.data;
                 this.total = res.data.total;
             })
@@ -161,13 +165,16 @@ export default {
             })
         },
         goDetial(row){
-            this.$router.push({
-                path:'/cms/ordermannage/businessorderlist/decorationlist',
-                query:{
-                    id:row.id,
-                    type:'business'
-                }
-            })
+            row.renovation_type == 2 ? 
+                this.$router.push({
+                    path:'/cms/ordermannage/businessorderlist/details',
+                    query:{order_no:row.order_no,type:'business'}
+                })
+                :
+                this.$router.push({
+                    path:'/cms/ordermannage/businessorderlist/decorationlist',
+                    query:{id:row.id,type:'business'}
+                })
         },
         openLower(row){
             if(!row){return this.$Message.warning('请至少选择一项')}
@@ -199,6 +206,21 @@ export default {
                 }
             })
         },
+        exportData(){
+            let url = this.$store.state.ip+'/api/orders_export'+this.func.objToParams(this.proxyObj)
+            location.href=url
+        },
+        uploadSuccess(res){
+            if(res.code == 200){
+                this.$Message.success(res.msg||'上传成功')
+            }else{
+                this.$Message.warning(res.msg||'上传失败')
+            }
+            this.getData(this.proxyObj)
+        },
+        uploadError(err){
+            this.$Message.error(err.msg||'上传失败')
+        }
     }
 }
 </script>

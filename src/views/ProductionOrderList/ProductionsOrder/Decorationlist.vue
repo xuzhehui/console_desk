@@ -40,14 +40,19 @@
                 </Form>
             </Modal>
 
-            <Modal title="批量绑定" fullscreen v-model="showBatchModal">
+            <Modal title="批量绑定" fullscreen v-model="showBatchModal" @on-visible-change='visibleBatchModal'>
                 <div class="batch-content">
-                    <div style="margin-right:10px;width:50%;">
-                        <Table :columns="batchTablePartsColumn"></Table>
+                    <div style="margin-right:10px;width:60%;">
+                        <Table @on-selection-change='batchSelect' border stripe :columns="batchTablePartsColumn" :data='batchTablePartsData'></Table>
                     </div>
-                    <div style="margin-left:10px">
-                        <Table :columns='batchChipColumns'></Table>
+                    <div style="margin-left:10px;width:40%;">
+                        <Table border stripe :columns='batchChipColumns' :data='batchChipData'></Table>
                     </div>
+                </div>
+                <div class="batch-footer"><Page :total="batchTotal" show-total /></div>
+                <div slot='footer' class="modal-footer">
+                    <Button @click="showBatchModal = false">取消</Button>
+                    <Button type="primary" @click="batchBindChip">确认绑定</Button>
                 </div>
             </Modal>
         </FullPage>
@@ -87,7 +92,7 @@ export default {
                     render:(h,params)=>h('span',{},params.row.sub_is_tag==1 ? '是' : '否')
                 },
                 {title:'预估房号工期',align:'center',key:'predict_time',minWidth:200},
-                {title:'操作',align:'center',slot:'set',width:'280',fixed:'right'},
+                {title:'操作',align:'center',slot:'set',width:'280',fixed:'right',},
             ],
             tableData:[],
             pageIndex:1,
@@ -111,19 +116,45 @@ export default {
             chipInfo:{},
             showBatchModal:false,
             batchTablePartsColumn:[
-                {title:'小区名称',key:'',align:'center',fixed:'left',minWidth:200},
-                {title:'房号',key:'',align:'center',minWidth:100},
-                {title:'产品',key:'',align:'center',minWidth:100},
-                {title:'位置',key:'',align:'center',minWidth:100},
-                {title:'部件',key:'',align:'center',minWidth:100},
-                {title:'贴标签零部件',key:'',align:'center',minWidth:200},
-                {title:'零部件是否贴标签',key:'',align:'center',minWidth:200,fixed:'right'},
+                {type:'selection',fixed:'left',minWidth:90,align:'center'},
+                {title:'小区名称',key:'',align:'center',minWidth:200},
+                {title:'房号',key:'',align:'center',key:'number_detail',minWidth:100},
+                {title:'产品',key:'',align:'center',key:'product_title',minWidth:150},
+                {title:'位置',key:'',align:'center',key:'position',minWidth:100},
+                {title:'部件',key:'',align:'center',key:'part_title',minWidth:100},
+                {title:'部件是否贴标签',key:'',align:'center',minWidth:200,
+                    render:(h,params)=>h('span',{},params.row.label == 1 ? '是' : '否')
+                },
+                {title:'零部件是否贴标签',key:'',align:'center',minWidth:150,
+                    render:(h,params)=>h('span',{},params.row.sub_is_tag==1 ? '是' : '否')
+                },
+                {title:'操作',align:'center',width:'100',fixed:'right',
+                    render:(h,params)=>h('a',{
+                        on:{
+                            'click':()=>this.batchTablePartsData.splice(params.index,1)
+                        }
+                    },'删除')
+                }
             ],
+            batchTablePartsData:[],
             batchChipColumns:[
-                {title:'芯片编码',key:'',align:'center',minWidth:200},
-                {title:'扫码时间',key:'',align:'center',minWidth:200},
-                {title:'操作',key:'',align:'center',},
-            ]
+                {title:'芯片编码',key:'',align:'center',key:'tag',},
+                {title:'扫码时间',key:'',align:'center',minWidth:100,
+                    render:(h,params)=>h('span',{},this.func.replaceDate(params.row.scan_time*1))
+                },
+                {title:'操作',key:'',align:'center',
+                    render:(h,params)=>h('a',{
+                        on:{
+                            'click':()=>this.batchChipData.splice(params.index,1)
+                        }
+                    },'删除')
+                },
+            ],
+            batchChipData:[],
+            batchPageIndex:1,
+            batchPageSize:10,
+            batchTotal:10,
+            batchSelectArray:[],
         }
     },
     methods:{
@@ -235,8 +266,47 @@ export default {
         vivibleModal(e){
             if(!e){this.chipInfo = {}}
         },
-        batchChipModal(){
+        getChipData(){
+            this.axios('/api/tag_list',{params:{page_size:this.batchPageSize,page_index:this.pageIndex,status:0}})
+            .then(res=>{
+                res.code == 200 ? (()=>{
+                    this.batchChipData = res.data.data;
+                    this.batchTotal = res.data.total
+                })() : ''
+            })
+            this.axios('/api/orders_produce_parts_list',{params:{page_size:this.batchPageSize,page_index:this.batchPageIndex,order_no:this.$route.query.order_no,type:'produce',label:0}})
+            .then(res=>{
+                res.code == 200 ? (()=>{this.batchTablePartsData = res.data.list})() : this.$Message.error(res.msg||'请求失败')
+            })
+        },
+        visibleBatchModal(e){
+            if(e){
+                this.getChipData()
+            }
             
+        },
+        batchSelect(e){
+            this.batchSelectArray = e;
+        },
+        batchBindChip(){
+            if(!this.batchSelectArray.length){
+                return false
+            }
+            let pr_id = '',tag = '';
+            this.batchSelectArray.forEach((v,i)=>{
+                this.batchChipData[i].tag ? (()=>{
+                    // result.push({pr_id:v.pr_id,tag:this.batchChipData[i].tag})
+                    pr_id+=v.pr_id+(i==this.batchSelectArray.length-1 ? '' : ',');
+                    tag+=this.batchChipData[i].tag+(i==this.batchSelectArray.length-1 ? '' : ',')
+                })() : ''
+            })
+            this.axios.post('/api/tag_bind',{pr_id:pr_id,tag:tag})
+            .then(res=>{
+                if(res.code == 200){
+                    this.$Message.success(res.msg||'操作成功')
+                    this.showBatchModal = false
+                }
+            })
         }
     }
 }
@@ -246,4 +316,5 @@ export default {
 .nav{display: flex;justify-content: space-between;align-items: center;}
 .table-set{a{margin:0 5px;}}
 .batch-content{width:100%;display: flex;}
+.batch-footer{display: flex;justify-content: center;padding:10px 0;}
 </style>
