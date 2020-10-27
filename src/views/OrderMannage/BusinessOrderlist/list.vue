@@ -15,7 +15,7 @@
         :total='total'
         >
             <div slot='titleButton' style="display:flex;">
-                <Upload name='your_file' :show-upload-list='false' :headers='headers' :on-error='uploadError' :on-success='uploadSuccess' :action="$store.state.ip+'/api/orders_export'">
+                <Upload name='your_file' :show-upload-list='false' :headers='headers' :on-error='uploadError' :on-success='uploadSuccess' :action="$store.state.ip+'/api/orders_import'">
                     <Button type="success" ghost icon='md-exit' style="margin-right:10px;">批量导入</Button>
                 </Upload>
                 <Button @click="exportData" type="warning" ghost style="margin-right:10px;" icon='md-return-left'>批量导出</Button>

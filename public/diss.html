@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试语音阅读</title>
+</head>
+<body>
+
+    <div>
+        <input id='ipt' type="text" placeholder="请输入要阅读的文本">
+        <button id='button'>开始阅读</button>
+    </div>
+    <script>
+        function speack(msg){
+            let inner = new SpeechSynthesisUtterance(msg);
+            window.speechSynthesis.speak(inner);
+        }
+        const dom = document.querySelector('#ipt')
+        const button = document.querySelector('#button')
+        button.addEventListener('click',()=>{
+            speack(dom.value)
+        })
+
+        
+       
+    </script>
+</body>
+</html>

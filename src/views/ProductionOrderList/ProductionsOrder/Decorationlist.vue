@@ -64,7 +64,24 @@ export default {
     data(){
         return {
             list:[
-                {title:'按房号',name:'Input',value:'',serverName:'number',placeholder:'请输入ID'},
+                {title:'按楼幢',name:'Select',multiple:true,filterable:true,value:'',serverName:'house',placeholder:'请选择楼幢',
+                    option:[]
+                },
+                {title:'按单元',name:'Select',multiple:true,filterable:true,value:'',serverName:'unit',placeholder:'请选择单元',
+                    option:[]
+                },
+                {title:'按楼层',name:'Select',multiple:true,filterable:true,value:'',serverName:'layer',placeholder:'请选择楼层',
+                    option:[]
+                },
+                {title:'按房号',name:'Select',multiple:true,filterable:true,value:'',serverName:'number_detail',placeholder:'请选择房号',
+                    option:[]
+                },
+                {title:'按部件',name:'Select',multiple:true,filterable:true,value:'',serverName:'part',placeholder:'请选择部件',
+                    option:[]
+                },
+                {title:'按工序',name:'Select',multiple:true,filterable:true,value:'',serverName:'produce',placeholder:'请选择工序',
+                    option:[]
+                },
                 {title:'产品名称',name:'Input',value:'',serverName:'title',placeholder:'请输入产品名称'},
                 {title:'是否存在工艺路线',name:'Select',value:'',serverName:'process_router',
                     option:[
@@ -157,11 +174,32 @@ export default {
             batchSelectArray:[],
         }
     },
+    created(){
+        this.getOptions()
+    },
     methods:{
         init(row){
             row.page_index = this.pageIndex;
             row.page_size = this.pageSize;
             Object.assign(row,this.$route.query)
+            if(this.func.isType(row.house) == 'Array'){
+                row.house = row.house.join(',')
+            }
+            if(this.func.isType(row.unit) == 'Array'){
+                row.unit = row.unit.join(',')
+            }
+            if(this.func.isType(row.layer) == 'Array'){
+                row.layer = row.layer.join(',')
+            }
+            if(this.func.isType(row.number_detail) == 'Array'){
+                row.number_detail = row.number_detail.join(',')
+            }
+            if(this.func.isType(row.part) == 'Array'){
+                row.part = row.part.join(',')
+            }
+            if(this.func.isType(row.produce) == 'Array'){
+                row.produce = row.produce.join(',')
+            }
             this.proxyObj = row;
             this.getData(row)
         },
@@ -182,6 +220,24 @@ export default {
                     house_id:row.house_id,
                     type:'produce'
                 }
+            })
+        },
+        getOptions(){
+            this.axios('/api/order_detail_word',{params:{order_no:this.$route.query.order_no}})
+            .then(res=>{
+                console.log(res)
+                res.data.house.map(v=>{v.value = v.house;v.label = v.house})
+                res.data.unit.map(v=>{v.value = v.unit;v.label = v.unit})
+                res.data.layer.map(v=>{v.value = v.layer;v.label = v.layer})
+                res.data.number_detail.map(v=>{v.value = v.number_detail;v.label = v.number_detail})
+                res.data.part.map(v=>{v.value = v.title;v.label = v.title})
+                res.data.produce.map(v=>{v.value=v.title,v.value=v.title})
+                this.list[0].option = res.data.house;
+                this.list[1].option = res.data.unit;
+                this.list[2].option = res.data.layer;
+                this.list[3].option = res.data.number_detail;
+                this.list[4].option = res.data.part;
+                this.list[5].option = res.data.produce;
             })
         },
         changePage(e){

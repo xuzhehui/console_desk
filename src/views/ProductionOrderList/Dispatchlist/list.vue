@@ -19,7 +19,7 @@
             
             <template slot='set' slot-scope='{row}'>
                 <div>
-                    <a class="map-margin">打印原材料</a>
+                    <a class="map-margin">原材料预算</a>
                     <a class="map-margin">打印派工单</a>
                     <a class="map-margin" @click="goDetial(row)">详情</a>
                 </div>
@@ -39,8 +39,19 @@ export default {
             ],
             tableColums:[
                 {title:'订单编号',align:'center',key:'order_no',fixed:'left',width:'200'},
-                {title:'订单类型',align:'center',key:'type',minWidth:150},
-                {title:'紧急程度',align:'center',key:'warning_state',minWidth:150},
+                {title:'订单类型',align:'center',key:'type',minWidth:150,
+                    render:(h,params)=>h('span',{},params.row.renovation_type == 1 ? '工装' : '家装')
+                },
+                {title:'紧急程度',align:'center',key:'warning_state',minWidth:150,
+                    render(h,params){
+                        return h('span',{
+                            props:{},
+                            style:{
+                                color:params.row.warning_state ==  0 ? '#32C800' : (params.row.warning_state == 1 ? '#FFA141' : '#FF5E5C')
+                            }
+                        },params.row.warning_state == 0 ? '不急' : (params.row.warning_state == 1 ? '比较急' : (params.row.warning_state == 2 ? '紧急' : '非常急')))
+                    }
+                },
                 {title:'小区名称',align:'center',key:'residential_name',minWidth:200},
                 {title:'派工开始时间',align:'center',key:'start_time',minWidth:200,
                     render:(h,params)=>h('span',{},this.func.replaceDate(params.row.start_time*1))

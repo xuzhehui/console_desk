@@ -22,12 +22,16 @@
             
             <template slot='set' slot-scope='{row}'>
                 <div>
-                    <a style="margin:0 5px">原材料预算</a>
+                    <a style="margin:0 5px" @click="showOriginal = true">原材料预算</a>
                     <a style="margin:0 5px">打印二维码</a>
                     <a style="margin:0 5px" @click="goDetial(row)">详情</a>
                     <a style="margin:0 5px" @click="openModal(row)">下生产计划</a>
                 </div>
             </template>
+
+            <Modal :width='1000' class-name="vertical-center-modal" title='原材料预算' v-model="showOriginal">
+                <Table border :span-method="handleSpan" :columns="originalTableColumns" :data="originalData"></Table>
+            </Modal>
         </FullPage>
     </div>
 </template>
@@ -92,7 +96,18 @@ export default {
                 start_time:'',
                 end_time:'',
                 state:3,
-            }
+            },
+            originalTableColumns:[
+                {title:'原材料名称',align:'center',key:'title'},
+                {title:'原材料库存',align:'center',key:'stock'},
+                {title:'所需原材料数量',align:'center',key:'num'},
+                {title:'原材料单价',align:'center',key:'price'},
+                {title:'规格型号',align:'center'},
+                {title:'原材料单位',align:'center',key:'unit'},
+                {title:'原材料预估费用',align:'center',key:'num_price'},
+            ],
+            originalData:[],
+            showOriginal:false,
         }
     },
     methods:{
@@ -143,6 +158,11 @@ export default {
                 then:(e)=>{this.getData(this.proxyObj)},
                 cancel:(e)=>{},
             })
+        },
+        handleSpan ({ row, column, rowIndex, columnIndex }) {
+            if(row.end){
+                return [1,6]
+            }
         },
     }
 }
