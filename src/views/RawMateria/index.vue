@@ -17,7 +17,7 @@
             </div>
 
             <Modal v-model="show" :width="794" :closable='false'>
-                <Table style="width:100%;" border  :columns='printTableColums' :data='tableData'></Table>
+                <Table width='700'  border  :columns='printTableColums' :data='tableData'></Table>
                 <div slot="footer"></div>
             </Modal>
 
@@ -40,13 +40,13 @@ export default {
                 {title:'原材料预估费用',align:'center',key:'num_price',fixed:'right',minWidth:100},
             ],
             printTableColums:[
-                {title:'原材料名称',align:'center',key:'title',},
-                {title:'原材料库存',align:'center',key:'stock',},
-                {title:'所需原材料数量',align:'center',key:'num',},
-                {title:'规格型号',align:'center',},
-                {title:'原材料单位',align:'center',key:'unit',width:'110'},
+                {title:'原材料名称',align:'center',key:'title',width:100},
+                {title:'原材料库存',align:'center',key:'stock',width:140},
+                {title:'所需原材料数量',align:'center',key:'num',width:140},
+                {title:'规格型号',align:'center',key:'tag',minWidth:100},
+                {title:'原材料单位',align:'center',key:'unit',width:130},
             ],
-            tableData:[{title:'蛋蛋们-d-h-s30-bbg',stock:'12000',num:122222}],
+            tableData:[{title:'蛋蛋们-d-h-s30-bbg',stock:'12000',num:122222,tag:'222222',unit:'22'}],
             pageIndex:1,
             pageSize:10,
             total:0,
@@ -84,7 +84,7 @@ export default {
         back(){this.$router.go(-1)},
         powerPoint(){
             this.show= true
-            setTimeout(()=>{print().then(()=>{alert(1)})},1000)
+            setTimeout(()=>{print()},1000)
             
         }
     }
