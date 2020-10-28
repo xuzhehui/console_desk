@@ -26,13 +26,13 @@
             <FormItem label="手机号" prop='mobile'>
                 <Input type="number" v-model="info.mobile"  placeholder="请输入手机号"/>
             </FormItem>
-            <FormItem label="手持设备">
+            <FormItem label="是否手持设备">
                 <i-switch v-model="info.is_mobile">
                     <span slot="open">是</span>
                     <span slot="close">否</span>
                 </i-switch>
             </FormItem>
-            <FormItem label="手持设备" v-if="info.is_mobile">
+            <FormItem label="工序类型" v-if="info.is_mobile">
                 <CheckboxGroup style="width:100%;display:flex;" v-model="info.power">
                     <Checkbox label="1">生产</Checkbox>
                     <Checkbox label="2">运输</Checkbox>

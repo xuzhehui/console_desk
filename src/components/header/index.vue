@@ -1,7 +1,8 @@
 <template>
     <div class="header">
         <div class="content">
-            <span class="title">Welecome</span>
+            <img :src="$store.state.ip+'/api/pic/16038707135247'" alt="">
+            <!-- <span class="title">Welecome</span> -->
             <div class="header-right">
                 <Input placeholder="请输入关键词" style="width: auto;margin-right:50px;">
                     <Icon type="ios-search" slot="suffix" />

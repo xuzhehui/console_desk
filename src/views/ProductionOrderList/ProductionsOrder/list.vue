@@ -22,16 +22,16 @@
             
             <template slot='set' slot-scope='{row}'>
                 <div>
-                    <a style="margin:0 5px" @click="showOriginal = true">原材料预算</a>
+                    <a style="margin:0 5px" @click="goOriginalPage(row)">原材料预算</a>
                     <a style="margin:0 5px">打印二维码</a>
                     <a style="margin:0 5px" @click="goDetial(row)">详情</a>
                     <a style="margin:0 5px" @click="openModal(row)">下生产计划</a>
                 </div>
             </template>
 
-            <Modal :width='1000' class-name="vertical-center-modal" title='原材料预算' v-model="showOriginal">
+            <!-- <Modal :width='1000' class-name="vertical-center-modal" title='原材料预算' v-model="showOriginal">
                 <Table border :span-method="handleSpan" :columns="originalTableColumns" :data="originalData"></Table>
-            </Modal>
+            </Modal> -->
         </FullPage>
     </div>
 </template>
@@ -68,6 +68,7 @@ export default {
                 {title:'地址',align:'center',key:'address',minWidth:200},
                 {title:'客户姓名',align:'center',key:'client_name',minWidth:200},
                 {title:'手机号',align:'center',key:'mobile',minWidth:200},
+                {title:'测量人员',align:'center',key:'nickname',minWidth:200},
                 {title:'紧急程度',align:'center',key:'warning_state',minWidth:100,
                     render(h,params){
                         return h('span',{
@@ -80,11 +81,19 @@ export default {
                         )
                     }
                 },
-                {title:'下单日期',align:'center',key:'show_crt_time',minWidth:200},
-                {title:'测量人员',align:'center',key:'show_measure_start_time',minWidth:200},
-                {title:'测量开始日期',align:'center',key:'show_measure_start_time',minWidth:200},
-                {title:'测量结束日期',align:'center',key:'show_measure_start_time',minWidth:200},
-                {title:'实际测量时间',align:'center',key:'show_measure_time',minWidth:200},
+                {title:'下单日期',align:'center',minWidth:200,
+                    render:(h,params)=>h('span',{},this.func.replaceDate(params.row.crt_time*1))
+                },
+                
+                {title:'测量开始日期',align:'center',minWidth:200,
+                    render:(h,params)=>h('span',{},this.func.replaceDate(params.row.measure_start_time*1))
+                },
+                {title:'测量结束日期',align:'center',minWidth:200,
+                    render:(h,params)=>h('span',{},this.func.replaceDate(params.row.measure_end_time*1))
+                },
+                {title:'实际测量时间',align:'center',minWidth:200,
+                    render:(h,params)=>h('span',{},this.func.replaceDate(params.row.measure_time*1))
+                },
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'320'},
             ],
             tableData:[],
@@ -97,17 +106,6 @@ export default {
                 end_time:'',
                 state:3,
             },
-            originalTableColumns:[
-                {title:'原材料名称',align:'center',key:'title'},
-                {title:'原材料库存',align:'center',key:'stock'},
-                {title:'所需原材料数量',align:'center',key:'num'},
-                {title:'原材料单价',align:'center',key:'price'},
-                {title:'规格型号',align:'center'},
-                {title:'原材料单位',align:'center',key:'unit'},
-                {title:'原材料预估费用',align:'center',key:'num_price'},
-            ],
-            originalData:[],
-            showOriginal:false,
         }
     },
     methods:{
@@ -129,12 +127,6 @@ export default {
         },
         getData(row){
             this.axios('/api/orders_produce_order_list',{params:row}).then(res=>{
-                res.data.data.map(v=>{
-                    v.show_predict_time = this.func.replaceDate(v.predict_time*1);
-                    v.show_crt_time = this.func.replaceDate(v.crt_time);
-                    v.show_measure_time = this.func.replaceDate(v.measure_time)
-                    v.show_measure_start_time = this.func.replaceDate(v.measure_start_time)
-                })
                 this.tableData = res.data.data;
                 this.total = res.data.total;
             })
@@ -159,11 +151,14 @@ export default {
                 cancel:(e)=>{},
             })
         },
-        handleSpan ({ row, column, rowIndex, columnIndex }) {
-            if(row.end){
-                return [1,6]
-            }
-        },
+        goOriginalPage(row){
+            this.$router.push({
+                path:'/cms/rawmateria/index',
+                query:{
+                    order_no:row.order_no
+                }
+            })
+        }
     }
 }
 </script>

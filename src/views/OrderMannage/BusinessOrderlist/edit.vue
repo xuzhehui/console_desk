@@ -154,7 +154,7 @@
             </div>
         </div>       
         <!-- 选择产品弹层 -->
-        <Modal :width="1200" class-name="vertical-center-modal" title="选择产品" v-model="showProduct" @on-ok="tapProduct">
+        <Modal :width="1200" class-name="vertical-center-modal" title="选择产品" v-model="showProduct">
             <div class="modal-scroll">
                 <div class="modal-items" v-for="(item,idx) in modalArray" :key="idx">
                     <Form inline :model="item" :rules="productRules" ref='productModel'>
@@ -551,14 +551,13 @@ export default {
         },
         tapProduct(){
             let str = [];
+            let product_id = '';
+            let measure = '';
             this.info.house.map(v=>{
-                v.product.map(k=>{
-                    if(k.product_id){
-                        str.push(k.product_id)
-                    }
-                })
+                product_id = v.product.reduce((pre,cur,index)=>pre+=(cur.product_id+(index == v.product.length-1 ? '' : ',')),'')
+                measure = v.product.reduce((pre,cur,index)=>pre+=(cur.measure+(index == v.product.length-1 ? '' : ',')),'')
             })
-            this.axios('/api/house_detail_material',{params:{product_id:str.length>=1 ? str.join(',') : ''}}).then(res=>{
+            this.axios('/api/house_detail_material',{params:{product_id:product_id,measure:measure}}).then(res=>{
                 if(res.code == 200){
                     this.originalData = res.data.data;
                     this.originalData.push({end:true,stock:res.data.num,title:'合计'})

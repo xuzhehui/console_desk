@@ -19,7 +19,7 @@
             
             <template slot='set' slot-scope='{row}'>
                 <div>
-                    <a class="map-margin">原材料预算</a>
+                    <a class="map-margin" @click="goOriginalPage(row)">原材料预算</a>
                     <a class="map-margin">打印派工单</a>
                     <a class="map-margin" @click="goDetial(row)">详情</a>
                 </div>
@@ -102,6 +102,14 @@ export default {
                 path:'/cms/productionorderlist/dispatchlist/details',
                 query:{
                     order_no:row.order_no,
+                }
+            })
+        },
+        goOriginalPage(row){
+            this.$router.push({
+                path:'/cms/rawmateria/index',
+                query:{
+                    order_no:row.order_no
                 }
             })
         }

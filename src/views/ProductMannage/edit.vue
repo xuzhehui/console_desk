@@ -16,11 +16,30 @@
 
                     <div class="add-items">
                         <div class="item">
-                            <Icon size='100' type="ios-add" />
+                            <Icon size='50' type="ios-add" />
                         </div>
                         
                         <span>支持jpg/png格式</span>
-                        <input @change="changeIpt" type="file" class="ipt"/>
+                        <input @change="changeIpt($event,info.img)" type="file" class="ipt"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-img">
+                <span>图纸</span>
+                <div class="product-add">
+                    <div class="items" v-for='(item,index) of info.url' :key="index">
+                        <img :src="$store.state.ip+item" alt="">
+                        <Icon size='20' @click="delItems(index,info.url)" class="delete-img" type="ios-close-circle" />
+                    </div>
+
+                    <div class="add-items">
+                        <div class="item">
+                            <Icon size='50' type="ios-add" />
+                        </div>
+                        
+                        <span>支持jpg/png格式</span>
+                        <input @change="changeIpt($event,info.url)" type="file" class="ipt"/>
                     </div>
                 </div>
             </div>
@@ -43,14 +62,14 @@
                 <FormItem label="图号" prop='title'>
                     <Input v-model="info.url_number" style="width:300px" placeholder="请输入图号"></Input>
                 </FormItem>
-                <FormItem label="图纸" >
+                <!-- <FormItem label="图纸" >
                     <Upload style="width:100%" :show-upload-list='false' :headers='headers' :on-success='uploadSuccess' :action="$store.state.ip+'/api/upload_pic'">
                         <div class="upload-avatar">
                             <Icon v-if="!info.url" size='30' type="ios-cloud-upload-outline" />
                             <img style="max-width:30px;max-height:30px;" v-if="info.url" :src="$store.state.ip+info.url" alt="图纸">
                         </div>
                     </Upload>
-                </FormItem>
+                </FormItem> -->
                 <FormItem label="是否加锁">
                     <div style="display:flex;min-width:300px;">
                         <RadioGroup v-model="info.lucy_type">
@@ -62,11 +81,6 @@
                             <Option v-for="item of lucks" :key="item.id" :value='item.id'>{{item.title }}</Option>
                         </Select>
                     </div>
-                    
-                </FormItem>
-
-                <FormItem>
-                    
                 </FormItem>
             </Form>
 
@@ -197,7 +211,7 @@ export default {
                 lock:0,
                 lucy_type:0,
                 id:'',
-                url:'',
+                url:[],
                 url_number:'',
             },
             rules:{
@@ -300,19 +314,19 @@ export default {
             }
             this.info.remark.push({title:'',content:'',type:1})
         },
-        postImg(file){
+        postImg(file,row){
             let formData = new FormData()
             formData.append('file',file)
             this.axios.post('/api/upload_pic',formData).then(res=>{
-                this.info.img.push(res.data.url)
+                row.push(res.data.url)
             })
         },
-        changeIpt(e){
+        changeIpt(e,row){
             if(this.info.img.length>=3){
                 return this.$Message.warning('图片最多上传3张')
             }
             let file = e.target.files[0];
-            this.postImg(file)
+            this.postImg(file,row)
             e.target.value = null
         },
         getProductFiledData(id){
@@ -381,12 +395,12 @@ export default {
 .product-img{padding-top:10px;}
 .product-add{padding:10px 0;display:flex;flex-wrap:wrap;
     .ipt{position:absolute;width:100%;height:100%;opacity:0;cursor: pointer;outline: none;top:0;left:0;}
-    .add-items{width:240px;height:240px;border:1px dotted #E7E7E7;
+    .add-items{width:120px;height:120px;border:1px dotted #E7E7E7;
     border-radius:5px;display: flex;justify-content: center;align-items: center;overflow: hidden;position:relative;flex-direction: column;background:#F4F5F7;
-        .item{width:76px;height:76px;background:#3764FF;opacity: .6;display: flex;justify-content: center;align-items: center;border-radius:50%;color:#fff;}
+        .item{width:46px;height:46px;background:#3764FF;opacity: .6;display: flex;justify-content: center;align-items: center;border-radius:50%;color:#fff;}
     }
-    .items{width:240px;height:240px;margin-bottom:10px;display:flex;justify-content:center;align-items:center;background:#E7E7E7;margin-right:10px;border-radius:5px;position:relative;
-        img{max-width:208px;max-height:208px;;}
+    .items{width:120px;height:120px;margin-bottom:10px;display:flex;justify-content:center;align-items:center;background:#E7E7E7;margin-right:10px;border-radius:5px;position:relative;
+        img{max-width:108px;max-height:108px;;}
         
     }
 }

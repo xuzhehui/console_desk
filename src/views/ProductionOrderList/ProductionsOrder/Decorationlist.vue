@@ -225,7 +225,6 @@ export default {
         getOptions(){
             this.axios('/api/order_detail_word',{params:{order_no:this.$route.query.order_no}})
             .then(res=>{
-                console.log(res)
                 res.data.house.map(v=>{v.value = v.house;v.label = v.house})
                 res.data.unit.map(v=>{v.value = v.unit;v.label = v.unit})
                 res.data.layer.map(v=>{v.value = v.layer;v.label = v.layer})

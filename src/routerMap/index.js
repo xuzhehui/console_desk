@@ -377,6 +377,12 @@ const routerMap = [
         meta:{index:1},
         component: resolve => require(['@/views/ChipMannage/index'], resolve)
     },
+    {
+        path:'/cms/rawmateria/index',  
+        name:'RawMateria',//原材料预算
+        meta:{index:1},
+        component: resolve => require(['@/views/RawMateria/index'], resolve)
+    },
 
 ]
 

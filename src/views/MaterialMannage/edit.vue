@@ -183,7 +183,6 @@ export default {
             row.push({long:'',width:'',price:'',stock:'',warning_number:'',scale:'',})
         },
         removeChild(row,n){
-            console.log(row)
             row.splice(n,1)
         }
     }
