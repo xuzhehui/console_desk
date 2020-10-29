@@ -559,6 +559,9 @@ export default {
             })
             this.axios('/api/house_detail_material',{params:{product_id:product_id,measure:measure}}).then(res=>{
                 if(res.code == 200){
+                    if(this.func.isType(res.data.data) != 'Array'){
+                        return this.$Message.error('Must be Array got Object at house_detail_material')
+                    }
                     this.originalData = res.data.data;
                     this.originalData.push({end:true,stock:res.data.num,title:'合计'})
                 }
@@ -668,6 +671,9 @@ export default {
         },
         copyProduct(maprows,item){
             let rows = JSON.parse(JSON.stringify(maprows[item]));
+            rows.position = ''
+            const ms = rows.measuring.map(v=>v.key)
+            ms.forEach((element) => rows[element] = '');
             maprows.push(rows)
         },
         getLockList(){
