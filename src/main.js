@@ -10,13 +10,12 @@ import untilFn from './untils/until'
 import IconFont from './assets/iconfont/iconfont.js'
 import echarts from 'echarts'
 
-import VCharts from 'v-charts'
+import Print from 'vue-print-nb'
+Vue.use(Print);
 
 Vue.use(ViewUI)
 
 Vue.use(IconFont)
-
-Vue.use(VCharts)
 
 Vue.use(components)
 

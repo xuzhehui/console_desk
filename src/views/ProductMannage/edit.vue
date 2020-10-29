@@ -62,14 +62,6 @@
                 <FormItem label="图号" prop='title'>
                     <Input v-model="info.url_number" style="width:300px" placeholder="请输入图号"></Input>
                 </FormItem>
-                <!-- <FormItem label="图纸" >
-                    <Upload style="width:100%" :show-upload-list='false' :headers='headers' :on-success='uploadSuccess' :action="$store.state.ip+'/api/upload_pic'">
-                        <div class="upload-avatar">
-                            <Icon v-if="!info.url" size='30' type="ios-cloud-upload-outline" />
-                            <img style="max-width:30px;max-height:30px;" v-if="info.url" :src="$store.state.ip+info.url" alt="图纸">
-                        </div>
-                    </Upload>
-                </FormItem> -->
                 <FormItem label="是否加锁">
                     <div style="display:flex;min-width:300px;">
                         <RadioGroup v-model="info.lucy_type">
@@ -237,7 +229,6 @@ export default {
                 url:'',
                 url_number:'',
             },
-            // coustom:[],
             parts:[],
             showKey:false,
             attrindex:null,
@@ -256,7 +247,6 @@ export default {
         this.getProductFiledData();
         this.changeProduct(this.$route.query.back_id)
         this.getLocks()
-        // this.getMeasureList()
     },
     components:{
         KeyBoard,
@@ -266,6 +256,7 @@ export default {
             this.type == 1 ? this.info.op = 'add' : this.info.op = 'edit'
             let data = JSON.parse(JSON.stringify(this.info));
             data.img = JSON.stringify(data.img)
+            data.url = JSON.stringify(data.url)
             data.part = JSON.stringify(data.part)
             data.remark = JSON.stringify(data.remark)
             this.axios.post('/api/product',data).then(res=>{
@@ -337,6 +328,9 @@ export default {
         getData(row){
             this.axios('/api/product',{params:{id:row}}).then(res=>{
                 this.info = res.data;
+                if(!this.info.url){
+                    this.info.url = []
+                }
             })
         },
         getPartsData(id){

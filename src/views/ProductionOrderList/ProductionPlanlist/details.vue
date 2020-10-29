@@ -16,7 +16,7 @@
         >   
             <div slot='titleButton'>
                 <Button @click="back" type='primary' ghost style="margin-right:10px;">返回</Button>
-                <Button type="primary" style="margin-right:10px;" ghost>打印清单</Button>
+                <Button @click="goOriginalPage($route.query)" type="primary" style="margin-right:10px;" ghost>打印清单</Button>
                 <Button type="primary" ghost @click="batchDispatchOrder">批量派工单</Button>
             </div>
 
@@ -184,6 +184,15 @@ export default {
             this.proxyObj.page_size = this.pageSize;
             this.getData(this.proxyObj)
         },
+        goOriginalPage(row){
+            this.$router.push({
+                path:'/cms/rawmateria/index',
+                query:{
+                    order_no:row.order_no,
+                    type:4
+                }
+            })
+        }
     }
 }
 </script>

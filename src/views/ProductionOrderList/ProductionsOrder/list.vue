@@ -155,7 +155,9 @@ export default {
             this.$router.push({
                 path:'/cms/rawmateria/index',
                 query:{
-                    order_no:row.order_no
+                    order_no:row.order_no,
+                    type:4,
+                    residential_name:row.residential_name
                 }
             })
         }

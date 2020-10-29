@@ -88,7 +88,7 @@ export default {
                 {title:'收款',align:'center',key:'residential_name',minWidth:100,
                     render:(h,params)=>h('span',{},params.row.pay_state == 0 ? '未收款' : '已收款')
                 },
-                {title:'完成进度',align:'center',key:'complete_rate',minWidth:180,
+                {title:'生产进度',align:'center',key:'complete_rate',minWidth:180,
                     render(h,params){
                         return h('span',{},parseInt(params.row.complete_rate*100)+'%')
                     },

@@ -49,8 +49,8 @@
                     </FormItem>
                     <FormItem label='操作'>
                         <div style="width:100%;display:flex;height:100%;align-items:center;">
-                            <Button size='small' @click="addMaterrial(info.detail)">添加</Button>
-                            <Button v-if="key==0 ? false : true" size='small' style="margin-left:10px;" @click="removeChild(info.detail,key)">删除</Button>
+                            <Button type='success' ghost  @click="addMaterrial(info.detail)">添加</Button>
+                            <Button type="error" ghost v-if="key==0 ? false : true"  style="margin-left:10px;" @click="removeChild(info.detail,key)">删除</Button>
                         </div> 
                     </FormItem>
                 </Form>

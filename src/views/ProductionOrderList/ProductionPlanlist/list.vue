@@ -100,7 +100,7 @@ export default {
                 {title:'计划结束时间',align:'center',minWidth:200,
                     render:(h,params)=>h('span',{},this.func.replaceDate(params.row.plan_end_time))
                 },
-                {title:'完成进度',align:'center',key:'complete_rate',minWidth:100,
+                {title:'生产进度',align:'center',key:'complete_rate',minWidth:100,
                     render:(h,params)=>h('span',{},parseInt(params.row.complete_rate*100)+'%') 
                 },
                 {title:'预估交付日期',align:'center',key:'predict_time',minWidth:200},

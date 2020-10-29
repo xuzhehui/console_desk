@@ -99,7 +99,7 @@ export default {
                 {title:'订单交付日期',align:'center',minWidth:180,
                     render:(h,params)=>h('span',{},this.func.replaceDate(params.row.end_time))
                 },
-                {title:'完成进度',align:'center',key:'complete_rate',minWidth:180,
+                {title:'生产进度',align:'center',key:'complete_rate',minWidth:180,
                     render(h,params){
                         return h('span',{},parseInt(params.row.complete_rate*100)+'%')
                     },

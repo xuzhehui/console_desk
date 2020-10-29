@@ -66,7 +66,7 @@ export default {
                         },params.row.warning_state == 0 ? '不急' : (params.row.warning_state == 1 ? '比较急' : (params.row.warning_state == 2 ? '紧急' : '非常急')))
                     }
                 },
-                {title:'完成进度',align:'center',key:'complete_rate',minWidth:180,
+                {title:'生产进度',align:'center',key:'complete_rate',minWidth:180,
                     render(h,params){
                         return h('span',{},params.row.complete_rate||0*100+'%')
                     },

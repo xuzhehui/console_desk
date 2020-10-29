@@ -283,7 +283,7 @@ export default {
                 {title:'原材料库存',align:'center',key:'stock'},
                 {title:'所需原材料数量',align:'center',key:'num'},
                 {title:'原材料单价',align:'center',key:'price'},
-                {title:'规格型号',align:'center'},
+                {title:'规格型号',align:'center',key:'specifications'},
                 {title:'原材料单位',align:'center',key:'unit'},
                 {title:'原材料预估费用',align:'center',key:'num_price'},
             ],
@@ -294,7 +294,9 @@ export default {
                 {title:'自定义组合名称',key:'',align:'center',slot:'Costum',minWidth:100},
                 {title:'指导报价',key:'price',align:'center'},
                 {title:'部件测量数据',key:'measur',align:'center'},
-                {title:'预估工期',key:'maber_time',align:'center'},
+                {title:'预估工期',key:'maber_time',align:'center',
+                    render:(h,params)=>h('span',{},`${params.row.maber_time}小时`)
+                },
                 {title:'操作',key:'title',align:'center',slot:'set'},
             ],
             originalData:[],
@@ -497,19 +499,19 @@ export default {
                 parts:[]
             })
         },
-        changeSelect(e,item,row,n){
-            this.axios('/api/parts_routes_detail',{params:{product_id:item.product_id,route_id:e}}).then(res=>{
-                for(let i in res.data){
-                    if(i!='route_id'){
-                        row[i] = res.data[i]
-                        item.product[n][i] = res.data[i]
-                    }else{
-                        item.product[n]['route_id'] = e
-                    } 
-                }
-                this.$forceUpdate()
-            })
-        },
+        // changeSelect(e,item,row,n){
+        //     this.axios('/api/parts_routes_detail',{params:{product_id:item.product_id,route_id:e}}).then(res=>{
+        //         for(let i in res.data){
+        //             if(i!='route_id'){
+        //                 row[i] = res.data[i]
+        //                 item.product[n][i] = res.data[i]
+        //             }else{
+        //                 item.product[n]['route_id'] = e
+        //             } 
+        //         }
+        //         this.$forceUpdate()
+        //     })
+        // },
         saveParts(){
             let _this = this;
             this.modalArray.map(v=>{//计算预估工期，指导报价
@@ -580,7 +582,7 @@ export default {
             this.modalArray[this.currentIndex].url = url
         },
         getUsers(){
-            this.axios('/api/user').then(res=>this.users = res.data.data)
+            this.axios('/api/user',{params:{group_title:'业务员'}}).then(res=>this.users = res.data.data)
         },
         get_router_Date(row,father,idx,index){
             this.axios('/api/get_route_select',{params:{route_id:row.id}})
