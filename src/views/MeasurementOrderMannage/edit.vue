@@ -20,15 +20,17 @@
                         <Input v-model="tableData[index][item.key]" :placeholder="'请输入'+item.title"></Input> 
                     </div>
 
-                    <template slot-scope="{index}" slot="img_number">
+                    <!-- <template slot-scope="{index}" slot="img_number">
                         <Input :disabled='type == 3 ? true : false' v-model="tableData[index].url_number" placeholder="请输入图号"/>
-                    </template>
-                    <template slot-scope="{row,index}" slot="up-load">
+                    </template> -->
+                    <template slot-scope="{row}" slot="up-load">
                         <div>
-                            <Upload :disabled='type == 3 ? true : false' :headers="headers" :on-success='successUpload' :show-upload-list='false' :action="$store.state.ip+'/api/upload_pic'">
-                                <a v-if="!row.url" @click="mapRow(index)">上传</a>
+                            <img style="max-width:50px;max-height:50px;position:relative;top:3px" v-if="row.url" :src="$store.state.ip+row.url" alt="">
+                            <a v-if="!row.url">暂无图片</a>
+                            <!-- <Upload :disabled='type == 3 ? true : false' :headers="headers" :on-success='successUpload' :show-upload-list='false' :action="$store.state.ip+'/api/upload_pic'">
+                                <a v-if="!row.url" @click="mapRow(index)">暂无图片</a>
                                 <img @click="mapRow(index)" style="max-width:50px;max-height:50px;position:relative;top:3px" v-if="row.url" :src="$store.state.ip+row.url" alt="">
-                            </Upload>
+                            </Upload> -->
                         </div>
                     </template>
                 </Table>
@@ -50,7 +52,7 @@ export default {
                 {title:'产品名称',align:'center',key:'product_title',minWidth:200},
                 {title:'产品型号',align:'center',key:'model',minWidth:150},
                 {title:'单位',align:'center',key:'unit',minWidth:130},
-                {title:'图号',align:'center',minWidth:130,slot:'img_number',},
+                {title:'图号',align:'center',minWidth:130,key:'img_number',},
                 {title:'图纸',align:'center',slot:'up-load',minWidth:130},
                 {title:'位置',align:'center',minWidth:200,key:'position'},
                 {title:'预估产品工期',align:'center',minWidth:200,key:'predict_working'},

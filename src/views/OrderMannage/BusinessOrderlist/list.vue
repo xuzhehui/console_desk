@@ -19,8 +19,7 @@
                     <Button type="success" ghost icon='md-exit' style="margin-right:10px;">批量导入</Button>
                 </Upload>
                 <Button @click="exportData" type="warning" ghost style="margin-right:10px;" icon='md-return-left'>批量导出</Button>
-                <Button  type="primary" @click="openLower(selectIds)" style="margin-right:10px;" ghost>批量下测量</Button>
-                <Button  type="primary" ghost>批量打印二维码</Button>
+                <Button  type="primary" @click="openLower(selectIds)"  ghost>批量下测量</Button>
             </div>
 
             <div slot='navButton' style="display:flex;">

@@ -33,14 +33,14 @@ export default {
             logList:[],
             tableColums:[
                 {title:'产品类型',align:'center',key:'type',fixed:'left',minWidth:100,key:'basics_title'},
-                {title:'产品名称',align:'center',key:'product_title',minWidth:100},
+                {title:'产品名称',align:'center',key:'product_title',minWidth:150},
                 {title:'产品型号',align:'center',key:'model',minWidth:100},
-                {title:'测量数据',align:'center',key:'measure',minWidth:100},
+                {title:'测量数据',align:'center',key:'measurement',minWidth:200},
                 {title:'位置',align:'center',key:'address',key:'position',minWidth:100},
                 {title:'图号',align:'center',key:'address',key:'url_number',minWidth:100
                     
                 },
-                {title:'图纸',align:'center',key:'address',key:'url',minWidth:100,
+                {title:'图纸',align:'center',key:'address',key:'url',minWidth:120,
                     render:(h,params)=>{
                         return h('a',{
                             attrs:{
@@ -52,14 +52,16 @@ export default {
                                 h('img',{
                                     attrs:{
                                         src:this.$store.state.ip+params.row.url,
-                                        style:'max-width:30px;max-height:30px;position:relative;top:3px;'
+                                        style:'max-width:30px;max-height:30px;position:relative;top:3px;',
                                     }
                                 })
                             ]
                         )
                     }
                 },
-                {title:'预估产品工期',align:'center',key:'predict_working',minWidth:100},
+                {title:'预估产品工期',align:'center',minWidth:150,
+                    render:(h,params)=>h('span',{},`${params.row.predict_working}小时`)
+                },
                 {title:'操作',align:'center',slot:'set',fixed:'right',minWidth:100},
             ],
             tableData:[],

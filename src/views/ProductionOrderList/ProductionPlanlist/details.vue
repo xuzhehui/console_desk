@@ -36,32 +36,32 @@ export default {
             order_no:null,
             logList:[{title:'系统单号',value:'10998765'}],
             list:[
-                {title:'按楼幢',name:'Select',multiple:true,filterable:true,serverName:'house',placeholder:'请选择楼幢',value:'',
+                {title:'楼幢',name:'Select',multiple:true,filterable:true,serverName:'house',placeholder:'请选择楼幢',value:'',
                     option:[
                         {label:1,value:1}
                     ]
                 },
-                {title:'按单元',name:'Select',multiple:true,filterable:true,serverName:'unit',placeholder:'请选择单元',value:'',
+                {title:'单元',name:'Select',multiple:true,filterable:true,serverName:'unit',placeholder:'请选择单元',value:'',
                     option:[
                         {label:1,value:1}
                     ]
                 },
-                {title:'按楼层',name:'Select',multiple:true,filterable:true,serverName:'layer',placeholder:'请选择楼层',value:'',
+                {title:'楼层',name:'Select',multiple:true,filterable:true,serverName:'layer',placeholder:'请选择楼层',value:'',
                     option:[
                         {label:1,value:1}
                     ]
                 },
-                {title:'按房间',name:'Select',multiple:true,filterable:true,serverName:'number_detail',placeholder:'请选择房间',value:'',
+                {title:'房间',name:'Select',multiple:true,filterable:true,serverName:'number_detail',placeholder:'请选择房间',value:'',
                     option:[
                         {label:1,value:1}
                     ]
                 },
-                {title:'按部件',name:'Select',multiple:true,filterable:true,value:'',serverName:'part',placeholder:'请选择部件',
+                {title:'部件',name:'Select',multiple:true,filterable:true,value:'',serverName:'part',placeholder:'请选择部件',
                     option:[
                         {label:1,value:1}
                     ]
                 },
-                {title:'按工序',name:'Select',multiple:true,filterable:true,value:'',serverName:'produce',placeholder:'请选择工序',
+                {title:'工序',name:'Select',multiple:true,filterable:true,value:'',serverName:'produce',placeholder:'请选择工序',
                     option:[]
                 },
                 {title:'产品',name:'Input',serverName:'title',placeholder:'请输入产品',value:'',},
@@ -84,7 +84,7 @@ export default {
                 {title:'工序分类',align:'center',key:'basics_procedure_title',minWidth:200},
                 {title:'工序',align:'center',key:'procedure_title',minWidth:200},
                 {title:'是否完成',align:'center',key:'is_complete',minWidth:200},
-                {title:'测量尺寸',align:'center',minWidth:200,key:'measure'},
+                {title:'测量尺寸',align:'center',minWidth:200,key:'measurement'},
                 {title:'单位',align:'center',minWidth:200,key:'company'},
                 {title:'芯片编号',align:'center',key:'chip',minWidth:200},
                 {title:'操作',align:'center',fixed:'right',width:'200',slot:'set'},

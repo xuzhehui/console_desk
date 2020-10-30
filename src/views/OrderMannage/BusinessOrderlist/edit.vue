@@ -90,7 +90,7 @@
                     </div>
                     <div class="header-right">
                         <Button v-if="index == info.house.length-1" type="success" style="margin-right:10px;" ghost shape="circle" @click="addHours(info.house)">添加</Button>
-                        <Button v-if="index<info.house.length-1" type="error" ghost shape="circle" @click="delItems(info.house,index)">删除</Button>
+                        <Button v-if="index<info.house.length-1" type="error" ghost shape="circle" @click="delItems(info.house,index,1)">删除</Button>
                     </div>
                 </div>
 
@@ -438,9 +438,10 @@ export default {
                 setTimeout(()=>v.parts = row.product[i].parts)
             })
         },
-        delItems(row,n){
+        delItems(row,n,flag){
             row.splice(n,1)
-            this.tapProduct()
+            flag == 1 ? this.tapProduct() : ''
+
         },
         addHours(row){
             row.push({
@@ -514,6 +515,7 @@ export default {
             this.Top[0].fixed='left'
             this.proxyObj.product_top = this.Top;
             this.proxyObj.product_top.map(v=>{v.width=200,v.align = 'center'})
+            // this.computedOrderDetail()
             this.$forceUpdate()
             this.tapProduct()
             this.showProduct = false;
@@ -538,29 +540,39 @@ export default {
                 })
             }
         },
+        // computedOrderDetail(){
+        //     let product_total_price = 0;
+        //     let predict_working = 0;
+        //     this.info.house.map(v=>{
+        //         product_total_price = v.product.reduce((pre,cur)=>pre+=parseInt(cur.price),product_total_price)
+        //         predict_working = v.product.reduce((pre,cur)=>pre+=parseInt(cur.limit_time),predict_working)
+        //     })
+        //     this.info.predict_price = product_total_price;
+        //     this.info.predict_working = predict_working
+        //     const time = new Date();
+        //     let requiredDays = Math.ceil(this.info.predict_working/24)
+        //     this.info.predict_time = this.func.replaceDate(time.setDate(time.getDate()+requiredDays)) 
+        // },
         tapProduct(){
             let str = [];
             let product_id = '';
             let measure = '';
-            let product_total_price = 0;
-            let predict_working = 0;
+            let house = ''
             this.info.house.map(v=>{
-                product_id = v.product.reduce((pre,cur,index)=>pre+=(cur.product_id+(index == v.product.length-1 ? '' : ',')),'')
-                measure = v.product.reduce((pre,cur,index)=>pre+=(cur.measure+(index == v.product.length-1 ? '' : ',')),'')
-                product_total_price = v.product.reduce((pre,cur)=>pre+=cur.price,product_total_price)
-                predict_working = v.product.reduce((pre,cur)=>pre+=parseInt(cur.limit_time),predict_working)
+                product_id += v.product.reduce((pre,cur,index)=>pre+=(cur.product_id+','),'')
+                measure += v.product.reduce((pre,cur,index)=>pre+=(cur.measure+','),'')
             })
-            this.info.predict_price = product_total_price;
-            this.info.predict_working = predict_working
-            const time = new Date();
-            let requiredDays = Math.ceil(this.info.predict_working/24)
-            this.info.predict_time = this.func.replaceDate(time.setDate(time.getDate()+requiredDays)) 
-
-            this.axios('/api/house_detail_material',{params:{product_id:product_id,measure:measure}}).then(res=>{
+            house = this.info.house.reduce((pre,cur)=>{
+                let num = cur.house.split(',').length*cur.unit.split(',').length*cur.layer.split(',').length*cur.number.split(',').length
+                let product_len = cur.product.length;
+                return pre+=`${num}-${product_len},`
+            },house)
+            
+            product_id = product_id.substr(0,product_id.length-1,'')
+            measure = measure.substr(0,measure.length-1,'')
+            house = house.substr(0,house.length-1,'')
+            this.axios('/api/house_detail_material',{params:{product_id:product_id,measure:measure,house:house}}).then(res=>{
                 if(res.code == 200){
-                    if(this.func.isType(res.data.data) != 'Array'){
-                        return this.$Message.error('Must be Array got Object at house_detail_material')
-                    }
                     this.originalData = res.data.data;
                     this.originalData.push({end:true,stock:res.data.num,title:'合计'})
                 }

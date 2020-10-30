@@ -383,6 +383,12 @@ const routerMap = [
         meta:{index:1},
         component: resolve => require(['@/views/RawMateria/index'], resolve)
     },
+    {
+        path:'/cms/templatemannage/index',  
+        name:'Chip',//模板管理
+        meta:{index:1},
+        component: resolve => require(['@/views/TemplateMannage/index'], resolve)
+    },
 
 ]
 

@@ -64,22 +64,22 @@ export default {
     data(){
         return {
             list:[
-                {title:'按楼幢',name:'Select',multiple:true,filterable:true,value:'',serverName:'house',placeholder:'请选择楼幢',
+                {title:'楼幢',name:'Select',multiple:true,filterable:true,value:'',serverName:'house',placeholder:'请选择楼幢',
                     option:[]
                 },
-                {title:'按单元',name:'Select',multiple:true,filterable:true,value:'',serverName:'unit',placeholder:'请选择单元',
+                {title:'单元',name:'Select',multiple:true,filterable:true,value:'',serverName:'unit',placeholder:'请选择单元',
                     option:[]
                 },
-                {title:'按楼层',name:'Select',multiple:true,filterable:true,value:'',serverName:'layer',placeholder:'请选择楼层',
+                {title:'楼层',name:'Select',multiple:true,filterable:true,value:'',serverName:'layer',placeholder:'请选择楼层',
                     option:[]
                 },
-                {title:'按房号',name:'Select',multiple:true,filterable:true,value:'',serverName:'number_detail',placeholder:'请选择房号',
+                {title:'房号',name:'Select',multiple:true,filterable:true,value:'',serverName:'number_detail',placeholder:'请选择房号',
                     option:[]
                 },
-                {title:'按部件',name:'Select',multiple:true,filterable:true,value:'',serverName:'part',placeholder:'请选择部件',
+                {title:'部件',name:'Select',multiple:true,filterable:true,value:'',serverName:'part',placeholder:'请选择部件',
                     option:[]
                 },
-                {title:'按工序',name:'Select',multiple:true,filterable:true,value:'',serverName:'produce',placeholder:'请选择工序',
+                {title:'工序',name:'Select',multiple:true,filterable:true,value:'',serverName:'produce',placeholder:'请选择工序',
                     option:[]
                 },
                 {title:'产品名称',name:'Input',value:'',serverName:'title',placeholder:'请输入产品名称'},

@@ -64,7 +64,7 @@ export default {
                     }
                 },
                 {title:'指导报价 (元)',align:'center',minWidth:200,key:'price'},
-                {title:'测量数据',align:'center',minWidth:200,key:'measure_data'},
+                {title:'测量数据',align:'center',minWidth:200,key:'measurement'},
                 {title:'图号',align:'center',minWidth:200,key:'url_number'},
                 {title:'图纸',align:'center',minWidth:200,key:'url'},
                 {title:'预估工期',align:'center',minWidth:200,key:'predict_time'},

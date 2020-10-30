@@ -29,16 +29,23 @@ export default {
             order_no:null,
             tableColums:[
                 {title:'部件',align:'center',key:'part_title',fixed:'left',width:'200'},
-                {title:'工艺路线',align:'center',key:'route_title',minWidth:100},
-                {title:'指导报价(元)',align:'center',key:'price',minWidth:100},
+                {title:'工艺路线',align:'center',key:'route_title',minWidth:150},
+                {title:'测量尺寸',align:'center',key:'measurement',minWidth:200},
+                {title:'指导报价(元)',align:'center',key:'price',minWidth:150,
+                    render:(h,params)=>h('span',{},
+                        `${params.row.price.toFixed(2)}元`
+                    )
+                },
                 {title:'单位',align:'center',key:'company',minWidth:100},
-                {title:'预估工期',align:'center',key:'predict_time',fixed:'right',width:'150'},
+                {title:'预估工期',align:'center',key:'predict_time',fixed:'right',minWidth:150,
+                    render:(h,params)=>h('span',{},`${params.row.predict_time}小时`)
+                },
             ],
             list:[
-                {title:'产品名称',name:'Input',value:'',serverName:'title',placeholder:'请输入产品名称'},
-                {title:'长',name:'Input',value:'',serverName:'long',placeholder:'请输入长度'},
-                {title:'宽',name:'Input',value:'',serverName:'wide',placeholder:'请输入宽度'},
-                {title:'高',name:'Input',value:'',serverName:'high',placeholder:'请输入高度'},
+                {title:'产品名称',name:'Input',disabled:true,value:'',serverName:'title',placeholder:'获取中...'},
+                {title:'长',name:'Input',disabled:true,value:'',serverName:'long',placeholder:'获取中...'},
+                {title:'宽',name:'Input',disabled:true,value:'',serverName:'wide',placeholder:'获取中...'},
+                {title:'高',name:'Input',disabled:true,value:'',serverName:'high',placeholder:'获取中...'},
             ],
             tableData:[],
             pageIndex:1,

@@ -6,10 +6,10 @@
         @init='init'
         :loading='loading' 
         :logList='logList'
-        @searchData='searchData' 
+        @searchData='init' 
         @selectTable='selectTable'
-        @changeSelected='changeSelected'
-        :showPage='false'
+        @changePage='changePage'
+        @changeSize='changeSize'
         :tableColums='tableColums'
         :tableData='tableData'
         :pageIndex='pageIndex'
@@ -51,17 +51,25 @@ export default {
             type:this.$route.query.type,
             logList:[],
             list:[
-                {title:'按楼幢',name:'Select',multiple:true,change:true,filterable:true,serverName:'house',placeholder:'请选择',value:'',
+                {title:'楼幢',name:'Select',multiple:true,filterable:true,serverName:'house',placeholder:'请选择',value:'',
                     option:[]
                 },
-                {title:'按单元',name:'Select',multiple:true,change:true,filterable:true,serverName:'unit',placeholder:'请选择',value:'',
+                {title:'单元',name:'Select',multiple:true,filterable:true,serverName:'unit',placeholder:'请选择',value:'',
                     option:[]
                 },
-                {title:'按楼层',name:'Select',multiple:true,change:true,filterable:true,serverName:'layer',placeholder:'请选择',value:'',
+                {title:'楼层',name:'Select',multiple:true,filterable:true,serverName:'layer',placeholder:'请选择',value:'',
                     option:[]
                 },
-                {title:'按房号',name:'Select',multiple:true,change:true,filterable:true,serverName:'number_detail',placeholder:'请选择',value:'',
+                {title:'房号',name:'Select',multiple:true,filterable:true,serverName:'number_detail',placeholder:'请选择',value:'',
                     option:[]
+                },
+                {title:'测量状态',name:'Select',serverName:'measurement_state',placeholder:'请选择',value:'',
+                    option:[
+                        {label:'未下测量',value:0},
+                        {label:'已下测量',value:1},
+                        {label:'测量中',value:2},
+                        {label:'测量完成',value:3},
+                    ]
                 },
             ],
             tableColums:[
@@ -71,15 +79,27 @@ export default {
                 {title:'单元',align:'center',key:'unit',minWidth:100},
                 {title:'楼层',align:'center',key:'layer',minWidth:100},
                 {title:'房间号',align:'center',key:'number_detail',minWidth:100},
-                {title:'单价',align:'center',key:'price',minWidth:100},
-                {title:'预估房间工期',align:'center',key:this.$route.query.type == 'business' ? 'time' : 'predict_time',minWidth:150},
+                {title:'单价',align:'center',key:'price',minWidth:150,
+                    render:(h,params)=>h('span',{},
+                        `${parseInt(params.row.price).toFixed(2)}元`
+                    )
+                },
+                {title:'测量状态',align:'center',key:'measurement_state',minWidth:100,
+                    render:(h,params)=>h('span',{},
+                        params.row.measurement_state == 2 ? '测量完成' : (params.row.measurement_state == 1 ? '已下测量' : (params.row.measurement_state == 2 ? '测量中' : '未下测量'))
+                    )
+                },
+                {title:'预估房间工期',align:'center',key:this.$route.query.type == 'business' ? 'time' : 'predict_time',minWidth:150,
+                    render:(h,params)=>h('span',{},this.$route.query.type == 'business' ? `${params.row.time}小时` : (`${params.row.predict_working}小时`||`${params.row.predict_time}小时`))
+                },
                 {title:'操作',align:'center',slot:'set',fixed:'right',minWidth:250},
             ],
 
             tableData:[],
             reset_Table:[],
             pageIndex:1,
-            total:100,
+            pageSize:10,
+            total:0,
             loading:false,
             room_list:[],
             units:[],
@@ -98,33 +118,27 @@ export default {
     },
     created(){
         this.axios('/api/user').then(res=>this.users = res.data.data)
+        this.querySelectColumns(this.$route.query)
     },
     methods:{
         init(row){
-            this.getData(this.$route.query)
-        },
-        searchData(row){
-            this.loading = true;
-            this.filterTable(row)
-            setTimeout(()=>{this.loading = false},500)
-        },
-        filterTable(row){
-            let resg = '';
-            if(row.house){
-                row.house.map((m,i)=>resg+=`${i==0? '(' : ''}v.house == ${m}${i==row.house.length-1&&(row.unit.length>0||row.layer.length>0||row.number_detail.length>0) ? ')&&' : (i==row.house.length-1 ? ')' : '||')}`)
+            if(this.func.isType(row.house) == 'Array'){
+                row.house = row.house.join(',')
             }
-            if(row.unit){
-                row.unit.map((m,i)=>resg+=`${i==0? '(' : ''}v.unit == ${m}${i==row.unit.length-1&&(row.layer.length>0||row.number_detail>0) ? ')&&' : (i==row.unit.length-1 ? ')' : '||')}`)
+            if(this.func.isType(row.unit) == 'Array'){
+                row.unit = row.unit.join(',')
             }
-            if(row.layer){
-                row.layer.map((m,i)=>resg+=`${i==0? '(' : ''}v.layer == ${m}${i==row.layer.length-1&&row.number_detail.length>0 ? ')&&' : (i==row.layer.length-1 ? ')' : '||')}`)
+            if(this.func.isType(row.layer) == 'Array'){
+                row.layer = row.layer.join(',')
             }
-            if(row.number_detail){
-                row.number_detail.map((m,i)=>resg+=`${i==0? '(' : ''}v.number_detail == ${'"'+m+'"'}${i==row.number_detail.length-1 ? ')' : '||'}`)
-            } 
-            this.tableData = this.reset_Table.filter(v=>{
-               return eval(resg)
-            })
+            if(this.func.isType(row.number_detail) == 'Array'){
+                row.number_detail = row.number_detail.join(',')
+            }
+            row.page_index = this.pageIndex;
+            row.page_size = this.pageSize;
+            Object.assign(row,this.$route.query)
+            this.proxyObj = row;
+            this.getData(row)
         },
         back(){
             this.$router.go(-1)
@@ -137,28 +151,7 @@ export default {
                 this.tableData = this.type == 'business' ? res.data.oil : res.data.list
                 this.reset_Table = JSON.parse(JSON.stringify(this.tableData))
                 this.logList = res.data.detail
-                let house_result = [],units_result = [],number_detail_result = [],layer_result = [];
-                this.tableData.map(v=>{
-                    number_detail_result.push(v.number_detail)
-                    house_result.push(v.house)
-                    units_result.push(v.unit)
-                    layer_result.push(v.layer)
-                })
-                
-                house_result = Array.from(new Set(house_result))
-                units_result = Array.from(new Set(units_result))
-                layer_result = Array.from(new Set(layer_result))
-                number_detail_result = Array.from(new Set(number_detail_result))
-                let houst_updata = [],unit_updata = [],number_detail_updata = [],layer_updata = [];
-                house_result.map(v=>houst_updata.push({label:v+'幢',value:v}))
-                units_result.map(v=>unit_updata.push({label:v+'单元',value:v}))
-                layer_result.map(v=>layer_updata.push({label:v+'层',value:v}))
-                number_detail_result.map(v=>number_detail_updata.push({label:v,value:v}))
-                this.list[0].option = houst_updata;
-                this.list[1].option = unit_updata;
-                this.list[2].option = layer_updata;
-                this.list[3].option = number_detail_updata;
-                
+                this.total = res.data.total;
             })
         },
         changeSelected(e){},
@@ -232,6 +225,28 @@ export default {
         },
         rejectApprove(){
             this.postData(2,this.selectIds)
+        },
+        changePage(e){
+            this.pageIndex = e;
+            this.proxyObj.page_index = this.pageIndex;
+            this.getData(this.proxyObj)
+        },
+        changeSize(e){
+            this.pageSize = e;
+            this.proxyObj.page_size = this.pageSize;
+            this.getData(this.proxyObj)
+        },
+        querySelectColumns(row){
+            this.axios('/api/order_industry_list_top',{params:row})
+            .then(res=>{
+                res.code == 200 ? (()=>{
+                    let result = res.data;
+                    this.list[0].option = result.house;
+                    this.list[1].option = result.unit;
+                    this.list[2].option = result.layer;
+                    this.list[3].option = result.number;
+                })() : ''
+            })
         }
         
     }
