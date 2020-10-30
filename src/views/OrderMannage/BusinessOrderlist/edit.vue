@@ -440,6 +440,7 @@ export default {
         },
         delItems(row,n){
             row.splice(n,1)
+            this.tapProduct()
         },
         addHours(row){
             row.push({
@@ -499,21 +500,7 @@ export default {
                 parts:[]
             })
         },
-        // changeSelect(e,item,row,n){
-        //     this.axios('/api/parts_routes_detail',{params:{product_id:item.product_id,route_id:e}}).then(res=>{
-        //         for(let i in res.data){
-        //             if(i!='route_id'){
-        //                 row[i] = res.data[i]
-        //                 item.product[n][i] = res.data[i]
-        //             }else{
-        //                 item.product[n]['route_id'] = e
-        //             } 
-        //         }
-        //         this.$forceUpdate()
-        //     })
-        // },
         saveParts(){
-            let _this = this;
             this.modalArray.map(v=>{//计算预估工期，指导报价
                 let t = 0,p = 0;
                 v.parts.map(k=>{t += k.maber_time ? k.maber_time : 0})
@@ -555,10 +542,20 @@ export default {
             let str = [];
             let product_id = '';
             let measure = '';
+            let product_total_price = 0;
+            let predict_working = 0;
             this.info.house.map(v=>{
                 product_id = v.product.reduce((pre,cur,index)=>pre+=(cur.product_id+(index == v.product.length-1 ? '' : ',')),'')
                 measure = v.product.reduce((pre,cur,index)=>pre+=(cur.measure+(index == v.product.length-1 ? '' : ',')),'')
+                product_total_price = v.product.reduce((pre,cur)=>pre+=cur.price,product_total_price)
+                predict_working = v.product.reduce((pre,cur)=>pre+=parseInt(cur.limit_time),predict_working)
             })
+            this.info.predict_price = product_total_price;
+            this.info.predict_working = predict_working
+            const time = new Date();
+            let requiredDays = Math.ceil(this.info.predict_working/24)
+            this.info.predict_time = this.func.replaceDate(time.setDate(time.getDate()+requiredDays)) 
+
             this.axios('/api/house_detail_material',{params:{product_id:product_id,measure:measure}}).then(res=>{
                 if(res.code == 200){
                     if(this.func.isType(res.data.data) != 'Array'){

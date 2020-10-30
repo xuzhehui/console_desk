@@ -148,6 +148,7 @@ export default {
             if(evt){
                 row.state = 1;
                 row.show_state = true;
+                
                 this.menu_ids.push(row.id)
                 if(row.sub){
                     row.sub.map(v=>{
