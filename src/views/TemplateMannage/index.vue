@@ -18,7 +18,7 @@
             </div>
             <template slot='set' slot-scope='{row}'>
                 <div style="display:flex;justify-content:space-around;">
-                    <svg @click="addTemplate(2)" style="font-size:20px;cursor:pointer;" color='#3764FF' class="icon icon-nav" aria-hidden="true">
+                    <svg @click="addTemplate(2,row)" style="font-size:20px;cursor:pointer;" color='#3764FF' class="icon icon-nav" aria-hidden="true">
                         <use xlink:href="#iconbianji"></use>
                     </svg>
                      <svg @click="delItems(row)" class="icon icon-nav" style="font-size:20px;cursor:pointer;" color='red' aria-hidden="true">
@@ -30,7 +30,7 @@
             <Modal :width="400" @on-visible-change='visibleChange' class-name="vertical-center-modal" :title='showType == 1 ? "新增模板" : "编辑模板"' v-model="showTemplate">
                 <Form :label-width="100">
                     <FormItem label='模板名称：'>
-                        <Input v-model="templateInfo.name" placeholder="请输入模板名称" />
+                        <Input v-model="templateInfo.title" placeholder="请输入模板名称" />
                     </FormItem>
                     <FormItem label='上传模板：'>
                         <Upload  :headers='headers' :on-success='uploadSuccess' :action="$store.state.ip+'/api/upload_template'">
@@ -74,10 +74,10 @@ export default {
             showModal:false,
             proxyObj:{},
             loading:false,
-            showTemplate:true,
+            showTemplate:false,
             showType:1,//1新增 2编辑
             templateInfo:{
-                name:'',
+                title:'',
                 url:'',
                 remark:''
             },
@@ -129,14 +129,15 @@ export default {
                 }
             })
         },
-        addTemplate(type){
+        addTemplate(type,row){
             this.showType = type;
+            type == 2 ? this.templateInfo = JSON.parse(JSON.stringify(row)) : ''
             this.templateInfo.type = this.showType == 1 ? 'add' : 'edit'
             this.showTemplate = true;
         },
         uploadSuccess(res){
-            if(res.data.url){
-                this.templateInfo.url = res.data.url;
+            if(res.code == 200){
+                this.templateInfo.url = this.$store.state.ip+res.data.url;
             }
         },
         uploadConfirm(){
@@ -152,7 +153,7 @@ export default {
         visibleChange(e){
             if(!e){
                 this.templateInfo = {
-                    name:'',
+                    title:'',
                     url:'',
                     remark:''
                 }

@@ -17,7 +17,7 @@
                 <Table  @on-selection-change='selectTable'  :width="tableWidth" class="overflow-table" border stripe :columns="tableColums" :data="tableData">
 
                     <div slot-scope="{index}" v-for="(item,_key) in tableTop" :key="_key" :slot="item.slot">
-                        <Input v-model="tableData[index][item.key]" :placeholder="'请输入'+item.title"></Input> 
+                        <Input v-model="tableData[index][item.key]" :placeholder="'请输入'+item.title"/>
                     </div>
 
                     <!-- <template slot-scope="{index}" slot="img_number">

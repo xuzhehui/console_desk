@@ -25,7 +25,22 @@
                     <Icon @click="goNotice" type="ios-notifications-outline" size="26"></Icon>
                 </Badge>
 
-                <Icon size='26' type="ios-cloud-download-outline" />
+                
+                <Dropdown trigger="custom" :visible="visible" placement="bottom-start" @on-clickoutside='clickoutside'>
+                    <Icon size='26' type="ios-cloud-download-outline" @click="visible = true" />
+                    <DropdownMenu slot="list" style="width:300px;">
+                        <div style="color:#333;padding-left:15px;">模板下载</div>
+                        <DropdownItem v-for="item of template_list" :key="item.id">
+                            <div class='drop-dowan-item'>
+                                <span>{{item.title}}</span>
+                                <Icon @click="downLoadTemlate(item)" size='20' type="md-download" />
+                            </div>
+                        </DropdownItem>
+                        <div style="text-align: right;margin:10px;border-top:1px solid #F4F4F4;padding-top:10px;">
+                            <Button style="text-align: right" type="primary" size='small' @click="visible = false">关闭</Button>
+                        </div>
+                    </DropdownMenu>
+                </Dropdown>
             </div>
         </div>
 
@@ -62,6 +77,8 @@
                 </FormItem>
             </Form>
         </Modal>
+
+        
     </div>
 </template>
 
@@ -93,6 +110,8 @@ export default {
                 avatar:'',
             },
             headers:{'Authorization':localStorage.getItem('token')},
+            visible:false,
+            template_list:[],
         }
     },
     created(){
@@ -102,6 +121,7 @@ export default {
         ...mapState(['userInfo'])
     },
     mounted(){
+        this.getTemplateDown_list()
     },
     methods:{
         ...mapMutations(['saveUser']),
@@ -159,6 +179,22 @@ export default {
             this.$router.push({
                 path:'/cms/notice/menote'
             })
+        },
+        clickoutside(e){
+            if(e){
+                this.visible = false;
+            }
+        },
+        getTemplateDown_list(){
+            this.axios('/api/template_list')
+            .then(res=>{
+                res.code == 200 ? (()=>{
+                    this.template_list = res.data.data;
+                })() : ''
+            })
+        },
+        downLoadTemlate(row){
+            location.href=row.url;
         }
     },
 }
@@ -175,4 +211,5 @@ export default {
 .upload-avatar{width:78px;height:78px;background:rgba(0,0,0,.1);display: flex;justify-content: center;align-items: center;border-radius:5px;
     img{max-width:78px;max-height:78px;border-radius:5px;}
 }
+.drop-dowan-item{display: flex;justify-content: space-between;align-items: center;}
 </style>

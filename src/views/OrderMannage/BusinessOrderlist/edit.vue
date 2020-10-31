@@ -591,7 +591,8 @@ export default {
             this.modalArray[this.currentIndex].url = url
         },
         getUsers(){
-            this.axios('/api/user',{params:{group_title:'业务员'}}).then(res=>this.users = res.data.data)
+            // this.axios('/api/user',{params:{group_title:'业务'}}).then(res=>this.users = res.data.data)
+            this.axios('/api/user').then(res=>this.users = res.data.data)
         },
         get_router_Date(row,father,idx,index){
             this.axios('/api/get_route_select',{params:{route_id:row.id}})
