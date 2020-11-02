@@ -389,6 +389,12 @@ const routerMap = [
         meta:{index:1},
         component: resolve => require(['@/views/TemplateMannage/index'], resolve)
     },
+    {
+        path:'/cms/logmannage/index',  
+        name:'LogMannage',//操作日志
+        meta:{index:1},
+        component: resolve => require(['@/views/LogMannage/index'], resolve)
+    },
 
 ]
 

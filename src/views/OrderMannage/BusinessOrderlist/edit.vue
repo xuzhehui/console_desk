@@ -96,24 +96,24 @@
 
                 <div class="form-item">
                     <Form inline :label-width="80">
-                        <FormItem label="楼幢(楼号)">
-                            <InputNumber clearable v-if='info.renovation_type == 2' style="width:186px" placeholder="请输入楼幢(楼号)" v-model="item.house"></InputNumber>
-                            <Input v-else  v-model="item.house" placeholder="请输入楼幢(楼号)"/>
+                        <FormItem label="楼幢(楼号)" v-if='info.renovation_type != 2'>
+                            <!-- <InputNumber clearable v-if='info.renovation_type == 2' style="width:186px" placeholder="请输入楼幢(楼号)" v-model="item.house"></InputNumber> -->
+                            <Input v-model="item.house" placeholder="请输入楼幢(楼号)"/>
                         </FormItem>
 
-                        <FormItem label="楼单元">
-                            <InputNumber clearable v-if='info.renovation_type == 2' style="width:186px" placeholder="请输入楼单元" v-model="item.unit"></InputNumber>
-                            <Input v-else v-model="item.unit" placeholder="请输入楼单元"/>
+                        <FormItem label="楼单元" v-if='info.renovation_type != 2'>
+                            <!-- <InputNumber clearable v-if='info.renovation_type == 2' style="width:186px" placeholder="请输入楼单元" v-model="item.unit"></InputNumber> -->
+                            <Input v-model="item.unit" placeholder="请输入楼单元"/>
                         </FormItem>
 
-                        <FormItem label="楼层">
-                            <InputNumber clearable v-if='info.renovation_type == 2' style="width:186px" placeholder="请输入楼层" v-model="item.layer"></InputNumber>
-                            <Input v-else v-model="item.layer" placeholder="请输入楼层"/>
+                        <FormItem label="楼层" v-if='info.renovation_type != 2'>
+                            <!-- <InputNumber clearable v-if='info.renovation_type == 2' style="width:186px" placeholder="请输入楼层" v-model="item.layer"></InputNumber> -->
+                            <Input v-model="item.layer" placeholder="请输入楼层"/>
                         </FormItem>
 
-                        <FormItem label="房间号">
-                            <InputNumber clearable v-if='info.renovation_type == 2 ' style="width:186px" placeholder="请输入房间号" v-model="item.number"></InputNumber>
-                            <Input v-else v-model="item.number" placeholder="请输入房间号"/>
+                        <FormItem label="房间号" v-if='info.renovation_type != 2'>
+                            <!-- <InputNumber clearable v-if='info.renovation_type == 2 ' style="width:186px" placeholder="请输入房间号" v-model="item.number"></InputNumber> -->
+                            <Input v-model="item.number" placeholder="请输入房间号"/>
                         </FormItem>
 
                         <FormItem label="选择产品">
@@ -155,8 +155,13 @@
         </div>       
         <!-- 选择产品弹层 -->
         <Modal :width="1200" class-name="vertical-center-modal" title="选择产品" v-model="showProduct">
+            <div class="nav-product">
+                <Tag type="border" v-for="(item,idx) in modalArray" :key="idx">
+                    <a :href="'#product_'+idx">{{item.title}}</a>
+                </Tag>
+            </div>
             <div class="modal-scroll">
-                <div class="modal-items" v-for="(item,idx) in modalArray" :key="idx">
+                <div class="modal-items" :id="'product_'+idx" v-for="(item,idx) in modalArray" :key="idx">
                     <Form inline :model="item" :rules="productRules" ref='productModel'>
                         <FormItem label="选择产品" prop='product_id'>
                             <Select filterable clearable label-in-value size='small' :disabled='productType == 3 ? true : false' v-model="item.product_id" @on-change='changeProduct($event,idx)' style="width:186px;">
@@ -515,7 +520,6 @@ export default {
             this.Top[0].fixed='left'
             this.proxyObj.product_top = this.Top;
             this.proxyObj.product_top.map(v=>{v.width=200,v.align = 'center'})
-            // this.computedOrderDetail()
             this.$forceUpdate()
             this.tapProduct()
             this.showProduct = false;
@@ -540,19 +544,6 @@ export default {
                 })
             }
         },
-        // computedOrderDetail(){
-        //     let product_total_price = 0;
-        //     let predict_working = 0;
-        //     this.info.house.map(v=>{
-        //         product_total_price = v.product.reduce((pre,cur)=>pre+=parseInt(cur.price),product_total_price)
-        //         predict_working = v.product.reduce((pre,cur)=>pre+=parseInt(cur.limit_time),predict_working)
-        //     })
-        //     this.info.predict_price = product_total_price;
-        //     this.info.predict_working = predict_working
-        //     const time = new Date();
-        //     let requiredDays = Math.ceil(this.info.predict_working/24)
-        //     this.info.predict_time = this.func.replaceDate(time.setDate(time.getDate()+requiredDays)) 
-        // },
         tapProduct(){
             let str = [];
             let product_id = '';
@@ -563,7 +554,7 @@ export default {
                 measure += v.product.reduce((pre,cur,index)=>pre+=(cur.measure+','),'')
             })
             house = this.info.house.reduce((pre,cur)=>{
-                let num = cur.house.split(',').length*cur.unit.split(',').length*cur.layer.split(',').length*cur.number.split(',').length
+                let num = (cur.house.toString().split(',').length||1)*(cur.unit.toString().split(',').length||1)*(cur.layer.toString().split(',').length||1)*(cur.number.toString().split(',').length||1)
                 let product_len = cur.product.length;
                 return pre+=`${num}-${product_len},`
             },house)
@@ -591,8 +582,7 @@ export default {
             this.modalArray[this.currentIndex].url = url
         },
         getUsers(){
-            // this.axios('/api/user',{params:{group_title:'业务'}}).then(res=>this.users = res.data.data)
-            this.axios('/api/user').then(res=>this.users = res.data.data)
+            this.axios('/api/user',{params:{group_title:'业务'}}).then(res=>this.users = res.data.data)
         },
         get_router_Date(row,father,idx,index){
             this.axios('/api/get_route_select',{params:{route_id:row.id}})
@@ -715,7 +705,7 @@ export default {
     .form-item{padding:20px;}
 }
 .modal-scroll{height:600px;overflow: scroll;}
-.modal-items{border-radius:5px;border:1px solid #DEDEDE;padding:0px 10px;margin-bottom:10px;}
+.modal-items{border-radius:5px;border:1px solid #DEDEDE;padding:0px 10px;margin-bottom:40px;}
 .modal-footer-button{display: flex;justify-content:flex-end;padding:10px 0;}
 .items-table{width:100%;overflow-x: scroll;}
 /deep/ .ivu-table-wrapper{overflow:visible;color:red;}//穿透iview
@@ -727,4 +717,5 @@ export default {
         .radio-us-foc{color:#3764FF;background:#fff;border:1px solid #3764FF;}
     }
 }
+.nav-product{width:100%;height:50px;display: flex;align-items: center;}
 </style>

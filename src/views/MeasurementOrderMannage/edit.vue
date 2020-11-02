@@ -55,8 +55,10 @@ export default {
                 {title:'图号',align:'center',minWidth:130,key:'img_number',},
                 {title:'图纸',align:'center',slot:'up-load',minWidth:130},
                 {title:'位置',align:'center',minWidth:200,key:'position'},
-                {title:'预估产品工期',align:'center',minWidth:200,key:'predict_working'},
-                {title:'测量数据',align:'center',fixed:'right',width:'200',key:'model'},
+                {title:'预估产品工期',align:'center',minWidth:200,key:'predict_working',
+                    render:(h,params)=>h('span',{},`${params.row.predict_working}小时`)
+                },
+                {title:'测量数据',align:'center',fixed:'right',width:'200',key:'measurement'},
             ],
             tableData:[],
             pageIndex:1,
@@ -119,6 +121,7 @@ export default {
             this.axios.post('/api/orders_save_measure',{data:postInfo}).then(res=>{
                 if(res.code == 200){
                     this.$Message.success(res.msg);
+                    this.getData(this.oa_order_no,this.house_id)
                 }
             })
         },

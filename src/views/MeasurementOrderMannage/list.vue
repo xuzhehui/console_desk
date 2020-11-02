@@ -49,7 +49,9 @@ export default {
             ],
             tableColums:[
                 {title:'订单编号',align:'center',key:'order_no',fixed:'left',width:'200'},
-                {title:'测量单号',align:'center',key:'oa_order_no',minWidth:200},
+                {title:'测量单号',align:'center',key:'oa_order_no',minWidth:200,
+                    render:(h,params)=>h('span',{},params.row.oa_order_no||params.row.order_no)
+                },
                 {title:'小区',align:'center',key:'residential_name',minWidth:200},
                 {title:'地址',align:'center',key:'address',minWidth:200},
                 {title:'客户姓名',align:'center',key:'client_name',minWidth:100},
@@ -118,11 +120,13 @@ export default {
             this.getData(this.proxyObj)
         },
         goPage(n,row){
-            let oa_order_no = row ? row.oa_order_no : '';
+            const order_no = row ? row.id: '';
+            const id = row ? row.id : ''
             this.$router.push({
                 path:'/cms/ordermannage/businessorderlist/decorationlist',
                 query:{
-                    oa_order_no:oa_order_no,
+                    id:id,
+                    order_no:row.order_no,
                     type:'measure',
                 }
             })
@@ -131,7 +135,7 @@ export default {
             this.$router.push({
                 path:'/cms/approval/examine',
                 query:{
-                    oa_order_no:row.oa_order_no||'123123'
+                    order_no:row.oa_order_no||row.order_no
                 }
             })
         },
