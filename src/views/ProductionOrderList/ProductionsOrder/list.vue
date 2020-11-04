@@ -63,7 +63,9 @@ export default {
             ],
             tableColums:[
                 {title:'订单编号',align:'center',key:'order_no',fixed:'left',width:'200'},
-                {title:'生产订单编号',align:'center',key:'oa_order_no',minWidth:200},
+                {title:'生产订单编号',align:'center',key:'oa_order_no',minWidth:200,
+                    render:(h,params)=>h('span',{},params.row.oa_order_no||params.row.order_no)
+                },
                 {title:'小区',align:'center',key:'residential_name',minWidth:200},
                 {title:'地址',align:'center',key:'address',minWidth:200},
                 {title:'客户姓名',align:'center',key:'client_name',minWidth:200},

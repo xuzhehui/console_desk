@@ -88,7 +88,7 @@
                         <Badge :count="index+1" type="primary"></Badge>
                         <span>户型{{index+1}}</span>
                     </div>
-                    <div class="header-right">
+                    <div class="header-right" v-if="info.renovation_type == 1">
                         <Button v-if="index == info.house.length-1" type="success" style="margin-right:10px;" ghost shape="circle" @click="addHours(info.house)">添加</Button>
                         <Button v-if="index<info.house.length-1" type="error" ghost shape="circle" @click="delItems(info.house,index,1)">删除</Button>
                     </div>
@@ -97,28 +97,24 @@
                 <div class="form-item">
                     <Form inline :label-width="80">
                         <FormItem label="楼幢(楼号)" v-if='info.renovation_type != 2'>
-                            <!-- <InputNumber clearable v-if='info.renovation_type == 2' style="width:186px" placeholder="请输入楼幢(楼号)" v-model="item.house"></InputNumber> -->
                             <Input v-model="item.house" placeholder="请输入楼幢(楼号)"/>
                         </FormItem>
 
                         <FormItem label="楼单元" v-if='info.renovation_type != 2'>
-                            <!-- <InputNumber clearable v-if='info.renovation_type == 2' style="width:186px" placeholder="请输入楼单元" v-model="item.unit"></InputNumber> -->
                             <Input v-model="item.unit" placeholder="请输入楼单元"/>
                         </FormItem>
 
                         <FormItem label="楼层" v-if='info.renovation_type != 2'>
-                            <!-- <InputNumber clearable v-if='info.renovation_type == 2' style="width:186px" placeholder="请输入楼层" v-model="item.layer"></InputNumber> -->
                             <Input v-model="item.layer" placeholder="请输入楼层"/>
                         </FormItem>
 
                         <FormItem label="房间号" v-if='info.renovation_type != 2'>
-                            <!-- <InputNumber clearable v-if='info.renovation_type == 2 ' style="width:186px" placeholder="请输入房间号" v-model="item.number"></InputNumber> -->
                             <Input v-model="item.number" placeholder="请输入房间号"/>
                         </FormItem>
 
                         <FormItem label="选择产品">
                             <Button @click="selectProducts(1,item)" type="primary" style="margin-right:10px;" ghost>选择产品</Button>
-                            <span>(已选{{item.product.length||0}}，点击按钮可再次编辑)</span>
+                            <!-- <span>(已选{{item.product.length||0}}，点击按钮可再次编辑)</span> -->
                         </FormItem>
                     </Form>
                 </div>
@@ -157,7 +153,7 @@
         <Modal :width="1200" class-name="vertical-center-modal" title="选择产品" v-model="showProduct">
             <div class="nav-product">
                 <Tag type="border" v-for="(item,idx) in modalArray" :key="idx">
-                    <a :href="'#product_'+idx">{{item.title}}</a>
+                    <a :href="'#product_'+idx" @click="awaitFunc">{{item.title}}</a>
                 </Tag>
             </div>
             <div class="modal-scroll">
@@ -384,6 +380,22 @@ export default {
             },
         }
     },
+
+    watch:{
+        'info.renovation_type':{
+            handler(e){
+                if(e == 2){
+                    console.log(this)
+                    this.info.house.map(v=>{
+                        v.house = '1';
+                        v.layer = '1';
+                        v.unit = '1';
+                        v.number = '1';
+                    })
+                }
+            }
+        }
+    },
     
     created(e){
         this.tableWidth = window.innerWidth-300;
@@ -554,7 +566,7 @@ export default {
                 measure += v.product.reduce((pre,cur,index)=>pre+=(cur.measure+','),'')
             })
             house = this.info.house.reduce((pre,cur)=>{
-                let num = (cur.house.toString().split(',').length||1)*(cur.unit.toString().split(',').length||1)*(cur.layer.toString().split(',').length||1)*(cur.number.toString().split(',').length||1)
+                let num = (String(cur.house).split(',').length||1)*(String(cur.unit).split(',').length||1)*(String(cur.layer).split(',').length||1)*(String(cur.number).split(',').length||1)
                 let product_len = cur.product.length;
                 return pre+=`${num}-${product_len},`
             },house)
@@ -582,7 +594,7 @@ export default {
             this.modalArray[this.currentIndex].url = url
         },
         getUsers(){
-            this.axios('/api/user',{params:{group_title:'业务'}}).then(res=>this.users = res.data.data)
+            this.axios('/api/user',{params:{type:1}}).then(res=>this.users = res.data.data)
         },
         get_router_Date(row,father,idx,index){
             this.axios('/api/get_route_select',{params:{route_id:row.id}})
@@ -689,6 +701,11 @@ export default {
             row.price = parseInt(row.price)+parseInt(value.tag||'0')
             this.modalArray[idx] = row;
             this.$forceUpdate()
+        },
+        awaitFunc(){
+            setTimeout(()=>{
+                this.back()
+            },100)
         }
                                     
     }

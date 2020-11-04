@@ -7,10 +7,15 @@
         <div class="page-edit">
             <Form inline style="margin:10px 0;" ref='Info' :model="info" :rules='rules'>
                 <FormItem label="ID" :label-width="20">
-                    <Input v-model="info.id" disabled placeholder="自动生成"></Input>
+                    <Input style="width:130px;" v-model="info.id" disabled placeholder="自动生成"/>
                 </FormItem>
                 <FormItem label="角色分类名称" :label-width="110" prop='group_title'>
-                    <Input  v-model="info.group_title" placeholder="请输入角色分类名称"></Input>
+                    <Input style="width:130px;"  v-model="info.group_title" placeholder="请输入角色分类名"/>
+                </FormItem>
+                <FormItem label="分类名称" :label-width="80" prop='type'>
+                    <Select style="width:130px;" v-model="info.type">
+                        <Option v-for="item of ruleTypes" :key="item.type" :label="item.name" :value="item.type"></Option>
+                    </Select>
                 </FormItem>
             </Form>
 
@@ -51,6 +56,7 @@ export default {
             info:{
                 id:null,
                 group_title:null,
+                type:'',
             },
             id:null,
             group_id:null,
@@ -59,19 +65,28 @@ export default {
             menu_ids:[],
             group_title:'',
             rules:{
-                group_title:[{required: true, message: ' ', trigger: 'blur'}]
-            }
+                group_title:[{required: true, message: ' ', trigger: 'blur'}],
+                type:[{required: true, message: ' '}]
+            },
+            ruleTypes:[],
         }
     },
     mounted(){
         this.type = this.$route.query.type;
         this.info.id = this.$route.query.id||'';
         this.info.group_title = this.$route.query.group_title||'';
+        this.info.type = this.$route.query.group_type*1||'';
         if(this.info.id){
             this.getData({group_id:this.info.id})
         }else{
             this.getData()
         }
+        this.axios('/api/get_identity')
+        .then(res=>{
+            if(res.code == 200){
+                this.ruleTypes = res.data;
+            }
+        })
         
         
     },
@@ -84,13 +99,15 @@ export default {
             if(this.type == 1){
                 postInfo = {
                     op:'add',
-                    group_title:this.info.group_title
+                    group_title:this.info.group_title,
+                    type:this.info.type
                 }
             }else{
                 postInfo = {
                     op:'edit',
                     id:this.info.id,
-                    group_title:this.info.group_title
+                    group_title:this.info.group_title,
+                    type:this.info.type
                 }
             }
             this.axios.post('/api/group',postInfo).then(res=>{

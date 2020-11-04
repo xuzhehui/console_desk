@@ -90,14 +90,16 @@ export default {
             })
         },
         goPage(n,row){
-            let id = row ? row.id : '';
-            let group_title = row ? row.group_title : ''
+            const id = row ? row.id : '';
+            const group_title = row ? row.group_title : ''
+            const group_type = row ? row.type : ''
             this.$router.push({
                 path:'/cms/personnelmanagement/role/edit',
                 query:{
                     type:n,
                     id:id,
                     group_title:group_title,
+                    group_type:group_type
                 }
             })
         }
