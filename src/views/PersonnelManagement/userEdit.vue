@@ -38,6 +38,7 @@
                     <Checkbox label="2">运输</Checkbox>
                     <Checkbox label="3">安装</Checkbox>
                     <Checkbox label="4">包装</Checkbox>
+                    <Checkbox label="5">芯片添加</Checkbox>
                 </CheckboxGroup>
             </FormItem>
         </Form>

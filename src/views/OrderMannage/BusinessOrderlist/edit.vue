@@ -153,7 +153,7 @@
         <Modal :width="1200" class-name="vertical-center-modal" title="选择产品" v-model="showProduct">
             <div class="nav-product">
                 <Tag type="border" v-for="(item,idx) in modalArray" :key="idx">
-                    <a :href="'#product_'+idx" @click="awaitFunc">{{item.title}}</a>
+                    <a @click="jump('#product_'+idx)" >{{item.title}}</a>
                 </Tag>
             </div>
             <div class="modal-scroll">
@@ -702,10 +702,11 @@ export default {
             this.modalArray[idx] = row;
             this.$forceUpdate()
         },
-        awaitFunc(){
-            setTimeout(()=>{
-                this.back()
-            },100)
+        jump(querry){
+            document.querySelector(querry).scrollIntoView({
+                behavior: "smooth", // 平滑过渡
+                block: "start" // 上边框与视窗顶部平齐。默认值
+            })
         }
                                     
     }

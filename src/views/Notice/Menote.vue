@@ -84,7 +84,6 @@ export default {
         init(row){
             row.page_index = this.pageIndex;
             row.page_size = this.pageSize;
-            row.month = this.$route.query.title;
             this.proxyObj = row;
             this.getData(row)
         },
