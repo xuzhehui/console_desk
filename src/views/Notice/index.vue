@@ -29,7 +29,7 @@
                 </div>
             </template>
 
-            <Modal class-name='vertical-center-modal' :title='showType == 1 ? "新增内容" : "编辑内容"' v-model="show" @on-visible-change='changeModal'>
+            <Modal :width="400" class-name='vertical-center-modal' :title='showType == 1 ? "新增内容" : "编辑内容"' v-model="show" @on-visible-change='changeModal'>
                 <Form :label-width="80" ref='forms' :model="postInfo" :rules='rules'>
                     <FormItem label='通知分类' prop='type'>
                         <!-- <Input v-model="postInfo.title" placeholder="请输入通知分类"/> -->
@@ -43,6 +43,12 @@
 
                     <FormItem label='通知内容' prop='content'>
                         <Input v-model="postInfo.content" type="textarea" :autosize="true" placeholder="请输入内容" />
+                    </FormItem>
+
+                    <FormItem label='通知人员' prop='user_id'>
+                       <Select v-model="postInfo.user_id">
+                           <Option v-for='item of users' :key="item.id" :value="item.id" :label="item.nickname"></Option>
+                       </Select>
                     </FormItem>
                 </Form>
 
@@ -68,6 +74,7 @@ export default {
                 {title:'通知内容',align:'center',key:'content',minWidth:100},
                 {title:'操作',align:'center',slot:'set',width:'150'},
             ],
+            users:[],
             tableData:[{id:1}],
             pageIndex:1,
             pageSize:10,
@@ -78,13 +85,18 @@ export default {
             postInfo:{
                 type:'',
                 content:'',
+                user_id:''
             },
             rules:{
                 type:[{required: true,message:'请选择通知分类'}],
-                content:[{required: true,message:'请输入通知内容',trigger:'blur'}]
+                content:[{required: true,message:'请输入通知内容',trigger:'blur'}],
+                user_id:[{required: true,message:'请选择通知人员'}]
             },
             showType:1,
         }
+    },
+    mounted() {
+        this.axios('/api/user').then(res=>this.users = res.data.data)
     },
     methods:{
         init(row){
@@ -140,6 +152,7 @@ export default {
             if(row){
                 this.postInfo.type = row.type;
                 this.postInfo.content = row.content;
+                this.postInfo.user_id = row.user_id
                 this.postInfo.op = 'edit'
             }
             this.postInfo.op = 'add'

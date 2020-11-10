@@ -8,7 +8,6 @@
           </div>
           <div>
               <div class="info-text">
-                  <!-- 汇聚全球智慧<br/>构筑万物互联 -->
                   <img src="../assets/imgs/home-text.png" alt="">
               </div>
 

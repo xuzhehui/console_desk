@@ -38,18 +38,21 @@ instance.interceptors.response.use(res => {
         }else{//若code 非 200
             if(res.data.code == 401){
               localStorage.removeItem('token')
-              location.reload()
+              return location.reload()
             }
-            Vue.prototype.$Message.error(res.data.msg||'数据格式不统一')
-            return res.data
+            Vue.prototype.$Message.error(res.data.msg||'未知错误')
+            return res
         }
       }else{
-          
-          return Vue.prototype.$Message.error(res.data.msg||'请求超时')
+          return Vue.prototype.$Message.error('请求超时') 
       }
     },
     // 对于错误响应的处理
-    err => {Vue.prototype.$Notice.error({title:'请求失败',desc:err});Vue.prototype.$loading.hide();}
+    err => {
+      Vue.prototype.$Notice.error({title:'请求失败',desc:err});
+      Vue.prototype.$loading.hide();
+      return err;
+    }
 );
 
 export default instance

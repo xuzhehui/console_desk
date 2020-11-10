@@ -19,18 +19,10 @@
                     <div slot-scope="{index}" v-for="(item,_key) in tableTop" :key="_key" :slot="item.slot">
                         <Input v-model="tableData[index][item.key]" :placeholder="'请输入'+item.title"/>
                     </div>
-
-                    <!-- <template slot-scope="{index}" slot="img_number">
-                        <Input :disabled='type == 3 ? true : false' v-model="tableData[index].url_number" placeholder="请输入图号"/>
-                    </template> -->
                     <template slot-scope="{row}" slot="up-load">
                         <div>
                             <img style="max-width:50px;max-height:50px;position:relative;top:3px" v-if="row.url" :src="$store.state.ip+row.url" alt="">
                             <a v-if="!row.url">暂无图片</a>
-                            <!-- <Upload :disabled='type == 3 ? true : false' :headers="headers" :on-success='successUpload' :show-upload-list='false' :action="$store.state.ip+'/api/upload_pic'">
-                                <a v-if="!row.url" @click="mapRow(index)">暂无图片</a>
-                                <img @click="mapRow(index)" style="max-width:50px;max-height:50px;position:relative;top:3px" v-if="row.url" :src="$store.state.ip+row.url" alt="">
-                            </Upload> -->
                         </div>
                     </template>
                 </Table>

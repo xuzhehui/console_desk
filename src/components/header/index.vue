@@ -21,7 +21,7 @@
 
                 <Divider type="vertical" style="margin-right:20px;" />
 
-                <Badge  style="margin-right:20px;cursor:pointer" :count="88">
+                <Badge  style="margin-right:20px;cursor:pointer" :count="noticeNum">
                     <Icon @click="goNotice" type="ios-notifications-outline" size="26"></Icon>
                 </Badge>
 
@@ -83,7 +83,7 @@
 </template>
 
 <script>
-import { mapState,mapMutations } from 'vuex'
+import { mapState,mapMutations,mapActions } from 'vuex'
 export default {
     data(){
         return {
@@ -118,13 +118,15 @@ export default {
         this.saveUser()
     },
     computed:{
-        ...mapState(['userInfo'])
+        ...mapState(['userInfo','noticeNum'])
     },
     mounted(){
         this.getTemplateDown_list()
+        this.update_notice()
     },
     methods:{
         ...mapMutations(['saveUser']),
+        ...mapActions(['update_notice']),
         loginOut(){
             this.axios.post('/api/login_out').then(res=>{
                 if(res.code == 200){

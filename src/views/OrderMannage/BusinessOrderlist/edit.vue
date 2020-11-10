@@ -385,7 +385,6 @@ export default {
         'info.renovation_type':{
             handler(e){
                 if(e == 2){
-                    console.log(this)
                     this.info.house.map(v=>{
                         v.house = '1';
                         v.layer = '1';
@@ -481,6 +480,12 @@ export default {
                 modalData.unit = res.data.detail.unit||''
                 modalData.model = res.data.detail.model || ''
                 modalData.price = modalData.price ? modalData.price : 0;
+                res.data.outh.map(v=>{
+                    if(v.key == 'img'){
+                        console.log(v)
+                        modalData.img = v.value
+                    }
+                })
                 if(res.code == 200){
                     if(!ext){
                         if(row){modalData.title = row.label||''}
@@ -496,6 +501,13 @@ export default {
                         modalData.parts = res.data.intermediate.parts  
                     }
                     this.Top = res.data.product_top;
+                    const index = this.Top.findIndex(v=>v.key == 'img')
+                    this.Top[index] = {...this.Top[index],render:(h,params)=>h('img',{
+                        attrs:{
+                            src:_this.$store.state.ip+params.row.img||'',
+                            style:'max-width:30px;max-height:30px;'
+                        }
+                    },)}
                     this.$forceUpdate()
                 }
             })
@@ -548,13 +560,12 @@ export default {
             })
         },
         handleProductSubmit(name){
+            const result = []
             for(let i = 0;i<this.$refs[name].length;i++){
-                this.$refs[name][i].validate((valid) => {
-                    if(valid){
-                        this.saveParts()  
-                    }
-                })
+                this.$refs[name][i].validate((valid) => result.push(valid))
             }
+            const flag = result.every(row=>row)
+            if(flag){this.saveParts()}
         },
         tapProduct(){
             let str = [];

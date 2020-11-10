@@ -21,6 +21,9 @@ const mutations  = {
     clearPageEditData(state){
         state.pageEditData = []
     },
+    updataNoticeNum(state,payload){
+        state.noticeNum = payload
+    }
 }
 
 export default mutations

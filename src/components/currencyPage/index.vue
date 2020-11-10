@@ -93,13 +93,15 @@ export default {
     created(){},
     mounted(){
         this.$nextTick(()=>{
-            this.tableWidth = window.innerWidth-300;
-            this.tableHeight = window.innerHeight - this.$refs.table.$el.offsetTop - 320
-            window.addEventListener('resize',(e)=>{
-                this.tableWidth = e.target.innerWidth - 300;
-                // this.tableHeight = e.target.innerHeight - this.$refs.table.$el.offsetTop - 320;
-                this.$forceUpdate()
-            })
+            if(this.showTable){
+                this.tableWidth = window.innerWidth-300;
+                this.tableHeight = window.innerHeight - this.$refs.table.$el.offsetTop - 320
+                window.addEventListener('resize',(e)=>{
+                    this.tableWidth = e.target.innerWidth - 300;
+                    // this.tableHeight = e.target.innerHeight - this.$refs.table.$el.offsetTop - 320;
+                    this.$forceUpdate()
+                })
+            } 
         })
     },
     destroyed(){

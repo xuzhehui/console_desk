@@ -74,7 +74,7 @@ export default {
             ],
             tableColums:[
                 {type:'selection',align:'center',fixed:'left',minWidth:100},
-                {title:'小区',align:'center',key:'residential_name',minWidth:100},
+                {title:'小区',align:'center',key:'residential_name',minWidth:200},
                 {title:'楼幢',align:'center',key:'house',minWidth:100},
                 {title:'单元',align:'center',key:'unit',minWidth:100},
                 {title:'楼层',align:'center',key:'layer',minWidth:100},

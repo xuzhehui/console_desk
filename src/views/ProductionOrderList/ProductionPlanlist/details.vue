@@ -87,7 +87,7 @@ export default {
                 {title:'测量尺寸',align:'center',minWidth:200,key:'measurement'},
                 {title:'单位',align:'center',minWidth:200,key:'company'},
                 {title:'芯片编号',align:'center',key:'chip',minWidth:200},
-                {title:'操作',align:'center',fixed:'right',width:'200',slot:'set'},
+                {title:'操作',align:'center',fixed:'right',width:'120',slot:'set'},
             ],
             tableData:[],
             pageIndex:1,

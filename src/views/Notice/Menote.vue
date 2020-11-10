@@ -31,7 +31,7 @@
                             </span>
                         </div>
                         
-                        <span :style="item.type == 1||item.type == 2 ? 'color:#333333;' : '#fff'"  class="header-time">2020/01/23  19:09:23</span>
+                        <span :style="item.type == 1||item.type == 2 ? 'color:#333333;' : '#fff'"  class="header-time">{{func.replaceDate(item.crt_time*1)}}</span>
                     </div>
                     <div class="item-footer">
                         <div class="ready">
@@ -43,7 +43,7 @@
                         <div class="item-outher">
                             
                             <div class="item-set">
-                                <a>查看 ></a>
+                                <a @click="goDetails(item)">查看</a>
                             </div>
                         </div>
                     </div>
@@ -54,6 +54,7 @@
 </template>
 
 <script>
+import {mapActions} from 'vuex'
 export default {
     data(){
         return {
@@ -81,6 +82,7 @@ export default {
     },
     
     methods:{
+        ...mapActions(['update_notice']),
         init(row){
             row.page_index = this.pageIndex;
             row.page_size = this.pageSize;
@@ -110,6 +112,19 @@ export default {
                 path:'/cms/finance/salary',
                 query:{
                    title:row.name,
+                }
+            })
+        },
+        goDetails(row){
+            this.axios.post('/api/notice_confirm',{id:row.id}).then(res=>{
+                if(res.code == 200){
+                    this.update_notice()
+                    if(row.type == 1 || row.type == 2){
+                        this.$router.push({
+                            path:row.url
+                        })
+                    } 
+                    this.getData(this.proxyObj)
                 }
             })
         },

@@ -36,10 +36,12 @@ export default {
             ],
             tableColums:[
                 {title:'编号',align:'center',key:'id',width:'100'},
-                {title:'操作者',align:'center',key:'nickname'},
-                {title:'操作日期',align:'center',key:'date',},
+                {title:'操作者',align:'center',key:'user'},
+                {title:'操作日期',align:'center',key:'date',
+                    render:(h,params)=>h('span',{},this.func.replaceDate(params.row.crt_time))
+                },
                 {title:'IP地址',align:'center',key:'ip',},
-                {title:'操作记录',align:'center',key:'record'},
+                {title:'操作记录',align:'center',key:'info'},
             ],
             tableData:[],
             pageIndex:1,

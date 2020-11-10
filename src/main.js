@@ -11,7 +11,8 @@ import IconFont from './assets/iconfont/iconfont.js'
 import echarts from 'echarts'
 
 import Print from 'vue-print-nb'
-Vue.use(Print);
+
+Vue.use(Print)
 
 Vue.use(ViewUI)
 
