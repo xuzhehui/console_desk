@@ -166,8 +166,9 @@ export default {
                     res.data.produce_users = []
                 }
                 this.info = res.data;
-                this.type == 1 ? '' : this.info.password = '******'
-                
+                this.info.is_mobile = this.info.is_mobile == 1 ? true : false
+                this.info.power = this.info.power ? this.info.power.split(',') : []
+                this.type == 1 ? '' : this.info.password = '******' 
             })
         },
         postData(){

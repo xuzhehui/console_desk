@@ -20,7 +20,8 @@
                 <Button @click="confirmSuccess(selects)" type="success" ghost style="margin-right:10px;" >批量完成</Button>
             </div>
             <template slot-scope="{ row }" slot="set">
-                <a class="map-margin" @click="confirmSuccess(row)">完成</a>
+                <a class="map-margin" v-if='row.sub_state!=3' @click="confirmSuccess(row)">完成</a>
+                <span v-else>已完成</span>
             </template>
 
             <!-- <Modal class-name="vertical-center-modal" width='400' title='确认出库' v-model="showStock" @on-ok="confirmOutStock">

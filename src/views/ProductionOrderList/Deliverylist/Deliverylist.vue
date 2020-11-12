@@ -12,14 +12,10 @@
         :tableData='tableData'
         :pageIndex='pageIndex'
         :total='total'
-        >
-            <div slot='navButton'>
-                
-            </div>
-            
+        >   
             <template slot='set' slot-scope='{row}'>
-                <a @click="confirmOutStock(row,1)"  v-if="!row.transport_no" class="map-margin">确认出库</a>
-                <a @click="confirmOutStock(row,2)" v-if="row.transport_no" class="map-margin">确认运输</a>
+                <a @click="confirmOutStock(row,1)"  v-if="row.state == 0" class="map-margin">确认出库</a>
+                <a @click="confirmOutStock(row,2)" v-if="row.state == 1" class="map-margin">确认运输</a>
                 <a class="map-margin" @click="goPage(row)">详情</a>
             </template>
         </FullPage>

@@ -236,6 +236,9 @@ export default {
             headers:{'Authorization':localStorage.getItem('token')},
         }
     },
+    created(){
+        this.changeProduct(this.$route.query.back_id)
+    },
     mounted(){
         this.getPartsData(this.$route.query.back_id)
         this.type = this.$route.query.type||1;
@@ -244,8 +247,6 @@ export default {
         if(this.id){
             this.getData(this.id)
         }
-        this.getProductFiledData();
-        this.changeProduct(this.$route.query.back_id)
         this.getLocks()
     },
     components:{

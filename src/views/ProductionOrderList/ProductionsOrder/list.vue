@@ -132,7 +132,6 @@ export default {
                 this.tableData = res.data.data;
                 this.total = res.data.total;
             })
-            this.tableData.push({order_no:'123'})
         },
         goDetial(row){
             this.$router.push({

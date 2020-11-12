@@ -34,12 +34,10 @@ const router = new VueRoute({
     mode: 'hash',
     linkActiveClass: 'active'
 })
+document.title = '九方家装'
 
 router.beforeEach((to, from, next) => {
     if(to.path === '/'){
-      if(to.meta.title){
-        document.title  = to.meta.title;
-      }
       next();
     }else{
       let token = localStorage.getItem('token');
