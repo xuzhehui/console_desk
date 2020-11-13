@@ -60,24 +60,6 @@ export default {
                 {title:'运输时间',align:'center',key:'crt_time',minWidth:200,
                     render:(h,params)=>h('span',{},this.func.replaceDate(params.row.transport_end_time))
                 },
-                {title:'收到确认',align:'center',key:'sub_state',minWidth:150,
-                    render(h,params){
-                        return h('a',{
-                            on:{
-                                'click':()=>{
-                                    _this.confirmDelete({
-                                        type:'primary',
-                                        title:'确认收到订单',
-                                        content:'确认收到后，订单将移入待运输订单',
-                                        then(){
-                                            _this.getData(_this.proxyObj)
-                                        },
-                                    })
-                                }
-                            }
-                        },'确认')
-                    }
-                },
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'150'},
             ],
             tableData:[],

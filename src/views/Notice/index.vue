@@ -2,29 +2,17 @@
     <div>
         <FullPage 
         title='消息通知内容'
-        :list='list' 
-        @init='init' 
+        :showTopSearch='false'
+        :showPage='false'
         :loading='loading'
-        @searchData='init' 
-        @changePage='changePage'
-        @changeSize='changeSize'
         :tableColums='tableColums'
         :tableData='tableData'
-        :pageIndex='pageIndex'
-        :total='total'
         >
-            <div slot='navButton'>
-                <Button type="primary" @click="openModal(null,1)" ghost icon='md-add'>新增内容</Button>
-            </div>
             
             <template slot='set' slot-scope='{row}'>
                  <div class="table-set">
                     <svg @click="openModal(row,2)" style="font-size:20px" color='#3764FF' class="icon icon-nav" aria-hidden="true">
                         <use xlink:href="#iconbianji"></use>
-                    </svg>
-
-                    <svg @click="delItems(row)" class="icon icon-nav" style="font-size:20px" color='red' aria-hidden="true">
-                        <use xlink:href="#iconshanchu"></use>
                     </svg>
                 </div>
             </template>
@@ -32,7 +20,6 @@
             <Modal :width="400" class-name='vertical-center-modal' :title='showType == 1 ? "新增内容" : "编辑内容"' v-model="show" @on-visible-change='changeModal'>
                 <Form :label-width="80" ref='forms' :model="postInfo" :rules='rules'>
                     <FormItem label='通知分类' prop='type'>
-                        <!-- <Input v-model="postInfo.title" placeholder="请输入通知分类"/> -->
                         <Select v-model="postInfo.type">
                             <Option :value='1'>测量</Option>
                             <Option :value='2'>生产</Option>
@@ -46,7 +33,7 @@
                     </FormItem>
 
                     <FormItem label='通知人员' prop='user_id'>
-                       <Select v-model="postInfo.user_id">
+                       <Select v-model="postInfo.user_id" multiple filterable>
                            <Option v-for='item of users' :key="item.id" :value="item.id" :label="item.nickname"></Option>
                        </Select>
                     </FormItem>
@@ -65,9 +52,6 @@
 export default {
     data(){
         return {
-            list:[
-                {title:'ID',name:'Input',value:'',serverName:'id',placeholder:'请输入ID'},
-            ],
             tableColums:[
                 {title:'ID',align:'center',key:'id',width:'100'},
                 {title:'通知分类',align:'center',key:'title',minWidth:100},
@@ -75,17 +59,13 @@ export default {
                 {title:'操作',align:'center',slot:'set',width:'150'},
             ],
             users:[],
-            tableData:[{id:1}],
-            pageIndex:1,
-            pageSize:10,
-            total:0,
-            proxyObj:{},
+            tableData:[],
             loading:false,
             show:false,
             postInfo:{
                 type:'',
                 content:'',
-                user_id:''
+                user_id:[],
             },
             rules:{
                 type:[{required: true,message:'请选择通知分类'}],
@@ -97,31 +77,15 @@ export default {
     },
     mounted() {
         this.axios('/api/user').then(res=>this.users = res.data.data)
+        this.getData()
     },
     methods:{
-        init(row){
-            row.page_index = this.pageIndex;
-            row.page_size = this.pageSize;
-            this.proxyObj = row;
-            this.getData(row)
-        },
-        getData(row){
+        getData(){
             this.loading = true;
-            this.axios('/api/notice_index',{params:row}).then(res=>{
+            this.axios('/api/notice_index').then(res=>{
                 this.loading = false;
                 this.tableData = res.data||res.data.data;
-                this.total = res.data.total||0;
             })
-        },
-        changePage(e){
-            this.pageIndex = e;
-            this.proxyObj.page_index = this.pageIndex;
-            this.getData(this.proxyObj);
-        },
-        changeSize(e){
-            this.pageSize = e;
-            this.proxyObj.page_size = this.pageSize;
-            this.getData(this.proxyObj);
         },
         delItems(row){
             this.confirmDelete({
@@ -132,7 +96,9 @@ export default {
             })
         },
         postData(){
-            this.axios.post('/api/save_notice',this.postInfo).then(res=>{
+            let postParams = JSON.parse(JSON.stringify(this.postInfo))
+            postParams.user_id = postParams.user_id.join(',')
+            this.axios.post('/api/save_notice',postParams).then(res=>{
                 if(res.code == 200){
                     this.$Message.success(res.msg||'操作成功');
                     this.show = false;
@@ -153,13 +119,15 @@ export default {
                 this.postInfo.type = row.type;
                 this.postInfo.content = row.content;
                 this.postInfo.user_id = row.user_id
+                this.postInfo.id = row.id
                 this.postInfo.op = 'edit'
+            }else{
+                this.postInfo.op = 'add'
             }
-            this.postInfo.op = 'add'
             this.show = true;
         },
         changeModal(e){
-            if(!e){this.postInfo = {};this.$refs['forms'].resetFields()}
+            if(!e){this.postInfo = {};this.$refs['forms'].resetFields();}
         }
     }
 }

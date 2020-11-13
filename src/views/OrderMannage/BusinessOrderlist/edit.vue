@@ -180,7 +180,7 @@
                             <Input size='small' :disabled='productType == 3 ? true : false' v-model="item.position" placeholder="请输入位置"/>
                         </FormItem>
 
-                        <FormItem v-for="(measuring,measuring_key) in item.measuring" :label="measuring.title" :key="measuring_key+11" :prop='measuring.key'>
+                        <FormItem v-for="(measuring,measuring_key) in item.measuring" :label="measuring.title" :key="measuring_key+11">
                             <Input @on-blur="blurMeasur(item,idx)" :disabled='productType == 3 ? true : false' :placeholder="'请输入'+measuring.title" size='small' v-model="item[measuring.key]"/>
                         </FormItem>
 
@@ -327,9 +327,6 @@ export default {
                 renovation_type:[{required: true,message:'请选择订单类型'}]
             },
             productRules:{
-                L:[{required: true,message:' ',trigger:'blur'}],
-                K:[{required: true,message:' ',trigger:'blur'}],
-                H:[{required: true,message:' ',trigger:'blur'}],
                 position:[{required: true,message:' ',trigger:'blur'}],
                 real_price:[{required: true,message:' ',trigger:'blur'}],
                 product_id:[{required: true,message:' ',}]

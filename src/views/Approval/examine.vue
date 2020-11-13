@@ -49,35 +49,6 @@
                     </table>
                 </div>
             </div>
-
-            <!-- <div class="table-zou">
-                <span>审批信息</span>
-                <div>
-                    <table border="0" cellspacing='1' cellpadding="0">
-                        <th style="width:10%;background:#F4F8FF">
-                            <tr>提交人员</tr>
-                            <tr v-for="item of left_table" :key="item.id">{{item.title}}</tr>
-                            <tr>审批状态</tr>
-                        </th>
-                        <th style="width:40%;">
-                            <tr>D19140</tr>
-                            <tr v-for="item of left_table" :key="item.id">{{item.nickname}}</tr>
-                            <tr>2020-8-20</tr>
-                        </th>
-                        <th style="width:10%;background:#F4F8FF">
-                            <tr>提交时间</tr>
-                            <tr v-for="item of right_table" :key="item.id">{{item.title}}</tr>
-                            <tr>通知他人</tr>
-                        </th>
-                        <th>
-                            <tr>{{func.replaceDate(examMineData.crt_time*1)}}</tr>
-                            <tr v-for="item of right_table" :key="item.id">{{item.nickname}}</tr>
-                            <tr>否</tr>
-                        </th>
-                    </table>
-                </div>
-            </div> -->
-
             <div class="time-line">
                 <span>订单状态</span>
                 <div class="time-ling-box">

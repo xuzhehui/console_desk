@@ -26,7 +26,7 @@
                     批量下测量
                 </Button>
 
-                <Button type="error" v-if="type == 'oa'" style="margin-right:10px;" ghost>批量驳回审批</Button>
+                <Button type="error" v-if="type == 'oa'" @click="showModal = true" style="margin-right:10px;" ghost>批量驳回审批</Button>
                 <Button type="success" @click="approved" v-if="type == 'oa'" style="margin-right:10px;" ghost>批量通过审批</Button>
 
                 <Button v-if='type!="oa"' type="primary" ghost>打印清单</Button>
@@ -40,6 +40,13 @@
                    <a v-if="type == 'measure'" style="margin:0 5px;" @click="openModal(row)">下生产</a>
                 </div>
             </template>
+
+            <Modal title='审批驳回' v-model="showModal" class-name="vertical-center-modal" @on-ok="rejectApprove" @on-visible-change='vivibleModal'>
+                <div class="cancelModal">
+                    <span>驳回原因：</span>
+                    <Input v-model="remark" clearable type="textarea" :autosize="true" placeholder="请输入驳回原因" />
+                </div>
+            </Modal>
         </FullPage>
     </div>
 </template>
@@ -114,6 +121,8 @@ export default {
             },//下生产数据
             users:[],
             selectIds:null,
+            showModal:false,
+            remark:'',
         }
     },
     created(){
@@ -224,6 +233,9 @@ export default {
             })
         },
         rejectApprove(){
+            if(!this.selectIds){
+                return this.$Message.warning('请至少选择一项')
+            }
             this.postData(2,this.selectIds)
         },
         changePage(e){
@@ -247,6 +259,9 @@ export default {
                     this.list[3].option = result.number;
                 })() : ''
             })
+        },
+        vivibleModal(e){
+            if(!e){this.remark = ''}
         }
         
     }

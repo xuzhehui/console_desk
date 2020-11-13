@@ -54,7 +54,7 @@ export default {
     data(){
         return {
             list:[
-                {title:'是否绑定',name:'Select',value:'',serverName:'pr_id',
+                {title:'是否绑定',name:'Select',value:'',serverName:'status',
                     option:[
                         {label:'是',value:1},
                         {label:'否',value:0}

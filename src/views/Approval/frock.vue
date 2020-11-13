@@ -19,13 +19,6 @@
                 <Button type="success" ghost>批量通过审批</Button>
             </div>
 
-            <!-- <div slot='text-list' class="log-list">
-                <div class="log-item" v-for="(item,index) of logList" :key="index">
-                    <span>{{item.key}}：</span>
-                    <span style="color:#333;font-weight:bold;">{{item.value}}</span>
-                </div>
-            </div> -->
-
             <div slot='navButton'>
                 <Button @click="setTableColums" type="primary" ghost icon='ios-cog'>表头设置</Button>
             </div>

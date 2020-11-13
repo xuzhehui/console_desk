@@ -27,7 +27,7 @@
                 <a v-if="$route.query.type == 4&&!row.order_in_no" class="map-margin" @click="confirmSuccess(row)">确认入库</a>
                 <a v-if="$route.query.type == 4&&row.order_in_no" class="map-margin" @click="outStock(row)">出库</a>
                 <a v-if="$route.query.type == 2&&!row.transport_no" class="map-margin" @click="outShip(row,1)">确认出库</a>
-                <a v-if="$route.query.type == 2&&row.transport_no" class="map-margin" @click="outShip(row,2)">运输</a>
+                <a v-if="$route.query.type == 2&&row.transport_no" class="map-margin" @click="row.sub_state!=3 ? outShip(row,2) : ''">{{row.sub_state!=3 ? '运输' : '已完成'}}</a>
             </template>
 
             <Modal class-name="vertical-center-modal" width='400' title='确认出库' v-model="showStock" @on-ok="confirmOutStock">

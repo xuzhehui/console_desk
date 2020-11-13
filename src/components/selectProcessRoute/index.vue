@@ -1,6 +1,7 @@
 <template>
     <div class="select-route">
-        <Modal :width='800' class-name="vertical-center-modal" :title='title' v-model="show" @cancel='cancel' @on-ok="selectSucces">
+        <Modal style="height:500px;" scrollable :width='800' class-name="vertical-center-modal" :title='title' v-model="show" @cancel='cancel' @on-ok="selectSucces">
+
             <div class="modal-page">
                <div style="padding-bottom:20px;">
                    <span>工艺路线</span>
@@ -119,8 +120,7 @@ export default {
             this.$emit('cancel',[])
         },
         getData(row,type){
-            this.axios.post('/api/select_route_to_production',{data:row}).then(res=>{
-                
+            this.axios.post('/api/select_route_to_production',row).then(res=>{
                 type == 1 ? '' : res.data.route_list.map(v=>v.show = v.show == 1 ? true : false)
                 res.data.procedure.map(v=>{
                     v.child.map(k=>{
@@ -142,7 +142,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.modal-page{width:100%;height:100%;min-height: 400px;
+.modal-page{width:100%;max-height:600px;overflow: scroll;
     .item-box{display: flex;padding-top:10px;
         .item{padding:2px 20px;color:#999999;border-radius:20px;background:#F4F5F7;border:1px solid #DEDEDE;margin-right:24px;cursor:pointer;}
         .item-foc{background: #fff;color:#3764FF;border: 1px solid #3764FF;}
@@ -153,4 +153,5 @@ export default {
         .item-center{width:10px;height:10px;background:#3764FF;border-radius:50%;}
     }
 }
+.select-route{height:400px;overflow: hidden;}
 </style>

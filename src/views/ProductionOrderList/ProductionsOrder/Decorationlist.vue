@@ -18,7 +18,7 @@
             <div slot='titleButton'>
                 <Button  @click="back" type='primary' ghost  style="margin-right:10px;">返回</Button>
                 <Button type="primary" ghost style="margin-right:10px;" @click="showBatchModal = true">批量绑定芯片</Button>
-                <Button type="primary" ghost style="margin-right:10px;">批量修改工艺路线</Button>
+                <Button type="primary" ghost style="margin-right:10px;" @click="batchSelectRouter">批量修改工艺路线</Button>
                 <Button type="primary" ghost style="margin-right:10px;" @click='openModal(selects)'>批量下生产计划</Button>
                 <Button type="primary" ghost>批量打印订单</Button>
             </div>
@@ -350,7 +350,6 @@ export default {
             let pr_id = '',tag = '';
             this.batchSelectArray.forEach((v,i)=>{
                 this.batchChipData[i].tag ? (()=>{
-                    // result.push({pr_id:v.pr_id,tag:this.batchChipData[i].tag})
                     pr_id+=v.pr_id+(i==this.batchSelectArray.length-1 ? '' : ',');
                     tag+=this.batchChipData[i].tag+(i==this.batchSelectArray.length-1 ? '' : ',')
                 })() : ''
@@ -360,6 +359,16 @@ export default {
                 if(res.code == 200){
                     this.$Message.success(res.msg||'操作成功')
                     this.showBatchModal = false
+                }
+            })
+        },
+        batchSelectRouter(){
+            if(this.selects.length<1){return this.$Message.error('请至少选择一项')}
+            this.selectProcessRouter({
+                params:{
+                    id:this.selects.reduce((pre,cur,index)=>pre+=cur.pr_id+`${index == this.selects.length-1 ? '' : ','}`,''),
+                },
+                then:()=>{
                 }
             })
         }

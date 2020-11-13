@@ -113,7 +113,6 @@ export default {
             this.axios.post('/api/orders_save_measure',{data:postInfo}).then(res=>{
                 if(res.code == 200){
                     this.$Message.success(res.msg);
-                    this.getData(this.oa_order_no,this.house_id)
                 }
             })
         },
