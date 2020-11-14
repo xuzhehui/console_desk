@@ -23,31 +23,6 @@
                 <a class="map-margin" v-if='row.sub_state!=3' @click="confirmSuccess(row)">完成</a>
                 <span v-else>已完成</span>
             </template>
-
-            <!-- <Modal class-name="vertical-center-modal" width='400' title='确认出库' v-model="showStock" @on-ok="confirmOutStock">
-                <Form :label-width="100">
-                    <FormItem label='选择人员'>
-                        <Select clearable v-model="info.user_id">
-                            <Option v-for="item of users" :key="item.id" :value="item.id" :label="item.nickname"></Option>
-                        </Select>
-                    </FormItem>
-                    
-                    <FormItem label='出库日期'>
-                        <DatePicker v-model="time" clearable type="daterange" split-panels placeholder="请选择日期"></DatePicker>
-                    </FormItem>
-                    <FormItem label="点工单形式">
-                        <RadioGroup v-model="info.work_type">
-                            <Radio :label="1">是</Radio>
-                            <Radio :label="2">否</Radio>
-                        </RadioGroup>
-                    </FormItem>
-                    <FormItem label="日薪" v-if="info.work_type == 1">
-                        <Input v-model="info.user_salary">
-                            <span slot="append">元</span>
-                        </Input>
-                    </FormItem>
-                </Form>
-            </Modal> -->
         </FullPage>
     </div>
 </template>
@@ -73,10 +48,10 @@ export default {
                 {title:'房号',align:'center',minWidth:100,key:'number_detail'},
                 {title:'产品名称',align:'center',minWidth:200,key:'product_title'},
                 {title:'位置',align:'center',minWidth:200,key:'position'},
-                {title:'出库时间',align:'center',minWidth:200,key:''},
-                {title:'运输开始时间',align:'center',minWidth:200,key:''},
-                {title:'实际结束时间',align:'center',minWidth:200,key:''},
-                {title:'实际运输时间',align:'center',minWidth:200},
+                {title:'出库时间',align:'center',minWidth:200,key:'dispatch_time'},
+                {title:'运输开始时间',align:'center',minWidth:200,key:'transport_time'},
+                {title:'实际结束时间',align:'center',minWidth:200,key:'end_time'},
+                {title:'实际运输时间',align:'center',minWidth:200,key:'at_time'},
                 {title:'操作',align:'center',width:'150',fixed:'right',slot:'set'},
             ],
             tableData:[],

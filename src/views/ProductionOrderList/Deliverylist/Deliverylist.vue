@@ -47,8 +47,10 @@ export default {
                     }
                 },
                 {title:'小区名称',align:'center',key:'residential_name',minWidth:200},
-                {title:'出库时间',align:'center',key:'unit',minWidth:100},
-                {title:'客户',align:'center',key:'warning_number',minWidth:150},
+                {title:'出库时间',align:'center',key:'unit',minWidth:200,
+                    render:(h,params)=>h('span',{},this.func.replaceDate(params.row.start_time))
+                },
+                {title:'客户',align:'center',key:'client_name',minWidth:150},
                 {title:'手机号',align:'center',key:'mobile',minWidth:150},
                 {title:'订单状态',align:'center',key:'long',minWidth:100,
                     render:(h,params)=>h('span',{},params.row.sub_state==0 ? '未指派' : (params.row.sub_state == 1 ? '可以派工' : (params.row.sub_state == 2 ? '已派工' : '已完成')))

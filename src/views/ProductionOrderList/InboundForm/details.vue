@@ -83,7 +83,7 @@ export default {
                 {title:'状态',align:'center',minWidth:200,key:'',
                     render:(h,params)=>h('span',{},params.row.sub_state==0 ? '未指派' : (params.row.sub_state == 1 ? '可以派工' : (params.row.sub_state == 2 ? '已派工' : '已完成')))
                 },
-                {title:'芯片编号',align:'center',minWidth:200},
+                {title:'芯片编号',align:'center',minWidth:200,key:'chip'},
                 {title:'操作',align:'center',width:'150',fixed:'right',slot:'set'},
             ],
             tableData:[],

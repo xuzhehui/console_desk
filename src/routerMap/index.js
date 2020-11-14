@@ -204,40 +204,10 @@ const routerMap = [
         component: resolve => require(['@/views/ProductionOrderList/Deliverylist/Deliverylist'], resolve)
     },
     {
-        path:'/cms/productionorderlist/deliverylist/decorationlist',
-        name:'Decorationlist',//生产订单列表-->出库表-->工装家装订单列表
-        meta:{index:4},
-        component: resolve => require(['@/views/ProductionOrderList/Deliverylist/Decorationlist'], resolve)
-    },
-    {
-        path:'/cms/productionorderlist/deliverylist/decorationorderdetails',
-        name:'DecorationOrderDetails',//生产订单列表-->出库表-->工装家装订单列表-->工装家装订单详情
-        meta:{index:4},
-        component: resolve => require(['@/views/ProductionOrderList/Deliverylist/DecorationOrderDetails'], resolve)
-    },
-    {
         path:'/cms/productionorderlist/deliverylist/partsdetails',
         name:'PartsDetails',//生产订单列表-->出库表-->工装家装订单列表-->工装家装订单详情-->部件详情
         meta:{index:4},
         component: resolve => require(['@/views/ProductionOrderList/Deliverylist/PartsDetails'], resolve)
-    },
-    {
-        path:'/cms/productionorderlist/completionlist/list',
-        name:'Completionlist',//生产订单列表-->完工单
-        meta:{index:4},
-        component: resolve => require(['@/views/ProductionOrderList/Completionlist/list'], resolve)
-    },
-    {
-        path:'/cms/productionorderlist/completionlist/decorationlist',
-        name:'CompletionlistDecorationlist',//生产订单列表-->完工单-->工装家装订单列表
-        meta:{index:4},
-        component: resolve => require(['@/views/ProductionOrderList/Completionlist/Decorationlist'], resolve)
-    },
-    {
-        path:'/cms/productionorderlist/completionlist/details',
-        name:'CompletionlistDecorationlistDetails',//生产订单列表-->完工单-->工装家装订单列表-->订单详情
-        meta:{index:4},
-        component: resolve => require(['@/views/ProductionOrderList/Completionlist/Details'], resolve)
     },
     {
         path:'/cms/productionorderlist/dispatchlist/list',
@@ -274,12 +244,6 @@ const routerMap = [
         name:'ProductionOrderDecorationlist',//生产订单列表-->生产订单列表-->生产计划订单详情
         meta:{index:4},
         component: resolve => require(['@/views/ProductionOrderList/ProductionsOrder/Decorationlist'], resolve)
-    },
-    {
-        path:'/cms/productionorderlist/productionsorder/details',
-        name:'ProductionOrderDetails',//生产订单列表-->生产订单列表-->生产计划订单详情-->编辑与查看
-        meta:{index:4},
-        component: resolve => require(['@/views/ProductionOrderList/ProductionsOrder/details'], resolve)
     },
     {
         path:'/cms/ordermannage/businessorderlist/list',
@@ -328,12 +292,6 @@ const routerMap = [
         name:'ApprovalExamine',//审批-->审批详情
         meta:{index:4},
         component: resolve => require(['@/views/Approval/examine'], resolve)
-    },
-    {
-        path:'/cms/approval/frock',
-        name:'ApprovaFrock',//审批-->审批列表-->工装审批列表
-        meta:{index:4},
-        component: resolve => require(['@/views/Approval/frock'], resolve)
     },
     {
         path:'/cms/approval/details',

@@ -213,15 +213,6 @@ export default {
                 this.total = res.data.total
             })
         },
-        goDetail(row){
-            this.$router.push({
-                path:'/cms/productionorderlist/productionsorder/details',
-                query:{
-                    house_id:row.house_id,
-                    type:'produce'
-                }
-            })
-        },
         getOptions(){
             this.axios('/api/order_detail_word',{params:{order_no:this.$route.query.order_no}})
             .then(res=>{
