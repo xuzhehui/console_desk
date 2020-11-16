@@ -39,8 +39,7 @@ export default {
                 {title:'小区',align:'center',key:'residential_name',minWidth:200},
                 {title:'产品',align:'center',minWidth:150,key:'product_title'},
                 {title:'部件',align:'center',minWidth:150,key:'part_title'},
-                {title:'包装码',align:'center',minWidth:150},
-                {title:'部件是否贴标签',align:'center',minWidth:150,key:'',
+                {title:'部件是否贴标签',align:'center',minWidth:150,
                     render:(h,params)=>h('span',{},params.row.label == '0' ? '否' : '是')
                 },
                 {title:'贴标签零部件',align:'center',minWidth:150,key:'sub_part'},

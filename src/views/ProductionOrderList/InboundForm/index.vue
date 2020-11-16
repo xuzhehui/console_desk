@@ -49,7 +49,9 @@ export default {
                 {title:'业务员',name:'Input',placeholder:'请输入业务员',value:'',serverName:'client_name'},
             ],
             tableColums:[
-                {title:'序号',align:'center',key:'',width:'100',fixed:'left'},
+                {title:'序号',align:'center',key:'',width:'100',fixed:'left',
+                    render:(h,params)=>h('span',{},params.index+1)
+                },
                 {title:'订单编号',align:'center',key:'order_no',minWidth:200},
                 {title:'订单类型',align:'center',key:'show_type',minWidth:100,
                     render:(h,params)=>h('span',{},params.row.type == 1 ? '工装' : '家装')

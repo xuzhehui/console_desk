@@ -114,7 +114,6 @@
 
                         <FormItem label="选择产品">
                             <Button @click="selectProducts(1,item)" type="primary" style="margin-right:10px;" ghost>选择产品</Button>
-                            <!-- <span>(已选{{item.product.length||0}}，点击按钮可再次编辑)</span> -->
                         </FormItem>
                     </Form>
                 </div>
@@ -198,6 +197,9 @@
 
                         <FormItem v-for="(remake,remake_key) in item.product_remake" :label="remake.title" :key="remake_key+31">
                             <Input  placeholder="请输入" size='small' v-model="item[remake.title]"/>
+                        </FormItem>
+                        <FormItem label='备注'>
+                            <Input size='small'  v-model="item.remark" placeholder="请输入备注"/>
                         </FormItem>
 
                     </Form>
@@ -524,7 +526,8 @@ export default {
                 url:'',
                 route_id:'',
                 limit_time:null,
-                parts:[]
+                parts:[],
+                process_attributes:''
             })
         },
         saveParts(){
@@ -570,19 +573,22 @@ export default {
             let measure = '';
             let house = ''
             this.info.house.map(v=>{
-                product_id += v.product.reduce((pre,cur,index)=>pre+=(cur.product_id+','),'')
+                product_id += v.product.reduce((pre,cur,index)=>pre+=(cur.product_id+'|'+(String(v.house).split(',').length||1)*(String(v.unit).split(',').length||1)*(String(v.layer).split(',').length||1)*(String(v.number).split(',').length||1)+','),'')
                 measure += v.product.reduce((pre,cur,index)=>pre+=(cur.measure+','),'')
             })
-            house = this.info.house.reduce((pre,cur)=>{
-                let num = (String(cur.house).split(',').length||1)*(String(cur.unit).split(',').length||1)*(String(cur.layer).split(',').length||1)*(String(cur.number).split(',').length||1)
-                let product_len = cur.product.length;
-                return pre+=`${num}-${product_len},`
-            },house)
-            
             product_id = product_id.substr(0,product_id.length-1,'')
+            const productInfo_arr = product_id.split(',')
+            let _id = '',_num = ''
+            productInfo_arr.map((v)=>{
+                let arr = v.split('|')
+                _id+=`${arr[0]},`
+                _num+=`${arr[1]},`
+            })
             measure = measure.substr(0,measure.length-1,'')
+            _id = _id.substr(0,measure.length-1,'')
+            _num = _num.substr(0,measure.length-1,'')
             house = house.substr(0,house.length-1,'')
-            this.axios('/api/house_detail_material',{params:{product_id:product_id,measure:measure,house:house}}).then(res=>{
+            this.axios('/api/house_detail_material',{params:{product_id:_id,measure:measure,num:_num}}).then(res=>{
                 if(res.code == 200){
                     this.originalData = res.data.data;
                     this.originalData.push({end:true,stock:res.data.num,title:'合计'})

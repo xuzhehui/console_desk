@@ -41,17 +41,25 @@ export default {
             logList:[],
             tableColums:[
                 {type:'selection',align:'center',width:'100',fixed:'left'},
-                {title:'订单编号',align:'center',key:'',minWidth:200},
+                {title:'订单编号',align:'center',key:'order_no',minWidth:200},
                 {title:'楼幢',align:'center',key:'house',minWidth:100},
                 {title:'单元',align:'center',minWidth:100,key:'layer'},
                 {title:'楼层',align:'center',minWidth:100,key:'unit'},
                 {title:'房号',align:'center',minWidth:100,key:'number_detail'},
                 {title:'产品名称',align:'center',minWidth:200,key:'product_title'},
                 {title:'位置',align:'center',minWidth:200,key:'position'},
-                {title:'出库时间',align:'center',minWidth:200,key:'dispatch_time'},
-                {title:'运输开始时间',align:'center',minWidth:200,key:'transport_time'},
-                {title:'实际结束时间',align:'center',minWidth:200,key:'end_time'},
-                {title:'实际运输时间',align:'center',minWidth:200,key:'at_time'},
+                {title:'出库时间',align:'center',minWidth:200,key:'dispatch_time',
+                    render:(h,params)=>h('span',{},this.func.replaceDate(params.row.dispatch_time))
+                },
+                {title:'运输开始时间',align:'center',minWidth:200,key:'transport_time',
+                    render:(h,params)=>h('span',{},this.func.replaceDate(params.row.transport_time))
+                },
+                {title:'实际结束时间',align:'center',minWidth:200,key:'end_time',
+                    render:(h,params)=>h('span',{},this.func.replaceDate(params.row.end_time))
+                },
+                {title:'实际运输时间',align:'center',minWidth:200,key:'at_time',
+                    render:(h,params)=>h('span',{},this.func.replaceDate(params.row.at_time))
+                },
                 {title:'操作',align:'center',width:'150',fixed:'right',slot:'set'},
             ],
             tableData:[],

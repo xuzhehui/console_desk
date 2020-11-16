@@ -103,7 +103,9 @@ export default {
                 {title:'生产进度',align:'center',key:'complete_rate',minWidth:100,
                     render:(h,params)=>h('span',{},parseInt(params.row.complete_rate*100)+'%') 
                 },
-                {title:'预估交付日期',align:'center',key:'predict_time',minWidth:200},
+                {title:'预估交付日期',align:'center',key:'predict_time',minWidth:200,
+                    render:(h,params)=>h('span',{},this.func.replaceDate(params.row.predict_time))
+                },
                 {title:'操作',align:'center',slot:'set',fixed:'right',width:'150'},
             ],
             tableData:[],
@@ -117,7 +119,6 @@ export default {
     },
     methods:{
         init(row){
-            // this.getUsers()
             row.sub_state = 5;
             row.page_index = this.pageIndex;
             row.page_size = this.pageSize;
