@@ -37,7 +37,7 @@ export default {
         ...mapState(['navgationData','crumbs'])
     },
     created(){
-        this.undata_navData()
+        // this.undata_navData()
     },
     mounted(){
         if(sessionStorage.getItem('crumbs')){

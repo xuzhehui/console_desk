@@ -36,17 +36,17 @@ const router = new VueRoute({
 })
 document.title = '九方家装'
 
-router.beforeEach((to, from, next) => {
-    if(to.path === '/'){
-      next();
-    }else{
-      let token = localStorage.getItem('token');
-      if(!token) {
-        next('/');
-      }else{
-        next();
-      }
-    }
-});
+// router.beforeEach((to, from, next) => {
+//     if(to.path === '/'){
+//       next();
+//     }else{
+//       let token = localStorage.getItem('token');
+//       if(!token) {
+//         next('/');
+//       }else{
+//         next();
+//       }
+//     }
+// });
 
 export default router

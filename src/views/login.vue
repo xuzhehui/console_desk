@@ -4,7 +4,7 @@
       <div class="info">
           <div class="info-header">
               <span class="complan-title">九方</span>
-              <span class="up">--家装版</span>
+              <span class="up">--中央控制台</span>
           </div>
           <div>
               <div class="info-text">

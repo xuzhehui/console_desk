@@ -1,7 +1,7 @@
 <template>
     <div>
         <FullPage 
-        title='消息通知列表'
+        title='消息列表'
         :showTopSearch='false'
         :showPage='false'
         :loading='loading'
@@ -75,8 +75,8 @@ export default {
         }
     },
     mounted() {
-        this.axios('/api/user').then(res=>this.users = res.data.data)
-        this.getData()
+        // this.axios('/api/user').then(res=>this.users = res.data.data)
+        // this.getData()
     },
     methods:{
         getData(){

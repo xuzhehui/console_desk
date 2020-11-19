@@ -121,8 +121,8 @@ export default {
         ...mapState(['userInfo','noticeNum'])
     },
     mounted(){
-        this.getTemplateDown_list()
-        this.update_notice()
+        // this.getTemplateDown_list()
+        // this.update_notice()
     },
     methods:{
         ...mapMutations(['saveUser']),

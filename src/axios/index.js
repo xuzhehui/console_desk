@@ -37,8 +37,8 @@ instance.interceptors.response.use(res => {
             return res.data
         }else{//若code 非 200
             if(res.data.code == 401){
-              localStorage.removeItem('token')
-              return location.reload()
+              // localStorage.removeItem('token')
+              // return location.reload()
             }
             Vue.prototype.$Message.error(res.data.msg||'未知错误')
             return res
