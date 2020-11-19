@@ -8,7 +8,6 @@ import ViewUI from 'view-design';
 import 'view-design/dist/styles/iview.css';
 import untilFn from './untils/until'
 import IconFont from './assets/iconfont/iconfont.js'
-import echarts from 'echarts'
 
 import Print from 'vue-print-nb'
 
@@ -25,7 +24,6 @@ Vue.prototype.axios = axios
 Vue.prototype.func = untilFn//全局引入自定义函数库
 
 Vue.config.productionTip = false
-Vue.prototype.$echarts = echarts
 Vue.prototype.$Message.config({//全局提示演示关闭时间
   duration: 3
 });

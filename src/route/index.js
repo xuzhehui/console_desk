@@ -13,7 +13,7 @@ const routes = [
     {
         path:'/',
         name:'Login',
-        meta:{index:1,title:'九方家装'},
+        meta:{index:1,title:'中控台'},
         
         component: resolve => require(['@/views/login'], resolve)
     },

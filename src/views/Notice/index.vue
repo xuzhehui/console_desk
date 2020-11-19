@@ -1,14 +1,13 @@
 <template>
     <div>
         <FullPage 
-        title='消息通知内容'
+        title='消息通知列表'
         :showTopSearch='false'
         :showPage='false'
         :loading='loading'
         :tableColums='tableColums'
         :tableData='tableData'
         >
-            
             <template slot='set' slot-scope='{row}'>
                  <div class="table-set">
                     <svg @click="openModal(row,2)" style="font-size:20px" color='#3764FF' class="icon icon-nav" aria-hidden="true">
