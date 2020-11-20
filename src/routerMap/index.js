@@ -17,6 +17,12 @@ const routerMap = [
         meta:{index:2},
         component: resolve => require(['@/views/Notice/message'], resolve)
     },
+    {
+        path:'/cms/notice/message/edit',  
+        name:'EditMessage',//消息通知管理-->消息列表
+        meta:{index:3},
+        component: resolve => require(['@/views/Notice/editMessage'], resolve)
+    },
 
 
 ]

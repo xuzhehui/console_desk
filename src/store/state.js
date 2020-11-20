@@ -18,7 +18,7 @@ const state = {
                     parent_id: 1,
                     sub: [],
                     sub_action: "0",
-                    title: "消息列表",
+                    title: "消息通知列表",
                 },
                 {
                     icon: "",
@@ -27,7 +27,7 @@ const state = {
                     parent_id: 1,
                     sub: [],
                     sub_action: "0",
-                    title: "类型列表",
+                    title: "消息类型列表",
                 }
             ],
             sub_action: "0",

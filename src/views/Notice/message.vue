@@ -1,48 +1,29 @@
 <template>
     <div>
         <FullPage 
-        title='消息列表'
-        :showTopSearch='false'
-        :showPage='false'
+        @init='init'
+        :list='list'
+        @searchData='init'
+        title='消息通知列表'
+        @changePage='changePage'
+        @changeSize='changeSize'
+        :pageIndex='pageIndex'
+        :total='total'
         :loading='loading'
         :tableColums='tableColums'
         :tableData='tableData'
         >
+            <div slot='titleButton'>
+                <Button  type="primary" @click="goDetails(null,1)">新增消息</Button>
+            </div>
             <template slot='set' slot-scope='{row}'>
                  <div class="table-set">
-                    <svg @click="openModal(row,2)" style="font-size:20px" color='#3764FF' class="icon icon-nav" aria-hidden="true">
-                        <use xlink:href="#iconbianji"></use>
-                    </svg>
+                    <Button size='small' class="map-margin" @click="goDetails(row,3)">详情</Button>
+                    <Button size='small' type='primary' class="map-margin" @click="goDetails(row,2)">编辑</Button>
+                    <Button size='small' type='error' class="map-margin" @click="delItems(row)">删除</Button>
                 </div>
             </template>
 
-            <Modal :width="400" class-name='vertical-center-modal' :title='showType == 1 ? "新增内容" : "编辑内容"' v-model="show" @on-visible-change='changeModal'>
-                <Form :label-width="80" ref='forms' :model="postInfo" :rules='rules'>
-                    <FormItem label='通知分类' prop='type'>
-                        <Select v-model="postInfo.type">
-                            <Option :value='1'>测量</Option>
-                            <Option :value='2'>生产</Option>
-                            <Option :value='3'>物料警告</Option>
-                            <Option :value='4'>订单过期</Option>
-                        </Select>
-                    </FormItem>
-
-                    <FormItem label='通知内容' prop='content'>
-                        <Input v-model="postInfo.content" type="textarea" :autosize="true" placeholder="请输入内容" />
-                    </FormItem>
-
-                    <FormItem label='通知人员' prop='user_id'>
-                       <Select v-model="postInfo.user_id" multiple filterable>
-                           <Option v-for='item of users' :key="item.id" :value="item.id" :label="item.nickname"></Option>
-                       </Select>
-                    </FormItem>
-                </Form>
-
-                <div slot="footer" class="modal-footer">
-                    <Button @click="show = false">取消</Button>
-                    <Button @click="handleSubmit('forms')" type="primary">确认</Button>
-                </div>
-            </Modal>
         </FullPage>
     </div>
 </template>
@@ -51,37 +32,52 @@
 export default {
     data(){
         return {
-            tableColums:[
-                {title:'ID',align:'center',key:'id',width:'100'},
-                {title:'通知分类',align:'center',key:'title',minWidth:100},
-                {title:'通知内容',align:'center',key:'content',minWidth:100},
-                {title:'操作',align:'center',slot:'set',width:'150'},
+            list:[
+                {name:'Input',title:'消息通知名称',value:'',serverName:'title',placeholder:'请输入消息通知名称'},
+                {name:'DatePicker',title:'创建时间',value:'',placeholder:'创建时间'}
             ],
-            users:[],
-            tableData:[],
+            tableColums:[
+                {title:'消息名称',align:'center',key:'title',width:'100',fixed:'left'},
+                {title:'通知类型',align:'center',key:'type',minWidth:100},
+                {title:'创建时间',align:'center',key:'create_time',minWidth:100},
+                {title:'最后操作人',align:'center',key:'last_user',minWidth:100},
+                {title:'操作时间',align:'center',key:'update_time',minWidth:100},
+                {title:'是否启用',align:'center',key:'state',minWidth:100,
+                    render:(h,params)=>h('i-switch',{
+                        props:{
+                            value:params.row.state,
+                            'true-value':1,
+                            'false-value':0,
+                        },
+                        on:{
+                            'on-change':(check)=>this.tableData[params.index].state = check
+                        }
+                    })
+                },
+                {title:'操作',align:'center',slot:'set',width:'180',fixed:'right'},
+            ],
+            tableData:[
+                {
+                    title:'内定',type:'123',state:1,id:1,
+                }
+            ],
             loading:false,
-            show:false,
-            postInfo:{
-                type:'',
-                content:'',
-                user_id:[],
-            },
-            rules:{
-                type:[{required: true,message:'请选择通知分类'}],
-                content:[{required: true,message:'请输入通知内容',trigger:'blur'}],
-                user_id:[{required: true,message:'请选择通知人员'}]
-            },
-            showType:1,
+            pageIndex:1,
+            pageSize:10,
+            total:10,
+            proxyObj:{},
         }
     },
-    mounted() {
-        // this.axios('/api/user').then(res=>this.users = res.data.data)
-        // this.getData()
-    },
     methods:{
-        getData(){
+        init(row){
+            row.page_index = this.pageIndex
+            row.page_size = this.pageSize
+            this.proxyObj = row
+            this.getData(row)
+        },
+        getData(row){
             this.loading = true;
-            this.axios('/api/notice_index').then(res=>{
+            this.axios('/api/notice_message/list',{params:row}).then(res=>{
                 this.loading = false;
                 this.tableData = res.data||res.data.data;
             })
@@ -90,43 +86,35 @@ export default {
             this.confirmDelete({
                 content:'确认删除么？',
                 then:()=>{
-                    
+                    this.axios.post('/api/notice_message/del',{id:row.id}).then(res=>{
+                        if(res.code == 200){
+                            this.$Message.success(res.msg||'操作成功')
+                            this.getData(this.proxyObj)
+                        }
+                    })
                 }
             })
         },
-        postData(){
-            let postParams = JSON.parse(JSON.stringify(this.postInfo))
-            postParams.user_id = postParams.user_id.join(',')
-            this.axios.post('/api/save_notice',postParams).then(res=>{
-                if(res.code == 200){
-                    this.$Message.success(res.msg||'操作成功');
-                    this.show = false;
-                    this.getData(this.proxyObj)
+        changePage(e){
+            this.pageIndex = e;
+            this.proxyObj.page_index = this.pageIndex;
+            this.getData(this.proxyObj);
+        },
+        changeSize(e){
+            this.pageSize = e;
+            this.proxyObj.page_size = this.pageSize;
+            this.getData(this.proxyObj);
+        },
+        goDetails(row,type){ //type：1新增 2编辑 3详情
+            const id = row&&row.id ? row.id : ''
+            this.$router.push({
+                path:'/cms/notice/message/edit',
+                query:{
+                    title:type == 1 ? '新增消息' : (type == 2 ? '编辑消息' : '查看消息'),
+                    type:type,
+                    id:id
                 }
             })
-        },
-        handleSubmit(name) {
-            this.$refs[name].validate((valid) => {
-                if(valid){
-                    this.postData()
-                }
-            })
-        },
-        openModal(row,type){
-            this.showType = type;
-            if(row){
-                this.postInfo.type = row.type;
-                this.postInfo.content = row.content;
-                this.postInfo.user_id = row.user_id
-                this.postInfo.id = row.id
-                this.postInfo.op = 'edit'
-            }else{
-                this.postInfo.op = 'add'
-            }
-            this.show = true;
-        },
-        changeModal(e){
-            if(!e){this.postInfo = {};this.$refs['forms'].resetFields();}
         }
     }
 }

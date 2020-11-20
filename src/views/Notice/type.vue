@@ -45,7 +45,7 @@
                    
                 </Form>
                  <div class="modal-footer" slot='footer'>
-                    <Button>取消</Button>
+                    <Button @click="show = false">取消</Button>
                     <Button type='primary' @click="handleSubmit('forms')">确认</Button>
                 </div>
             </Modal>
@@ -83,7 +83,6 @@ export default {
             total:10,
             postInfo:{
                 title:'',
-                user:[],
                 state:false,
                 remark:''
             },
@@ -137,7 +136,7 @@ export default {
             })
         },
         async postData(){
-           const result = await this.axios('/api/notice_type/update',this.postInfo)
+           const result = await this.axios.post('/api/notice_type/update',this.postInfo)
            if(result.code == 1){
                this.$Message.success(res.msg)
                this.show = false
