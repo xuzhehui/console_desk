@@ -23,6 +23,30 @@ const routerMap = [
         meta:{index:3},
         component: resolve => require(['@/views/Notice/editMessage'], resolve)
     },
+    {
+        path:'/cms/packagepermissions/factory',  
+        name:'PackageFactory',//套餐权限管理-->工厂权限管理-->工厂权限列表
+        meta:{index:1},
+        component: resolve => require(['@/views/packagePermissions/Factory'], resolve)
+    },
+    {
+        path:'/cms/templatemannage/index',  
+        name:'TemplateMannage',//模板管理-->模板列表
+        meta:{index:1},
+        component: resolve => require(['@/views/TemplateMannage/index'], resolve)
+    },
+    {
+        path:'/cms/permissions/index',  
+        name:'Permissions',//套餐管理-->套餐列表
+        meta:{index:1},
+        component: resolve => require(['@/views/Permissions/index'], resolve)
+    },
+    {
+        path:'/cms/permissions/edit',  
+        name:'PermissionsEdit',//套餐管理-->新增套餐
+        meta:{index:2},
+        component: resolve => require(['@/views/Permissions/edit'], resolve)
+    },
 
 
 ]
