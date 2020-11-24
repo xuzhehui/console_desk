@@ -107,6 +107,25 @@ const state = {
             ],
             sub_action: "0",
             title: "套餐管理",
+        },
+        {
+            icon: "#iconbujianguanli",
+            id: 35,
+            page: "",
+            parent_id: 0,
+            sub: [
+                {
+                    icon: "",
+                    id: 35,
+                    page: "/cms/factorymannage/index",
+                    parent_id: 1,
+                    sub: [],
+                    sub_action: "0",
+                    title: "工厂列表",
+                },
+            ],
+            sub_action: "0",
+            title: "工厂管理",
         }
     ]
 }

@@ -47,6 +47,12 @@ const routerMap = [
         meta:{index:2},
         component: resolve => require(['@/views/Permissions/edit'], resolve)
     },
+    {
+        path:'/cms/factorymannage/index',  
+        name:'FactoryMannage',//工厂管理-->工厂列表
+        meta:{index:2},
+        component: resolve => require(['@/views/FactoryMannage/index'], resolve)
+    },
 
 
 ]
