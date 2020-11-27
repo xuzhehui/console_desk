@@ -1,6 +1,6 @@
 <template>
     <div style="height:100%;">
-        <Toptitle :title="title">
+        <Toptitle v-if="showTopTitle" :title="title">
             <slot name='titleButton'></slot>
         </Toptitle>
 
@@ -80,6 +80,10 @@ export default {
         showTable:{
             type:Boolean,
             default:true,
+        },
+        showTopTitle:{
+            type:Boolean,
+            default:true
         }
 
 

@@ -3,8 +3,8 @@
 
       <div class="info">
           <div class="info-header">
-              <span class="complan-title">九方</span>
-              <span class="up">--中央控制台</span>
+              <span class="complan-title">天马</span>
+              <span class="up">--后台管理</span>
           </div>
           <div>
               <div class="info-text">

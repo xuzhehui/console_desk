@@ -10,6 +10,7 @@ import ProductTables from '../components/table-column/productField'
 import ColumnDropTree from '../components/drowDown/index'
 
 import ConfirmDelete from '../components/confirm-delete/index.js'
+import ConfirmEdit from '../components/confirm/edit/index'
 
 
 export default (Vue)=>{
@@ -22,4 +23,5 @@ export default (Vue)=>{
   Vue.component('ColumnDropTree',ColumnDropTree)
   Vue.use(Loading)
   Vue.use(ConfirmDelete)//删除--确认
+  Vue.use(ConfirmEdit)//删除--确认
 }
